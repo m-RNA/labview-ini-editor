@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "qscrollbar": "cpp",
+        "new": "cpp",
+        "qfile": "c",
+        "qtextcodec": "c",
+        "qtextstream": "c",
+        "qvector": "c",
+        "qstring": "cpp",
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "utility": "c",
+        "analysis_ini.h": "c"
+    }
+}

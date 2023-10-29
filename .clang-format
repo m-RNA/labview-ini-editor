@@ -1,0 +1,38 @@
+Language:	Cpp
+
+# 宏对齐
+# AlignConsecutiveMacros: AcrossEmptyLinesAndComments
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: true
+
+# 对齐连续的尾随的注释
+AlignTrailingComments: true
+
+# 连续空行的最大数量
+MaxEmptyLinesToKeep:	1
+# 在尾随的评论前添加的空格数(只适用于//)
+SpacesBeforeTrailingComments:	1
+
+# 每行的最大字符数
+ColumnLimit:	120
+
+
+IndentWidth: 4
+AccessModifierOffset: -4
+
+# 花括号换行
+AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakTemplateDeclarations: true
+BreakBeforeBinaryOperators: All
+BreakBeforeBraces: Allman
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializersBeforeComma: true
+BreakStringLiterals: true
+IndentCaseLabels: true
+KeepEmptyLinesAtTheStartOfBlocks: true
+PointerAlignment: Right
+SpaceAfterCStyleCast: true
+
+

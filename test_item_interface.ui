@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TestItemInterface</class>
+ <widget class="QWidget" name="TestItemInterface">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>527</width>
+    <height>120</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>9</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="lbIndex">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QLineEdit" name="leBrief">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="inputMask">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string>描述</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3" colspan="4">
+    <widget class="QComboBox" name="cbDataLimit">
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>OK</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>READY</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>AP READY</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>[]</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="7">
+    <widget class="QComboBox" name="cbUnit">
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>单位?</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>V</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>mV</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>A</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>mA</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>uA</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Hz</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>kHz</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>MHz</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QComboBox" name="cbComName">
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>底板串口</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>产品串口</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QComboBox" name="cbTestType">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>AT&lt;\r\n&gt;</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>AT&lt;HEX&gt;</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>68</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>串口查询真</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>串口查询假</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>单按钮弹框</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>双按钮弹框</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="3" colspan="4">
+    <widget class="QLineEdit" name="leTx">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string>发送</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="7">
+    <widget class="QSpinBox" name="spbxDelay">
+     <property name="suffix">
+      <string>s</string>
+     </property>
+     <property name="prefix">
+      <string>延时</string>
+     </property>
+     <property name="maximum">
+      <number>999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QComboBox" name="cbDisplayResult">
+     <item>
+      <property name="text">
+       <string>不显结果</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>显示结果</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>&lt;_空白&gt;</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QComboBox" name="spbxEncode">
+     <item>
+      <property name="text">
+       <string>HEX</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>H2S</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="3" colspan="4">
+    <widget class="QLineEdit" name="leRx">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>OK</string>
+     </property>
+     <property name="placeholderText">
+      <string>接收</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="7">
+    <widget class="QSpinBox" name="spbxTimeout">
+     <property name="suffix">
+      <string>s</string>
+     </property>
+     <property name="prefix">
+      <string>超时</string>
+     </property>
+     <property name="maximum">
+      <number>99</number>
+     </property>
+     <property name="value">
+      <number>5</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QSpinBox" name="spbxDataSize">
+     <property name="suffix">
+      <string>Byte</string>
+     </property>
+     <property name="prefix">
+      <string/>
+     </property>
+     <property name="maximum">
+      <number>99</number>
+     </property>
+     <property name="value">
+      <number>2</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QSpinBox" name="spbxDecPlace">
+     <property name="suffix">
+      <string>位</string>
+     </property>
+     <property name="prefix">
+      <string>小数</string>
+     </property>
+     <property name="maximum">
+      <number>99</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QComboBox" name="spbxByteOrder">
+     <item>
+      <property name="text">
+       <string>LH</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>HL</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="4">
+    <widget class="QComboBox" name="cbSign">
+     <property name="editable">
+      <bool>false</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>符号</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="5">
+    <widget class="QComboBox" name="cbAnalysis">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>截取?</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>截取</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>单匹配</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>双匹配</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="6" colspan="2">
+    <widget class="QLineEdit" name="leAnalysis">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="placeholderText">
+      <string>截取区间</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="8">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
