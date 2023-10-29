@@ -1,9 +1,11 @@
 #ifndef TEST_ITEM_INTERFACE_H
 #define TEST_ITEM_INTERFACE_H
 
+#include "analysis_ini.h"
 #include <QWidget>
 
-namespace Ui {
+namespace Ui
+{
 class TestItemInterface;
 }
 
@@ -16,10 +18,13 @@ public:
     ~TestItemInterface();
     void setIndex(int index);
 
-private slots:
-    void on_cbAnalysis_activated(int index);
+    // 配置
+    void setTestItem(int index, const TestCmd &item);
 
-    void on_cbDisplayResult_activated(int index);
+private slots:
+    void on_cbAnalysis_currentIndexChanged(int index);
+
+    void on_cbDisplayResult_currentIndexChanged(int index);
 
     void on_leTx_textChanged(const QString &arg1);
 

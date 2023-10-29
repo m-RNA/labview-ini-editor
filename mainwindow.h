@@ -22,7 +22,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_spinBox_valueChanged(int arg1);
 
     void on_btnAddTestItem_clicked();
 

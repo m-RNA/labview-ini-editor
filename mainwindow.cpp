@@ -1,3 +1,13 @@
+/*
+ * @Author: 陈俊健
+ * @Date: 2023-10-28 19:35:01
+ * @LastEditors: 陈俊健
+ * @LastEditTime: 2023-10-30 00:49:44
+ * @FilePath: \LabViewIniEditer\mainwindow.cpp
+ * @Description:
+ *
+ * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
+ */
 #include "mainwindow.h"
 #include "test_item_interface.h"
 #include "ui_mainwindow.h"
@@ -13,17 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() { delete ui; }
-
-void MainWindow::on_spinBox_valueChanged(int arg1)
-{
-    // 往 scrollArea 添加一个 TestItemInterface
-    // TestItemInterface *item = new TestItemInterface(ui->scrollAreaWidgetContents);
-    // // item->setObjectName(QString::number(arg1)); // 设置对象名
-    // item->setIndex(arg1);
-    // ui->vloTestItem->insertWidget(ui->vloTestItem->count() - 2, item);
-    // // 滚动到底部
-    // ui->scrollArea->verticalScrollBar()->setValue(ui->scrollArea->verticalScrollBar()->maximum());
-}
 
 void MainWindow::on_btnAddTestItem_clicked()
 {
@@ -99,8 +98,7 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
     for (int i = 0; i < this->testItemList.at(testItemIndex).cmdList.size(); ++i)
     {
         TestItemInterface *item = new TestItemInterface(ui->scrollAreaWidgetContents);
-        item->setIndex(testItemInterfaceList.size());
-        
+        item->setTestItem(i, this->testItemList.at(testItemIndex).cmdList.at(i));
         testItemInterfaceList.append(item);
         ui->vloTestItem->insertWidget(ui->vloTestItem->count() - 2, item);
         // 滚动到底部
