@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-29 13:18:19
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-10-29 22:52:47
+ * @LastEditTime: 2023-10-29 23:18:16
  * @FilePath: \LabViewIniEditer\analysis_ini.cpp
  * @Description:
  *
@@ -46,7 +46,7 @@
  * @param fileName ini文件的路径
  * @return QVector<QStringList> 每个测试项的内容
  */
-QVector<QStringList> analysis_ini(const QString fileName)
+QVector<QStringList> analysis_ini_to_QStringList(const QString fileName)
 {
     QVector<QStringList> testItemList; // 每个测试项的内容
     QFile file(fileName);              // 相对路径、绝对路径、资源路径都行
@@ -432,4 +432,15 @@ TestItem analysis_StringToTestItem(const QStringList testItem)
     printTestItem(testItemObj);
 
     return testItemObj;
+}
+
+QVector<TestItem> analysis_ini(const QString &pathFileName)
+{
+    QVector<QStringList> qslTestItemList = analysis_ini_to_QStringList(pathFileName); // 解析 ini 文件
+    QVector<TestItem> testItemList = {};
+    for (const auto &item : qslTestItemList)
+    {
+        testItemList.append(analysis_StringToTestItem(item));
+    }
+    return testItemList;
 }

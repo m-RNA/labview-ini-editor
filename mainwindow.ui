@@ -314,7 +314,7 @@
     <property name="title">
      <string>文件</string>
     </property>
-    <addaction name="action_ini"/>
+    <addaction name="actOpenIni"/>
     <addaction name="separator"/>
     <addaction name="action_2"/>
     <addaction name="action_9"/>
@@ -334,9 +334,12 @@
    <addaction name="menu_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="action_ini">
+  <action name="actOpenIni">
    <property name="text">
     <string>打开ini</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="action_2">
@@ -345,6 +348,9 @@
    </property>
    <property name="text">
     <string>保存ini</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="action_4">
@@ -393,6 +399,11 @@
    </property>
    <property name="text">
     <string>自动保存</string>
+   </property>
+  </action>
+  <action name="action_ini">
+   <property name="text">
+    <string>打开配置.ini</string>
    </property>
   </action>
  </widget>

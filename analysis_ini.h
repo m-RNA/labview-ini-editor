@@ -57,7 +57,7 @@ public:
     int cmdNum = 0;                // 测试项命令数量
 };
 
-QVector<QStringList> analysis_ini(const QString fileName);
+QVector<TestItem> analysis_ini(const QString &pathFileName);
 TestItem analysis_StringToTestItem(const QStringList testItem);
 QStringList splitStringSquareBrackets(const QString &input, char separator);
 
