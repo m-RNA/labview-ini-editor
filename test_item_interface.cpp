@@ -98,17 +98,14 @@ void TestItemInterface::on_leTx_editingFinished()
 
 void TestItemInterface::on_cbTestType_currentIndexChanged(int index)
 {
-    if (index >= 3)
+    if (index >= 3 || index == 0)
         ui->cbComName->setVisible(false);
     else
         ui->cbComName->setVisible(true);
-}
 
-void TestItemInterface::on_cbTestType_activated(int index)
-{
-    if (index == 0)
+    if (index == 1)
         ui->cbComName->setCurrentIndex(1); // 产品串口
-    else if (index == 1 || index == 2)
+    else if (index == 3 || index == 2)
         ui->cbComName->setCurrentIndex(0); // 底板串口
 }
 

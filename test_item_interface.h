@@ -31,8 +31,6 @@ private slots:
 
     void on_cbTestType_currentIndexChanged(int index);
 
-    void on_cbTestType_activated(int index);
-
     void on_cbDataLimit_currentTextChanged(const QString &arg1);
 
 private:

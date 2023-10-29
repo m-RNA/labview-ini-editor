@@ -11,6 +11,7 @@
         "string_view": "c",
         "initializer_list": "c",
         "utility": "c",
-        "analysis_ini.h": "c"
+        "analysis_ini.h": "c",
+        "sstream": "cpp"
     }
 }
