@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/../build-LabViewIniEditer-Desktop_Qt_5_14_2_MinGW_64_bit-Debug/**",
+                "${workspaceFolder}/../build-LabViewIniEditer-Desktop_Qt_5_14_2_MinGW_32_bit-Debug/**",
                 "C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/**",
                 "C:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore/**",
                 "${workspaceFolder}/**"

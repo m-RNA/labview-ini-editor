@@ -2,6 +2,12 @@
 #include "ui_test_item_interface.h"
 #include <QDebug>
 
+#define CB_TEST_TYPE_AT     0
+#define CB_TEST_TYPE_AT_R_N 1
+#define CB_TEST_TYPE_AT_HEX 2
+#define CB_TEST_TYPE_68     3
+#define CB_TEST_TYPE_UART_T 4
+
 TestItemInterface::TestItemInterface(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::TestItemInterface)
@@ -37,26 +43,45 @@ void TestItemInterface::on_cbDisplayResult_currentIndexChanged(int index)
 
 void TestItemInterface::on_leTx_textChanged(const QString &arg1)
 {
-    QString tx_Upper = arg1.toUpper();
+    QString tx = arg1;
+
     // 判断开头为 68 还是 AT
-    if (tx_Upper.startsWith("68"))
+    if (arg1.startsWith("68"))
     {
         QString rx = ui->leRx->text();
         // 判断是否为 16 结尾
         if (rx.endsWith("16"))
-            ui->cbTestType->setCurrentIndex(2); // AT<HEX>
+            ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_AT_HEX); // AT<HEX>
         else
-            ui->cbTestType->setCurrentIndex(3); // 68
+            ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_68); // 68
     }
-    else if (tx_Upper.startsWith("AT"))
+    else if (tx.toUpper().startsWith("AT"))
     {
-        ui->cbTestType->setCurrentIndex(1); // AT<\r\n>
+        ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_AT_R_N); // AT<\r\n>
     }
     // 判断格式是否为 1234RS1234RS...
-    else if (tx_Upper.contains("RS"))
+    else if (tx.toUpper().contains("RS"))
     {
-        ui->cbTestType->setCurrentIndex(4);
+        ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_UART_T);
     }
+    // else if (tx.endsWith("<\\r\\n>"))
+    // {
+    //     ui->leTx->setText(tx.remove("<\\r\\n>"));
+    //     ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_AT_R_N); // AT<\r\n>
+    // }
+    // else if (tx.toUpper().endsWith("<HEX>"))
+    // {
+    //     ui->leTx->setText(tx.toUpper().remove("<HEX>"));
+    //     ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_AT_HEX); // AT<HEX>
+    // }
+}
+
+void TestItemInterface::on_leTx_editingFinished()
+{
+    // 去除最后的空格、回车、换行
+    QString tx = ui->leTx->text();
+    tx = tx.trimmed();
+    ui->leTx->setText(tx);
 }
 
 void TestItemInterface::on_leRx_textChanged(const QString &arg1)
@@ -66,13 +91,15 @@ void TestItemInterface::on_leRx_textChanged(const QString &arg1)
     if (rx_Upper.startsWith("68"))
     {
         if (rx_Upper.endsWith("16"))
-            ui->cbTestType->setCurrentIndex(2); // AT<HEX>
+        {
+            ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_AT_HEX); // AT<HEX>
+        }
         else
-            ui->cbTestType->setCurrentIndex(3); // 68
+            ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_68); // 68
     }
     else if (rx_Upper.startsWith("AT"))
     {
-        ui->cbTestType->setCurrentIndex(1); // AT<\r\n>
+        ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_AT_R_N); // AT<\r\n>
     }
 }
 
@@ -84,25 +111,31 @@ void TestItemInterface::on_leRx_editingFinished()
     ui->leRx->setText(rx);
 }
 
-void TestItemInterface::on_leTx_editingFinished()
-{
-    // 去除最后的空格、回车、换行
-    QString tx = ui->leTx->text();
-    tx = tx.trimmed();
-    ui->leTx->setText(tx);
-}
-
 void TestItemInterface::on_cbTestType_currentIndexChanged(int index)
 {
-    if (index > 3 || index == 0)
+    if (index > CB_TEST_TYPE_68 || index == CB_TEST_TYPE_AT)
         ui->cbComName->setVisible(false);
     else
         ui->cbComName->setVisible(true);
-
-    if (index == 1)
+    QString tx = ui->leTx->text();
+    if (index == CB_TEST_TYPE_AT_R_N)
+    {
         ui->cbComName->setCurrentIndex(1); // 产品串口
-    else if (index == 3 || index == 2)
+        if (tx.endsWith("<\\r\\n>"))
+        {
+            ui->leTx->setText(tx.remove("<\\r\\n>"));
+            ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_AT_R_N); // AT<\r\n>
+        }
+    }
+    else if (index == CB_TEST_TYPE_AT_HEX || index == CB_TEST_TYPE_68)
+    {
         ui->cbComName->setCurrentIndex(0); // 底板串口
+        if (tx.toUpper().endsWith("<HEX>"))
+        {
+            ui->leTx->setText(tx.toUpper().remove("<HEX>"));
+            ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_AT_HEX); // AT<HEX>
+        }
+    }
 }
 
 void TestItemInterface::setIndex(int index) { ui->lbIndex->setText(QString::number(index)); }
@@ -131,6 +164,7 @@ void TestItemInterface::setTestItem(int index, const TestCmd &item)
     ui->spbxDataSize->setValue(item.dataByteLen);
     ui->spbxDecPlace->setValue(item.decimal);
     ui->spbxByteOrder->setCurrentText(item.byteOrder);
+    ui->cbEncode->setCurrentText(item.encodeWay);
     ui->cbSign->setCurrentText(item.sign);
     ui->cbAnalysis->setCurrentText(item.rxAnalysis);
 
@@ -140,6 +174,12 @@ void TestItemInterface::setTestItem(int index, const TestCmd &item)
             ui->cbDisplayResult->setCurrentIndex(2);
         else
             ui->cbDisplayResult->setCurrentIndex(1);
+    }
+
+    if(item.rxAnalysis != "")
+    {
+        ui->cbAnalysis->setCurrentText(item.rxAnalysis);
+        ui->leAnalysis->setText(item.rxAnalysis);
     }
 
     // ui->cbDataLimit->setCurrentText(item.dataLimit);

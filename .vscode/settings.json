@@ -12,6 +12,8 @@
         "initializer_list": "c",
         "utility": "c",
         "analysis_ini.h": "c",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "*.tcc": "cpp",
+        "list": "cpp"
     }
 }

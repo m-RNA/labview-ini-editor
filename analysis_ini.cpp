@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-29 13:18:19
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-10-29 23:18:16
+ * @LastEditTime: 2023-10-30 02:43:57
  * @FilePath: \LabViewIniEditer\analysis_ini.cpp
  * @Description:
  *
@@ -105,7 +105,8 @@ QVector<QStringList> analysis_ini_to_QStringList(const QString fileName)
 16:68 74 A1 C0 03 01 05 00 46 16:68 74 A1 08 01 01 87 16
 // 参数配置 =AT1&AT1&AT1&68&AT1&AT1:2:1:LH:HEX:0:0:5|3
 // ;参数配置=解析方式：每个数据项占用字节的长度:小数位:字节序:编码方式:符号:延时时间:超时时间|显示结果
-// 解析=双匹配&LADC[:]1[,]&OK:双匹配&LADC[: ]1[,]&OK 功能配置=重发次数(45)
+// 解析=双匹配&LADC[:]1[,]&OK:双匹配&LADC[: ]1[,]&OK
+// 功能配置=重发次数(45)
 */
 
 /**
@@ -167,6 +168,7 @@ void printTestItem(const TestItem &ti)
         qDebug() << "解析方式" << cmd.cmdType << "字节数" << cmd.dataByteLen << "小数" << cmd.decimal << "字节序"
                  << cmd.byteOrder << "编码方式" << cmd.encodeWay << "符号" << cmd.sign;
         qDebug() << "延时" << cmd.cmdDelay << "超时" << cmd.cmdTimeout << "显示结果" << cmd.resultShow;
+        qDebug() << "解析" << cmd.rxAnalysis;
     }
     qDebug() << "-----------------------";
 }
@@ -286,7 +288,12 @@ TestItem analysis_StringToTestItem(const QStringList testItem)
     qDebug() << "解析方式数量：" << qslParamList.size();
     for (int i = 0; i < qslParamList.size() && i < testItemObj.cmdNum; i++)
     {
-        testItemObj.cmdList[i].cmdType = qslParamList.at(i).trimmed(); // 解析方式
+        if (qslParamList.at(i).trimmed() == "AT1")
+            testItemObj.cmdList[i].cmdType = "AT<HEX>";
+        else if (qslParamList.at(i).trimmed() == "AT" && testItemObj.cmdList[i].tx.endsWith("<\\r\\n>"))
+            testItemObj.cmdList[i].cmdType = "AT<\\r\\n>";
+        else
+            testItemObj.cmdList[i].cmdType = qslParamList.at(i).trimmed(); // 解析方式
     }
     if (qslParamList.size() < testItemObj.cmdNum) // 省略写法，后面的参数会继承上一个的数值
     {
@@ -426,6 +433,36 @@ TestItem analysis_StringToTestItem(const QStringList testItem)
         {
             testItemObj.cmdList[index].resultShow = qslParamList_End.at(i).trimmed();
             index = -1;
+        }
+    }
+
+    // 解析
+    indexTemp = qStringListIndexOf(testItem, "解析");
+    if (indexTemp != -1)
+    {
+        qsCmdListOrigin = testItem.at(indexTemp);
+        qsCmdListOrigin = qsCmdListOrigin.mid(qsCmdListOrigin.indexOf("=") + 1).trimmed();
+        qslCmdList = splitStringSquareBrackets(qsCmdListOrigin, ':');
+        qDebug() << "显示结果数量：" << qslCmdList.size();
+        for (int i = 0; i < qslCmdList.size() && i < testItemObj.cmdNum; i++)
+        {
+            testItemObj.cmdList[i].rxAnalysis = qslCmdList.at(i).trimmed();
+        }
+    }
+
+    // 功能配置=重发次数(45)
+    indexTemp = qStringListIndexOf(testItem, "功能配置");
+    if (indexTemp != -1)
+    {
+        qsCmdListOrigin = testItem.at(indexTemp);
+        qsCmdListOrigin = qsCmdListOrigin.mid(qsCmdListOrigin.indexOf("=") + 1).trimmed();
+
+        if (qsCmdListOrigin.contains("重发次数"))
+        {
+            // 截取 () 中的数据
+            qsCmdListOrigin = qsCmdListOrigin.mid(qsCmdListOrigin.indexOf("(") + 1);
+            qsCmdListOrigin = qsCmdListOrigin.mid(0, qsCmdListOrigin.indexOf(")"));
+            testItemObj.repeat = qsCmdListOrigin.toInt();
         }
     }
 

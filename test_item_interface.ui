@@ -256,7 +256,7 @@
     </widget>
    </item>
    <item row="2" column="2">
-    <widget class="QComboBox" name="spbxEncode">
+    <widget class="QComboBox" name="cbEncode">
      <item>
       <property name="text">
        <string>HEX</string>

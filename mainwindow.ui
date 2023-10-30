@@ -277,6 +277,17 @@
        <layout class="QVBoxLayout" name="vloTestItem">
         <item>
          <widget class="QPushButton" name="btnAddTestItem">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>45</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>++ 添加测试命令 ++</string>
           </property>
