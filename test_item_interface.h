@@ -16,10 +16,9 @@ class TestItemInterface : public QWidget
 public:
     explicit TestItemInterface(QWidget *parent = nullptr);
     ~TestItemInterface();
-    void setIndex(int index);
 
-    // 配置
-    void setTestItem(int index, const TestCmd &item);
+    void setIndex(int index);
+    void setUi(int index, const TestCmd &item);
 
 private slots:
     void on_cbAnalysis_currentIndexChanged(int index);

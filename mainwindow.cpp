@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-10-31 22:43:17
+ * @LastEditTime: 2023-10-31 23:24:45
  * @FilePath: \LabViewIniEditer\mainwindow.cpp
  * @Description:
  *
@@ -114,7 +114,7 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
     for (int i = 0; i < this->testItemList.at(testItemIndex).cmdList.size(); ++i)
     {
         TestItemInterface *item = new TestItemInterface(ui->scrollAreaWidgetContents);
-        item->setTestItem(i, this->testItemList.at(testItemIndex).cmdList.at(i));
+        item->setUi(i, this->testItemList.at(testItemIndex).cmdList.at(i));
         testCmdInterfaceList.append(item);
         ui->vloCmdItem->insertWidget(ui->vloCmdItem->count() - 2, item);
         // 滚动到底部
@@ -124,11 +124,22 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
     // 添加结果项
     for (int i = 0; i < this->testItemList.at(testItemIndex).resultList.size(); ++i)
     {
-        TestResultInterface *item = new TestResultInterface(ui->scrollAreaWidgetContents);
-        // item->setTestResult(i, this->testItemList.at(testItemIndex).resultList.at(i));
+        TestResultInterface *item = new TestResultInterface(ui->scrollAreaWidgetContents_Result);
+        item->setUi(i, this->testItemList.at(testItemIndex).resultList.at(i));
         testResultInterfaceList.append(item);
         ui->vloResultItem->insertWidget(ui->vloResultItem->count() - 2, item);
         // 滚动到底部
         ui->scrollArea->verticalScrollBar()->setValue(ui->scrollArea->verticalScrollBar()->maximum());
     }
+}
+
+void MainWindow::on_btnAddResultItem_clicked()
+{
+    // 往 scrollArea_Result 添加一个 TestResult
+    TestResultInterface *item = new TestResultInterface(ui->scrollAreaWidgetContents_Result);
+    item->setIndex(testResultInterfaceList.size());
+    testResultInterfaceList.append(item);
+    ui->vloResultItem->insertWidget(ui->vloResultItem->count() - 2, item);
+    // 滚动到底部
+    ui->scrollArea_Result->verticalScrollBar()->setValue(ui->scrollArea_Result->verticalScrollBar()->maximum());
 }

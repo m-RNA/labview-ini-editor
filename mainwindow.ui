@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>738</width>
-    <height>498</height>
+    <width>880</width>
+    <height>670</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -354,7 +354,7 @@
              <number>0</number>
             </property>
             <item row="0" column="0">
-             <widget class="QScrollArea" name="scrollArea_3">
+             <widget class="QScrollArea" name="scrollArea_Result">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>1</horstretch>
@@ -372,8 +372,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>433</width>
-                 <height>170</height>
+                 <width>575</width>
+                 <height>256</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="vloResultItem">
@@ -471,8 +471,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>433</width>
-                 <height>170</height>
+                 <width>575</width>
+                 <height>256</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="vloCmdItem">
@@ -538,7 +538,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>738</width>
+     <width>880</width>
      <height>26</height>
     </rect>
    </property>

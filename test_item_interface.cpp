@@ -153,7 +153,7 @@ void TestItemInterface::on_cbDataLimit_currentTextChanged(const QString &arg1)
  * @param index 测试项序号
  * @param item 测试项
  */
-void TestItemInterface::setTestItem(int index, const TestCmd &item)
+void TestItemInterface::setUi(int index, const TestCmd &item)
 {
     ui->lbIndex->setText(QString::number(index));
     ui->leBrief->setText(item.brief);
