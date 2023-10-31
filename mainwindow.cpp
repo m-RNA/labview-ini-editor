@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-10-30 00:49:44
+ * @LastEditTime: 2023-10-31 22:43:17
  * @FilePath: \LabViewIniEditer\mainwindow.cpp
  * @Description:
  *
@@ -10,6 +10,7 @@
  */
 #include "mainwindow.h"
 #include "test_item_interface.h"
+#include "test_result_interface.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QFileDialog>
@@ -28,9 +29,9 @@ void MainWindow::on_btnAddTestItem_clicked()
 {
     // 往 scrollArea 添加一个 TestItem
     TestItemInterface *item = new TestItemInterface(ui->scrollAreaWidgetContents);
-    item->setIndex(testItemInterfaceList.size());
-    testItemInterfaceList.append(item);
-    ui->vloTestItem->insertWidget(ui->vloTestItem->count() - 2, item);
+    item->setIndex(testCmdInterfaceList.size());
+    testCmdInterfaceList.append(item);
+    ui->vloCmdItem->insertWidget(ui->vloCmdItem->count() - 2, item);
     // 滚动到底部
     ui->scrollArea->verticalScrollBar()->setValue(ui->scrollArea->verticalScrollBar()->maximum());
 }
@@ -93,20 +94,40 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
         return;
     }
 
-    // 清空测试项
-    for (int i = 0; i < testItemInterfaceList.size(); ++i)
+    // 清空命令项
+    for (int i = 0; i < testCmdInterfaceList.size(); ++i)
     {
-        ui->vloTestItem->removeWidget(testItemInterfaceList.at(i));
-        testItemInterfaceList.at(i)->deleteLater();
+        ui->vloCmdItem->removeWidget(testCmdInterfaceList.at(i));
+        testCmdInterfaceList.at(i)->deleteLater();
     }
-    testItemInterfaceList.clear();
+    testCmdInterfaceList.clear();
 
+    // 清空结果项
+    for (int i = 0; i < testResultInterfaceList.size(); ++i)
+    {
+        ui->vloResultItem->removeWidget(testResultInterfaceList.at(i));
+        testResultInterfaceList.at(i)->deleteLater();
+    }
+    testResultInterfaceList.clear();
+
+    // 添加命令项
     for (int i = 0; i < this->testItemList.at(testItemIndex).cmdList.size(); ++i)
     {
         TestItemInterface *item = new TestItemInterface(ui->scrollAreaWidgetContents);
         item->setTestItem(i, this->testItemList.at(testItemIndex).cmdList.at(i));
-        testItemInterfaceList.append(item);
-        ui->vloTestItem->insertWidget(ui->vloTestItem->count() - 2, item);
+        testCmdInterfaceList.append(item);
+        ui->vloCmdItem->insertWidget(ui->vloCmdItem->count() - 2, item);
+        // 滚动到底部
+        ui->scrollArea->verticalScrollBar()->setValue(ui->scrollArea->verticalScrollBar()->maximum());
+    }
+
+    // 添加结果项
+    for (int i = 0; i < this->testItemList.at(testItemIndex).resultList.size(); ++i)
+    {
+        TestResultInterface *item = new TestResultInterface(ui->scrollAreaWidgetContents);
+        // item->setTestResult(i, this->testItemList.at(testItemIndex).resultList.at(i));
+        testResultInterfaceList.append(item);
+        ui->vloResultItem->insertWidget(ui->vloResultItem->count() - 2, item);
         // 滚动到底部
         ui->scrollArea->verticalScrollBar()->setValue(ui->scrollArea->verticalScrollBar()->maximum());
     }

@@ -158,32 +158,61 @@ void TestItemInterface::setTestItem(int index, const TestCmd &item)
     ui->lbIndex->setText(QString::number(index));
     ui->leBrief->setText(item.brief);
     ui->cbComName->setCurrentText(item.comName);
-    ui->leTx->setText(item.tx);
-    ui->leRx->setText(item.rx);
-    ui->cbTestType->setCurrentText(item.cmdType);
-    ui->spbxDataSize->setValue(item.dataByteLen);
-    ui->spbxDecPlace->setValue(item.decimal);
-    ui->spbxByteOrder->setCurrentText(item.byteOrder);
-    ui->cbEncode->setCurrentText(item.encodeWay);
-    ui->cbSign->setCurrentText(item.sign);
-    ui->cbAnalysis->setCurrentText(item.rxAnalysis);
 
-    if (item.resultShow != "")
+    QString strTx = item.tx;
+    QString strRx = item.rx;
+    if (strTx.startsWith("68") && strRx.startsWith("68"))
     {
-        if (item.resultShow.contains("<")) // 截取 < 之前的字符串
-            ui->cbDisplayResult->setCurrentIndex(2);
+        if (strRx.endsWith("16"))
+        {
+            if (strTx.toUpper().endsWith("<HEX>"))
+                strTx = strTx.toUpper().remove("<HEX>");
+            ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_AT_HEX); // AT<HEX>
+        }
         else
-            ui->cbDisplayResult->setCurrentIndex(1);
+            ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_68); // 68
+    }
+    else if (strTx.toUpper().startsWith("AT"))
+    {
+        if (strTx.endsWith("<\\r\\n>"))
+            strTx = strTx.remove("<\\r\\n>");
+        ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_AT_R_N); // AT<\r\n>
+    }
+    // else if (strTx.toUpper().contains("RS"))
+    // {
+    //     ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_UART_T); // 串口
+    // }
+    else
+    {
+        ui->cbTestType->setCurrentText(item.cmdType);
     }
 
-    if(item.rxAnalysis != "")
-    {
-        ui->cbAnalysis->setCurrentText(item.rxAnalysis);
-        ui->leAnalysis->setText(item.rxAnalysis);
-    }
+    ui->leTx->setText(strTx);
+    ui->leRx->setText(strRx);
+
+//    ui->spbxDataSize->setValue(item.dataByteLen);
+//    ui->spbxDecPlace->setValue(item.decimal);
+//    ui->spbxByteOrder->setCurrentText(item.byteOrder);
+    ui->cbEncode->setCurrentText(item.encodeWay);
+//    ui->cbSign->setCurrentText(item.sign);
+
+    ui->spbxTimeout->setValue(item.cmdTimeout);
+    ui->spbxDelay->setValue(item.cmdDelay);
+
+    // if (item.resultShow != "")
+    // {
+    //     if (item.resultShow.contains("<")) // 截取 < 之前的字符串
+    //         ui->cbDisplayResult->setCurrentIndex(2);
+    //     else
+    //         ui->cbDisplayResult->setCurrentIndex(1);
+    // }
+
+    // if (item.rxAnalysis != "")
+    // {
+    //     ui->cbAnalysis->setCurrentText(item.rxAnalysis);
+    //     ui->leAnalysis->setText(item.rxAnalysis);
+    // }
 
     // ui->cbDataLimit->setCurrentText(item.dataLimit);
     // ui->cbUnit->setCurrentText(item.dataUnit);
-    ui->spbxTimeout->setValue(item.cmdTimeout);
-    ui->spbxDelay->setValue(item.cmdDelay);
 }

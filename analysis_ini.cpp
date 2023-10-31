@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-29 13:18:19
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-10-30 02:43:57
+ * @LastEditTime: 2023-10-31 22:16:01
  * @FilePath: \LabViewIniEditer\analysis_ini.cpp
  * @Description:
  *
@@ -39,6 +39,7 @@
 发送 =68 74 11 00 02 FF 00 EE 16<HEX>:68 74 11 00 02 00 00 EF 16<HEX>
 接收 = 68 74 A1 00 02 FF 00 7E 16:68 74 A1 00 02 00 00 7F 16
 参数配置 = AT1:0:0:LH:H2S:0:0:5|1
+参数配置 = AT&AT:1:0:LH:HEX:0:0:1|0<_空白>&1<_空白>
 ;参数配置 =解析方式：每个数据项占用字节的长度:小数位:字节序:编码方式:符号:延时时间:超时时间|显示结果
 */
 /**
@@ -156,6 +157,37 @@ QStringList splitStringSquareBrackets(const QString &input, char separator)
     return commandList;
 }
 
+QVector<int> splitStringSquareBracketsToInt(const QString &input, char separator, int size)
+{
+    QVector<int> qvInt = {};
+    QStringList qslParamList = splitStringSquareBrackets(input, separator);
+    for (int i = 0; i < qslParamList.size(); i++) // 解析出 序列 到 qvInt 中
+    {
+        qvInt.append(qslParamList.at(i).trimmed().toInt());
+    }
+    for (int i = qslParamList.size(); i <= size; i++) // 省略写法，后面的参数会继承上一个的数值
+    {
+        int tempInt = qvInt.at(i - 1);
+        qvInt.append(tempInt);
+    }
+    return qvInt;
+}
+
+QStringList splitStringSquareBracketsToQString(const QString &input, char separator, int size)
+{
+    QStringList qsl = {};
+    QStringList qslParamList = splitStringSquareBrackets(input, separator);
+    for (int i = 0; i < qslParamList.size(); i++) // 解析出 序列 到 qsl 中
+    {
+        qsl.append(qslParamList.at(i).trimmed());
+    }
+    for (int i = qslParamList.size(); i <= size; i++) // 省略写法，后面的参数会继承上一个的数值
+    {
+        qsl.append(qsl.at(i - 1));
+    }
+    return qsl;
+}
+
 void printTestItem(const TestItem &ti)
 {
     qDebug() << "测试名：" << ti.name;
@@ -165,10 +197,18 @@ void printTestItem(const TestItem &ti)
         qDebug() << cmd.index << cmd.brief << cmd.comName;
         qDebug() << "发送" << cmd.tx << "接收" << cmd.rx;
 
-        qDebug() << "解析方式" << cmd.cmdType << "字节数" << cmd.dataByteLen << "小数" << cmd.decimal << "字节序"
-                 << cmd.byteOrder << "编码方式" << cmd.encodeWay << "符号" << cmd.sign;
-        qDebug() << "延时" << cmd.cmdDelay << "超时" << cmd.cmdTimeout << "显示结果" << cmd.resultShow;
-        qDebug() << "解析" << cmd.rxAnalysis;
+        qDebug() << "解析方式" << cmd.cmdType << "编码方式" << cmd.encodeWay;
+        qDebug() << "延时" << cmd.cmdDelay << "超时" << cmd.cmdTimeout;
+    }
+
+    for (const auto &result : ti.resultList)
+    {
+        qDebug() << result.index << result.show;
+
+        qDebug() << "字节数" << result.dataByteLen << "小数" << result.decimal << "字节序" << result.byteOrder << "符号"
+                 << result.sign;
+
+        qDebug() << "解析" << result.analysisWay << result.analysisContent;
     }
     qDebug() << "-----------------------";
 }
@@ -226,7 +266,7 @@ TestItem analysis_StringToTestItem(const QStringList testItem)
         }
         else if (testCmdObj.tx.contains("68"))
         {
-            testCmdObj.cmdType = "68"; // 命令类型
+            // testCmdObj.cmdType = "68"; // 命令类型
         }
         testItemObj.cmdList.append(testCmdObj);
     }
@@ -303,51 +343,6 @@ TestItem analysis_StringToTestItem(const QStringList testItem)
         }
     }
 
-    // 数据项占用字节 int
-    qslParamList = splitStringSquareBrackets(qslCmdList[1], '&');
-    qDebug() << "数据项占用字节数量：" << qslParamList.size();
-    for (int i = 0; i < qslParamList.size() && i < testItemObj.cmdNum; i++)
-    {
-        testItemObj.cmdList[i].dataByteLen = qslParamList.at(i).trimmed().toInt();
-    }
-    if (qslParamList.size() < testItemObj.cmdNum) // 省略写法，后面的参数会继承上一个的数值
-    {
-        for (int i = qslParamList.size(); i < testItemObj.cmdNum; i++)
-        {
-            testItemObj.cmdList[i].dataByteLen = testItemObj.cmdList[i - 1].dataByteLen;
-        }
-    }
-
-    // 小数位 int
-    qslParamList = splitStringSquareBrackets(qslCmdList[2], '&');
-    qDebug() << "小数位数量：" << qslParamList.size();
-    for (int i = 0; i < qslParamList.size() && i < testItemObj.cmdNum; i++)
-    {
-        testItemObj.cmdList[i].decimal = qslParamList.at(i).trimmed().toInt();
-    }
-    if (qslParamList.size() < testItemObj.cmdNum) // 省略写法，后面的参数会继承上一个的数值
-    {
-        for (int i = qslParamList.size(); i < testItemObj.cmdNum; i++)
-        {
-            testItemObj.cmdList[i].decimal = testItemObj.cmdList[i - 1].decimal;
-        }
-    }
-
-    // 字节序 = LH
-    qslParamList = splitStringSquareBrackets(qslCmdList[3], '&');
-    qDebug() << "字节序数量：" << qslParamList.size();
-    for (int i = 0; i < qslParamList.size() && i < testItemObj.cmdNum; i++)
-    {
-        testItemObj.cmdList[i].byteOrder = qslParamList.at(i).trimmed();
-    }
-    if (qslParamList.size() < testItemObj.cmdNum) // 省略写法，后面的参数会继承上一个的数值
-    {
-        for (int i = qslParamList.size(); i < testItemObj.cmdNum; i++)
-        {
-            testItemObj.cmdList[i].byteOrder = testItemObj.cmdList[i - 1].byteOrder;
-        }
-    }
-
     // 编码方式 = HEX
     qslParamList = splitStringSquareBrackets(qslCmdList[4], '&');
     qDebug() << "编码方式数量：" << qslParamList.size();
@@ -360,21 +355,6 @@ TestItem analysis_StringToTestItem(const QStringList testItem)
         for (int i = qslParamList.size(); i < testItemObj.cmdNum; i++)
         {
             testItemObj.cmdList[i].encodeWay = testItemObj.cmdList[i - 1].encodeWay;
-        }
-    }
-
-    // 符号 = 0
-    qslParamList = splitStringSquareBrackets(qslCmdList[5], '&');
-    qDebug() << "符号数量：" << qslParamList.size();
-    for (int i = 0; i < qslParamList.size() && i < testItemObj.cmdNum; i++)
-    {
-        testItemObj.cmdList[i].sign = qslParamList.at(i).trimmed();
-    }
-    if (qslParamList.size() < testItemObj.cmdNum) // 省略写法，后面的参数会继承上一个的数值
-    {
-        for (int i = qslParamList.size(); i < testItemObj.cmdNum; i++)
-        {
-            testItemObj.cmdList[i].sign = testItemObj.cmdList[i - 1].sign;
         }
     }
 
@@ -416,37 +396,92 @@ TestItem analysis_StringToTestItem(const QStringList testItem)
 
     // qslParamList[1] = 显示结果
     qslParamList_End = splitStringSquareBrackets(qslParamList[1], '&');
-    qDebug() << "显示结果数量：" << qslParamList_End.size();
-    for (int i = 0; i < qslParamList_End.size() && i < testItemObj.cmdNum; i++)
+    testItemObj.resultNum = qslParamList_End.size(); // 测试项结果数量
+    qDebug() << "显示结果数量：" << testItemObj.resultNum;
+    for (int i = 0; i < testItemObj.resultNum; i++)
     {
-        int index = -1;
-        // 截取 < 之前的字符串
+        TestResult testResultObj;
         if (qslParamList_End.at(i).contains("<"))
         {
-            index = qslParamList_End.at(i).mid(0, qslParamList_End.at(i).indexOf("<")).trimmed().toInt();
+            // 截取 < 之前的字符串
+            testResultObj.index = qslParamList_End.at(i).mid(0, qslParamList_End.at(i).indexOf("<")).toInt();
+            // 截取<>之间的字符串,包含<>
+            testResultObj.show = qslParamList_End.at(i).mid(qslParamList_End.at(i).indexOf("<")).trimmed();
         }
         else
         {
-            index = qslParamList_End.at(i).trimmed().toInt();
+            testResultObj.index = qslParamList_End.at(i).toInt();
         }
-        if (index != -1)
+
+        testItemObj.resultList.append(testResultObj);
+
+        // 记录最大的 index
+        if (testItemObj.resultIndexMax < testResultObj.index)
         {
-            testItemObj.cmdList[index].resultShow = qslParamList_End.at(i).trimmed();
-            index = -1;
+            testItemObj.resultIndexMax = testResultObj.index;
         }
     }
 
-    // 解析
+    // 数据项占用字节 int
+    QVector<int> qvInt = splitStringSquareBracketsToInt(qslCmdList[1], '&', testItemObj.resultIndexMax);
+    qDebug() << "数据项占用字节";
+    for (int i = 0; i < testItemObj.resultNum; i++)
+    {
+        testItemObj.resultList[i].dataByteLen = qvInt.at(testItemObj.resultList[i].index);
+        qDebug() << testItemObj.resultList[i].index << testItemObj.resultList[i].dataByteLen; // 调试打印
+    }
+
+    // 小数位 int
+    qvInt.clear();
+    qvInt = splitStringSquareBracketsToInt(qslCmdList[2], '&', testItemObj.resultIndexMax);
+    qDebug() << "小数位";
+    for (int i = 0; i < testItemObj.resultNum; i++)
+    {
+        testItemObj.resultList[i].decimal = qvInt.at(testItemObj.resultList[i].index);
+        qDebug() << testItemObj.resultList[i].index << testItemObj.resultList[i].decimal; // 调试打印
+    }
+
+    // // 字节序 = LH
+    qslParamList = splitStringSquareBracketsToQString(qslCmdList[3], '&', testItemObj.resultIndexMax);
+    qDebug() << "字节序数量";
+    for (int i = 0; i < testItemObj.resultNum; i++)
+    {
+        testItemObj.resultList[i].byteOrder = qslParamList.at(testItemObj.resultList[i].index);
+        qDebug() << testItemObj.resultList[i].index << testItemObj.resultList[i].byteOrder; // 调试打印
+    }
+
+    // // 符号 = 0
+    qslParamList = splitStringSquareBracketsToQString(qslCmdList[5], '&', testItemObj.resultIndexMax);
+    qDebug() << "符号";
+    for (int i = 0; i < testItemObj.resultNum; i++)
+    {
+        testItemObj.resultList[i].sign = qslParamList.at(testItemObj.resultList[i].index);
+        qDebug() << testItemObj.resultList[i].index << testItemObj.resultList[i].sign; // 调试打印
+    }
+
+    // 解析=双匹配&LADC[:]1[,]&OK:双匹配&LADC[: ]1[,]&OK
     indexTemp = qStringListIndexOf(testItem, "解析");
     if (indexTemp != -1)
     {
         qsCmdListOrigin = testItem.at(indexTemp);
         qsCmdListOrigin = qsCmdListOrigin.mid(qsCmdListOrigin.indexOf("=") + 1).trimmed();
+
+        // qsCmdListOrigin =
+        // 双匹配&LADC[:]1[,]&OK:双匹配&LADC[: ]1[,]&OK
         qslCmdList = splitStringSquareBrackets(qsCmdListOrigin, ':');
-        qDebug() << "显示结果数量：" << qslCmdList.size();
-        for (int i = 0; i < qslCmdList.size() && i < testItemObj.cmdNum; i++)
+        qDebug() << "显示结果";
+        // qslCmdList =
+        // 双匹配&LADC[:]1[,]&OK
+        // 双匹配&LADC[:]1[,]&OK
+        for (int i = 0; i < testItemObj.resultNum; i++)
         {
-            testItemObj.cmdList[i].rxAnalysis = qslCmdList.at(i).trimmed();
+            // 截取第一个 & 前的内容， 放到 analysisWay
+            testItemObj.resultList[i].analysisWay = qslCmdList.at(i).mid(0, qslCmdList.at(i).indexOf("&")).trimmed();
+            // 截取第一个 & 后的内容， 放到 analysisContent
+            testItemObj.resultList[i].analysisContent
+                = qslCmdList.at(i).mid(qslCmdList.at(i).indexOf("&") + 1).trimmed();
+            qDebug() << testItemObj.resultList[i].index << testItemObj.resultList[i].analysisWay
+                     << testItemObj.resultList[i].analysisContent; // 调试打印
         }
     }
 

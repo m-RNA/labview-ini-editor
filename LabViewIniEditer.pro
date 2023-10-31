@@ -20,15 +20,18 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     test_item_interface.cpp \
+    test_result_interface.cpp
 
 HEADERS += \
     analysis_ini.h \
     mainwindow.h \
     test_item_interface.h \
+    test_result_interface.h
 
 FORMS += \
     mainwindow.ui \
     test_item_interface.ui \
+    test_result_interface.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
