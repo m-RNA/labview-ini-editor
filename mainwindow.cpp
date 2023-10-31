@@ -41,6 +41,12 @@ void MainWindow::on_actOpenIni_triggered()
     QString pathName;
     //"."表示在当前工作路径下寻找，“Ini files(*.ini)”表示指定
     pathName = QFileDialog::getOpenFileName(this, "打开文件", "./", "Ini files(*.ini)");
+    if (pathName == "")
+    {
+        qDebug() << "未选择文件";
+        return;
+    }
+
     qDebug() << pathName;
 
     this->testItemList.clear();                  // 清空
