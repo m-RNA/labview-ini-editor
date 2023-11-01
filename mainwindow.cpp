@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-10-31 23:24:45
+ * @LastEditTime: 2023-11-02 00:09:40
  * @FilePath: \LabViewIniEditer\mainwindow.cpp
  * @Description:
  *
@@ -47,7 +47,7 @@ void MainWindow::on_actOpenIni_triggered()
         qDebug() << "未选择文件";
         return;
     }
-
+    
     qDebug() << pathName;
 
     this->testItemList.clear();                  // 清空
@@ -78,6 +78,7 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
     // 获取当前点击的测试项
     QString str = item->text(column);
     qDebug() << "点击 TreeWidget: " << str;
+
     // 获取当前点击的测试项的索引
     int testItemIndex = -1;
     for (int i = 0; i < this->testItemList.size(); i++)
@@ -93,6 +94,10 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
         qDebug() << "未找到测试项";
         return;
     }
+    ui->leTestItemName->setText(testItemList.at(testItemIndex).name);
+    ui->spbxCmdNum->setValue(testItemList.at(testItemIndex).cmdList.size());
+    ui->spbxResultNum->setValue(testItemList.at(testItemIndex).resultList.size());
+    ui->spbxRepeatTimes->setValue(testItemList.at(testItemIndex).repeat);
 
     // 清空命令项
     for (int i = 0; i < testCmdInterfaceList.size(); ++i)

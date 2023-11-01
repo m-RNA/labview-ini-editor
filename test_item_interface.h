@@ -21,9 +21,6 @@ public:
     void setUi(int index, const TestCmd &item);
 
 private slots:
-    void on_cbAnalysis_currentIndexChanged(int index);
-
-    void on_cbDisplayResult_currentIndexChanged(int index);
 
     void on_leTx_textChanged(const QString &arg1);
 
@@ -34,8 +31,6 @@ private slots:
     void on_leTx_editingFinished();
 
     void on_cbTestType_currentIndexChanged(int index);
-
-    void on_cbDataLimit_currentTextChanged(const QString &arg1);
 
 private:
     Ui::TestItemInterface *ui;

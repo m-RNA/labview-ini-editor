@@ -13,33 +13,9 @@ TestItemInterface::TestItemInterface(QWidget *parent)
     , ui(new Ui::TestItemInterface)
 {
     ui->setupUi(this);
-    on_cbAnalysis_currentIndexChanged(ui->cbAnalysis->currentIndex());
-    on_cbDisplayResult_currentIndexChanged(ui->cbDisplayResult->currentIndex());
 }
 
 TestItemInterface::~TestItemInterface() { delete ui; }
-
-void TestItemInterface::on_cbAnalysis_currentIndexChanged(int index) { ui->leAnalysis->setVisible(index); }
-
-void TestItemInterface::on_cbDisplayResult_currentIndexChanged(int index)
-{
-    ui->spbxDataSize->setVisible(index);
-    ui->spbxDecPlace->setVisible(index);
-    ui->spbxByteOrder->setVisible(index);
-    ui->cbSign->setVisible(index);
-    ui->cbAnalysis->setVisible(index);
-    if (index)
-    {
-        ui->leAnalysis->setVisible(ui->cbAnalysis->currentIndex());
-        on_cbDataLimit_currentTextChanged(ui->cbDataLimit->currentText());
-    }
-    else
-    {
-        ui->leAnalysis->setVisible(false);
-        ui->cbUnit->setVisible(index);
-    }
-    ui->cbDataLimit->setVisible(index);
-}
 
 void TestItemInterface::on_leTx_textChanged(const QString &arg1)
 {
@@ -60,10 +36,10 @@ void TestItemInterface::on_leTx_textChanged(const QString &arg1)
         ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_AT_R_N); // AT<\r\n>
     }
     // 判断格式是否为 1234RS1234RS...
-    else if (tx.toUpper().contains("RS"))
-    {
-        ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_UART_T);
-    }
+    // else if (tx.toUpper().contains("RS"))
+    // {
+    //     ui->cbTestType->setCurrentIndex(CB_TEST_TYPE_UART_T);
+    // }
     // else if (tx.endsWith("<\\r\\n>"))
     // {
     //     ui->leTx->setText(tx.remove("<\\r\\n>"));
@@ -113,10 +89,10 @@ void TestItemInterface::on_leRx_editingFinished()
 
 void TestItemInterface::on_cbTestType_currentIndexChanged(int index)
 {
-    if (index > CB_TEST_TYPE_68 || index == CB_TEST_TYPE_AT)
-        ui->cbComName->setVisible(false);
+    if (index > CB_TEST_TYPE_68)
+        ui->cbComName->setEnabled(false);
     else
-        ui->cbComName->setVisible(true);
+        ui->cbComName->setEnabled(true);
     QString tx = ui->leTx->text();
     if (index == CB_TEST_TYPE_AT_R_N)
     {
@@ -140,14 +116,6 @@ void TestItemInterface::on_cbTestType_currentIndexChanged(int index)
 
 void TestItemInterface::setIndex(int index) { ui->lbIndex->setText(QString::number(index)); }
 
-void TestItemInterface::on_cbDataLimit_currentTextChanged(const QString &arg1)
-{
-    if (arg1 == "OK" || arg1.contains("READY"))
-        ui->cbUnit->setVisible(false);
-    else
-        ui->cbUnit->setVisible(true);
-}
-
 /**
  * @brief 配置测试项
  * @param index 测试项序号
@@ -156,7 +124,7 @@ void TestItemInterface::on_cbDataLimit_currentTextChanged(const QString &arg1)
 void TestItemInterface::setUi(int index, const TestCmd &item)
 {
     ui->lbIndex->setText(QString::number(index));
-    ui->leBrief->setText(item.brief);
+//    ui->leBrief->setText(item.brief);
     ui->cbComName->setCurrentText(item.comName);
 
     QString strTx = item.tx;
