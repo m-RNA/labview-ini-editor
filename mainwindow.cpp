@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-11-02 00:09:40
+ * @LastEditTime: 2023-11-02 02:21:35
  * @FilePath: \LabViewIniEditer\mainwindow.cpp
  * @Description:
  *
@@ -36,6 +36,59 @@ void MainWindow::on_btnAddTestItem_clicked()
     ui->scrollArea->verticalScrollBar()->setValue(ui->scrollArea->verticalScrollBar()->maximum());
 }
 
+QString FindFile(QString path, QString obj, QString target)
+{
+    // 查找配置文件
+    QDir dir(path);
+    QStringList filter;
+    filter << "*.ini";
+    dir.setNameFilters(filter);
+    QStringList fileList = dir.entryList();
+    QStringList targetFileList;
+    qDebug() << "fileList: " << fileList;
+    // 遍历 target 列表，移除版本号，与 obj
+    for (int i = 0; i < fileList.size(); i++)
+    {
+        QString str = fileList.at(i);
+        str = str.mid(0, str.indexOf(target));
+        qDebug() << "str: " << str;
+        if (str == obj)
+        {
+            targetFileList.append(fileList.at(i));
+        }
+    }
+    int newIndex = 0;
+    if (targetFileList.size() == 0)
+    {
+        qDebug() << "未找到" << target;
+        return "";
+    }
+    else if (targetFileList.size() > 1)
+    {
+        // 查找有无最新版本
+        qDebug() << "找到" << targetFileList.size() << "个" << target;
+        int maxRev = 0;
+        for (int i = 0; i < targetFileList.size(); i++)
+        {
+            int rev = 0;
+            rev = targetFileList.at(i)
+                      .mid(targetFileList.at(i).indexOf("_Rev") + 4,
+                           targetFileList.at(i).indexOf(".ini") - targetFileList.at(i).indexOf("_Rev") - 4)
+                      .toInt();
+            if (rev > maxRev)
+            {
+                maxRev = rev;
+                newIndex = i;
+            }
+        }
+    }
+    else
+    {
+        qDebug() << "找到一个" << target;
+    }
+    return targetFileList.at(newIndex);
+}
+
 // 原文链接：https://blog.csdn.net/zhang_ze1234/article/details/107682660
 void MainWindow::on_actOpenIni_triggered()
 {
@@ -47,11 +100,75 @@ void MainWindow::on_actOpenIni_triggered()
         qDebug() << "未选择文件";
         return;
     }
-    
-    qDebug() << pathName;
+    if (!pathName.endsWith(".ini"))
+    {
+        qDebug() << "文件格式错误";
+        return;
+    }
+    if (!QFile::exists(pathName))
+    {
+        qDebug() << "文件不存在";
+        return;
+    }
+    // if (pathName == fileNameProtocol || pathName == fileNameConfig)
+    // {
+    //     qDebug() << "文件未修改";
+    //     return;
+    // }
+    // 协议文件 和 配置文件 分别放在同目录下的 协议文件 和 配置文件 文件夹下，如下：
+    // C:NR90HCNA00NNA_IO测试程序_Rev01\协议文件\L-CM5TR01-90HCW_IO测试程序协议文件_Rev01.ini
+    // C:NR90HCNA00NNA_IO测试程序_Rev01\配置文件\L-CM5TR01-90HCW_IO测试程序配置文件_Rev01.ini
+    // 其中 L-CM5TR01-90HCW 表示测试对象， IO测试程序 表示测试程序， Rev01 表示版本号（版本号不同时，使用最新版本）
+    // 因此要匹配“协议”或“配置”前的字符串，以判断是否为同一测试对象
+    if (pathName.contains("协议文件"))
+    {
+        qDebug() << "打开协议文件";
+        fileNameProtocol = pathName;
+        QStringList strQirList = pathName.split("/");
+        // 获取协议文件名，移除版本号
+        QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("协议文件"));
+        qDebug() << "strTestObj: " << strTestObj;
+        QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
+        strPath = strPath.mid(0, strPath.lastIndexOf("/"));
+        strPath += "/配置文件/";
+        qDebug() << ": " << strPath;
+        fileNameConfig = strPath + FindFile(strPath, strTestObj, "配置文件");
+    }
+    else if (pathName.contains("配置文件"))
+    {
+        qDebug() << "打开配置文件";
+        fileNameConfig = pathName;
+        QStringList strQirList = pathName.split("/");
+        // 获取配置文件 前缀，移除版本号
+        QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("配置文件"));
+        qDebug() << "strTestObj: " << strTestObj;
+        QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
+        strPath = strPath.mid(0, strPath.lastIndexOf("/"));
+        strPath += "/协议文件/";
+        qDebug() << ": " << strPath;
+        fileNameProtocol = strPath + FindFile(strPath, strTestObj, "协议文件");
+    }
+    else
+    {
+        qDebug() << "文件名需要包含“协议”或“配置”关键字";
+        return;
+    }
+    qDebug() << "pathName: " << pathName;
+    qDebug() << "fileNameProtocol: " << fileNameProtocol;
+    qDebug() << "fileNameConfig: " << fileNameConfig;
 
-    this->testItemList.clear();                  // 清空
-    this->testItemList = analysis_ini(pathName); // 解析 ini 文件
+    if (fileNameProtocol == "")
+    {
+        qDebug() << "未找到协议文件";
+        return;
+    }
+    if (fileNameConfig == "")
+    {
+        qDebug() << "未找到配置文件";
+        return;
+    }
+    this->testItemList.clear();                          // 清空
+    this->testItemList = analysis_ini(fileNameProtocol); // 解析 ini 文件
 
     // 往 TreeWidget 添加测试项
     ui->treeWidget->clear();

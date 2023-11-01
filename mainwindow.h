@@ -43,6 +43,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QString fileNameProtocol = "";
+    QString fileNameConfig = "";
 
     QVector<TestItem> testItemList = {};
     QVector<QWidget *> testCmdInterfaceList = {};

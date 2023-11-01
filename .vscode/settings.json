@@ -14,6 +14,7 @@
         "analysis_ini.h": "c",
         "sstream": "cpp",
         "*.tcc": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "variant": "cpp"
     }
 }
