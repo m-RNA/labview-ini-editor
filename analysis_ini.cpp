@@ -3,7 +3,7 @@
  * @Date: 2023-10-29 13:18:19
  * @LastEditors: 陈俊健
  * @LastEditTime: 2023-10-31 22:16:01
- * @FilePath: \LabViewIniEditer\analysis_ini.cpp
+ * @FilePath: \LabViewIniEditor\analysis_ini.cpp
  * @Description:
  *
  * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
@@ -13,6 +13,11 @@
 #include <QFile>
 #include <QTextCodec>
 #include <QTextStream>
+
+const QStringList STR_TEST_TYPE = {
+    "AT", "AT1", "68", "串口查询真", "串口查询假", "单按钮弹框", "双按钮弹框",
+};
+
 /*
 1、要在形如如下格式文件中截取出每一个测试项：如下所示，有3个测试项目：开机检测、关机漏电流、底板初始化
 2、要在每个测试项中截取出每一行的内容，如下所示，每一行的内容用 QStringList 将中的测试内容保存起来
@@ -70,10 +75,13 @@ QVector<QStringList> analysis_ini_to_QStringList(const QString fileName)
                 testItemList.append(testItem);
                 testItem.clear();
             }
+            testItem.append(line); // 将测试项名称保存起来
+            continue;
         }
         if (line.startsWith(";") || line == "") // 如果是注释、空行，则跳过
             continue;
-        testItem.append(line);
+        if (line.contains("="))
+            testItem.append(line);
     }
     testItemList.append(testItem);
     file.close();
@@ -188,28 +196,49 @@ QStringList splitStringSquareBracketsToQString(const QString &input, char separa
     return qsl;
 }
 
+void printTestCmd(const TestCmd &tc)
+{
+    qDebug() << tc.index << tc.brief << tc.comName;
+    qDebug() << "发送" << tc.tx << "接收" << tc.rx;
+
+    qDebug() << "解析方式" << tc.cmdType << "编码方式" << tc.encodeWay;
+    qDebug() << "延时" << tc.cmdDelay << "超时" << tc.cmdTimeout;
+}
+
+void printTestResult(const TestResult &tr)
+{
+    qDebug() << tr.index << tr.show;
+
+    qDebug() << "字节数" << tr.dataByteLen << "小数" << tr.decimal << "字节序" << tr.byteOrder << "符号" << tr.sign;
+
+    qDebug() << "解析" << tr.analysisWay << tr.analysisContent;
+}
+
 void printTestItem(const TestItem &ti)
 {
     qDebug() << "测试名：" << ti.name;
     qDebug() << "重复次数" << ti.repeat;
     for (const auto &cmd : ti.cmdList)
     {
-        qDebug() << cmd.index << cmd.brief << cmd.comName;
-        qDebug() << "发送" << cmd.tx << "接收" << cmd.rx;
-
-        qDebug() << "解析方式" << cmd.cmdType << "编码方式" << cmd.encodeWay;
-        qDebug() << "延时" << cmd.cmdDelay << "超时" << cmd.cmdTimeout;
+        printTestCmd(cmd);
     }
 
     for (const auto &result : ti.resultList)
     {
-        qDebug() << result.index << result.show;
-
-        qDebug() << "字节数" << result.dataByteLen << "小数" << result.decimal << "字节序" << result.byteOrder << "符号"
-                 << result.sign;
-
-        qDebug() << "解析" << result.analysisWay << result.analysisContent;
+        printTestResult(result);
     }
+    qDebug() << "-----------------------";
+}
+
+void printConfigItem(const ConfigItem &ci)
+{
+    qDebug() << "配置名：" << ci.name;
+    qDebug() << "序号" << ci.index << "启用" << ci.enable;
+    for (auto cc : ci.contentList)
+    {
+        qDebug() << cc.name << "规格" << cc.value << "单位" << cc.unit;
+    }
+
     qDebug() << "-----------------------";
 }
 
@@ -220,7 +249,18 @@ int qStringListIndexOf(const QStringList &list, const QString &str)
         if (list.at(i).trimmed().startsWith(str))
             return i;
     }
-    qDebug() << "未找到" << str << "这一行";
+    qDebug() << "未找到" << str << "行";
+    return -1;
+}
+
+int qStringListVectorHeadIndexOf(const QVector<QStringList> &list, const QString &str)
+{
+    for (int i = 0; i < list.size(); i++)
+    {
+        if (list.at(i).at(0).trimmed().startsWith(str))
+            return i;
+    }
+    qDebug() << "未找到" << str << "项";
     return -1;
 }
 
@@ -328,12 +368,7 @@ TestItem analysis_StringToTestItem(const QStringList testItem)
     qDebug() << "解析方式数量：" << qslParamList.size();
     for (int i = 0; i < qslParamList.size() && i < testItemObj.cmdNum; i++)
     {
-        if (qslParamList.at(i).trimmed() == "AT1")
-            testItemObj.cmdList[i].cmdType = "AT<HEX>";
-        else if (qslParamList.at(i).trimmed() == "AT" && testItemObj.cmdList[i].tx.endsWith("<\\r\\n>"))
-            testItemObj.cmdList[i].cmdType = "AT<\\r\\n>";
-        else
-            testItemObj.cmdList[i].cmdType = qslParamList.at(i).trimmed(); // 解析方式
+        testItemObj.cmdList[i].cmdType = qslParamList.at(i).trimmed(); // 解析方式
     }
     if (qslParamList.size() < testItemObj.cmdNum) // 省略写法，后面的参数会继承上一个的数值
     {
@@ -506,13 +541,91 @@ TestItem analysis_StringToTestItem(const QStringList testItem)
     return testItemObj;
 }
 
-QVector<TestItem> analysis_ini(const QString &pathFileName)
+QVector<TestItem> analysis_protocol_ini(const QString &pathFileProtocol)
 {
-    QVector<QStringList> qslTestItemList = analysis_ini_to_QStringList(pathFileName); // 解析 ini 文件
-    QVector<TestItem> testItemList = {};
+    QVector<QStringList> qslTestItemList = analysis_ini_to_QStringList(pathFileProtocol); // 解析 ini 文件
+    QVector<TestItem> testItemPool = {};
     for (const auto &item : qslTestItemList)
     {
-        testItemList.append(analysis_StringToTestItem(item));
+        testItemPool.append(analysis_StringToTestItem(item));
     }
-    return testItemList;
+    return testItemPool;
+}
+// 获取 = 之后的字符串
+QString getAfterEqual(const QString &input) { return input.mid(input.indexOf("=") + 1).trimmed(); }
+// 获取 = 之前的字符串
+QString getBeforeEqual(const QString &input) { return input.mid(0, input.indexOf("=")).trimmed(); }
+// 是否包含 = 字符
+bool isContainEqual(const QString &input) { return input.contains("="); }
+
+QVector<ConfigItem> analysis_config_ini(const QString &pathFile)
+{
+    QVector<QStringList> vqslList = analysis_ini_to_QStringList(pathFile); // 解析 ini 文件
+    QVector<ConfigItem> configItemList = {};
+
+    /*
+    [UNIT] ;限定单位列表
+    休眠电流 = mA ; 限定名称 = 限定单位
+    ADC0 = mV ; 限定名称 = 限定单位
+    ADC1 = mV ; 限定名称 = 限定单位
+    */
+    int index = qStringListVectorHeadIndexOf(vqslList, "[UNIT]");
+    if (index == -1)
+        return configItemList;
+    QStringList qslUnit = vqslList.at(index);
+    qslUnit.removeFirst(); // 移除第一行
+    qDebug() << "限定单位列表" << qslUnit;
+
+    /**
+    [Test Item]
+    底板初始化=0 ; 测试项名称 = 是否启用
+    */
+    index = qStringListVectorHeadIndexOf(vqslList, "[Test Item]");
+    if (index == -1)
+        return configItemList;
+    QStringList qslTestItem = vqslList.at(index);
+    qslTestItem.removeFirst(); // 移除第一行
+
+    for (int i = 0; i < qslTestItem.size(); i++)
+    {
+        if (qslTestItem.at(i).contains("=") == false)
+            continue;
+
+        /**
+        [模组上电] ;测试项名称
+        模组上电=OK ; 限定名称 = 限定值
+
+        [ADC0and1] ;测试项名称
+        ADC0 = [800,1000] ; 限定名称 = [限定值1,限定值2]
+        ADC1 = [800,1000] ; 限定名称 = [限定值1,限定值2]
+        */
+        ConfigItem configItem;
+        configItem.index = i;
+        configItem.name = getBeforeEqual(qslTestItem.at(i));
+        configItem.enable = getAfterEqual(qslTestItem.at(i)).toInt();
+
+        index = qStringListVectorHeadIndexOf(vqslList, "[" + configItem.name + "]");
+        if (index != -1)
+        {
+            for (int k = 1; k < vqslList.at(index).size(); ++k)
+            {
+                ConfigContent cc;
+                cc.name = getBeforeEqual(vqslList.at(index).at(k));
+                cc.value = getAfterEqual(vqslList.at(index).at(k));
+                for (QString unit : qslUnit)
+                {
+                    QString temp = getBeforeEqual(unit);
+                    if (temp == cc.name)
+                    {
+                        cc.unit = getAfterEqual(unit);
+                        break;
+                    }
+                }
+                configItem.contentList.append(cc);
+            }
+        }
+        printConfigItem(configItem);
+        configItemList.append(configItem);
+    }
+    return configItemList;
 }

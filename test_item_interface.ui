@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>429</width>
-    <height>69</height>
+    <width>378</width>
+    <height>52</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,13 +18,13 @@
     <number>0</number>
    </property>
    <property name="topMargin">
-    <number>4</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
     <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>4</number>
+    <number>0</number>
    </property>
    <item>
     <widget class="QFrame" name="frame">
@@ -55,6 +55,9 @@
           <bold>true</bold>
          </font>
         </property>
+        <property name="toolTip">
+         <string>序号</string>
+        </property>
         <property name="text">
          <string>1</string>
         </property>
@@ -62,8 +65,14 @@
       </item>
       <item>
        <widget class="QComboBox" name="cbComName">
+        <property name="toolTip">
+         <string>端口选择</string>
+        </property>
         <property name="editable">
          <bool>true</bool>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
         </property>
         <item>
          <property name="text">
@@ -75,24 +84,9 @@
           <string>产品串口</string>
          </property>
         </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="cbEncode">
-        <property name="minimumSize">
-         <size>
-          <width>57</width>
-          <height>0</height>
-         </size>
-        </property>
         <item>
          <property name="text">
-          <string>HEX</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>H2S</string>
+          <string>主机串口</string>
          </property>
         </item>
        </widget>
@@ -111,12 +105,55 @@
           <height>0</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>发送数据</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="placeholderText">
          <string>发送</string>
         </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cbTxEnd">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>无、&lt;\r\n&gt;、&lt;HEX&gt;</string>
+        </property>
+        <property name="currentText">
+         <string>NC</string>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>NC</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>\r\n</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>HEX</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>
@@ -129,9 +166,12 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>86</width>
+          <width>0</width>
           <height>0</height>
          </size>
+        </property>
+        <property name="toolTip">
+         <string>命令发送延时时间</string>
         </property>
         <property name="suffix">
          <string>s</string>
@@ -169,14 +209,19 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QCheckBox" name="checkBox">
-        <property name="text">
-         <string>显示</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QComboBox" name="cbTestType">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>解析方式：AT、AT1、68、串口查询真、串口查询假、单按钮弹框、双按钮弹框</string>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
         <property name="currentIndex">
          <number>0</number>
         </property>
@@ -187,12 +232,7 @@
         </item>
         <item>
          <property name="text">
-          <string>AT&lt;\r\n&gt;</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>AT&lt;HEX&gt;</string>
+          <string>AT1</string>
          </property>
         </item>
         <item>
@@ -236,6 +276,9 @@
           <height>0</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>接收数据匹配字段</string>
+        </property>
         <property name="text">
          <string>OK</string>
         </property>
@@ -245,12 +288,41 @@
        </widget>
       </item>
       <item>
+       <widget class="QComboBox" name="cbEncode">
+        <property name="minimumSize">
+         <size>
+          <width>51</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>编码方式：HEX、Hex To String</string>
+        </property>
+        <property name="toolTipDuration">
+         <number>-1</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>HEX</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>H2S</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
        <widget class="QSpinBox" name="spbxTimeout">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>数据接收超时时间</string>
         </property>
         <property name="suffix">
          <string>s</string>
@@ -267,13 +339,6 @@
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
     </widget>
    </item>
   </layout>

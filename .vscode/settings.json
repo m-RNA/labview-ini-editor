@@ -15,6 +15,17 @@
         "sstream": "cpp",
         "*.tcc": "cpp",
         "list": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "qcheckbox": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "ratio": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "qmessagebox": "cpp"
     }
 }

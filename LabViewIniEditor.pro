@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     analysis_ini.cpp \
+    inisettings.cpp \
     main.cpp \
     mainwindow.cpp \
     test_item_interface.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 
 HEADERS += \
     analysis_ini.h \
+    inisettings.h \
     mainwindow.h \
     test_item_interface.h \
     test_result_interface.h

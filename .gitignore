@@ -1,3 +1,8 @@
 *.user
-LabViewIniEditer.pro.user
+LabViewIniEditor.pro.user
 *.TMP
+Txt
+TxtToCode.py
+CodeToTxt.py
+.VSCodeCounter
+

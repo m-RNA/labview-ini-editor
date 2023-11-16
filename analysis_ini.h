@@ -3,7 +3,7 @@
  * @Date: 2023-10-29 13:35:55
  * @LastEditors: 陈俊健
  * @LastEditTime: 2023-10-31 12:18:03
- * @FilePath: \LabViewIniEditer\analysis_ini.h
+ * @FilePath: \LabViewIniEditor\analysis_ini.h
  * @Description:
  *
  * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
@@ -15,6 +15,9 @@
 #include <QStringList>
 #include <QVector>
 
+extern const QStringList STR_TEST_TYPE;
+#define TEST_TYPE_INDEX_68 2
+
 class TestCmd
 {
 public:
@@ -25,7 +28,7 @@ public:
     QString tx = ""; // 发送内容
     QString rx = ""; // 接收内容
 
-    // 命令类型（AT、AT<\r\n>、AT<HEX>、68、串口查询真、串口查询假、单按钮弹框、双按钮弹框...)
+    // 命令类型（AT、AT1、68、串口查询真、串口查询假、单按钮弹框、双按钮弹框...)
     QString cmdType = "AT";
     QString encodeWay = "HEX"; // 编码方式（HEX、H2S）
 
@@ -49,9 +52,6 @@ public:
     QString byteOrder = "LH"; // 字节序 （LH、HL）
     QString sign = "0";       // 符号
 
-    QString dataLimit = ""; // 数据规格限制
-    QString dataUnit = "";  // 数据单位
-
     QString analysisWay = "";     // 截取、单匹配、双匹配
     QString analysisContent = ""; // 数据截取区间、单匹配内容、双匹配内容
 };
@@ -70,9 +70,32 @@ public:
     int resultIndexMax = 0;              // 测试项结果数量
 };
 
-QVector<TestItem> analysis_ini(const QString &pathFileName);
+class ConfigContent
+{
+public:
+    QString name = "";  // 限定名称
+    QString value = ""; // 限定值
+    QString unit = "";  // 限定单位
+};
+
+class ConfigItem
+{
+public:
+    QString name = ""; // 测试项名称
+    int index = 0;     // 测试项序号
+    bool enable = 0;   // 测试项是否启用
+
+    QVector<ConfigContent> contentList = {}; // 测试项内容列表
+};
+
+QVector<TestItem> analysis_protocol_ini(const QString &pathFile);
+QVector<ConfigItem> analysis_config_ini(const QString &pathFile);
+
 TestItem analysis_StringToTestItem(const QStringList testItem);
 QStringList splitStringSquareBrackets(const QString &input, char separator);
+
+void printTestCmd(const TestCmd &tc);
+void printTestResult(const TestResult &tr);
 
 #endif
 
