@@ -26,6 +26,8 @@
         "deque": "cpp",
         "string": "cpp",
         "vector": "cpp",
-        "qmessagebox": "cpp"
+        "qmessagebox": "cpp",
+        "qobject": "cpp",
+        "fstream": "cpp"
     }
 }
