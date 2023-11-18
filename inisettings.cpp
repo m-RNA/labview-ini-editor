@@ -1,4 +1,5 @@
 #include "inisettings.h"
+#include <QDebug>
 #include <QFile>
 #include <QTextStream>
 
@@ -20,8 +21,19 @@ bool IniSettings::loadFile() { return loadFile(m_fileName); }
 
 bool IniSettings::loadFile(const QString &fileName)
 {
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    QFile file(fileName); // 新建文件对象
+    if (file.exists() == false)
+    {
+        // 文件不存在，创建文件
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            return false;
+        }
+        file.close();
+        return true;
+    }
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) // 只读、文本方式打开
     {
         return false;
     }
@@ -29,7 +41,6 @@ bool IniSettings::loadFile(const QString &fileName)
     m_mapKey.clear();
     m_mapGroup.clear();
     m_mapGroupKey.clear();
-    m_mapGroupKeyDefault.clear();
 
     QString line;  // 读取的每一行数据
     QString group; // 当前组
@@ -86,13 +97,17 @@ void IniSettings::clear()
     m_mapKey.clear();
     m_mapGroup.clear();
     m_mapGroupKey.clear();
-    m_mapGroupKeyDefault.clear();
 }
 
 /**
  * @brief 设置组
  */
-void IniSettings::beginGroup(const QString &prefix) { m_group = prefix; }
+void IniSettings::beginGroup(const QString &prefix) { m_group = prefix; 
+    if (!m_mapGroup.contains(prefix))
+    {
+        m_mapGroupNew.append(prefix);
+    }
+}
 
 /**
  * @brief 结束组
@@ -292,7 +307,7 @@ bool IniSettings::saveFile(const QString &fileName)
     {
         line = in.readLine().trimmed(); // 读取一行并去除两端的空白
 
-        if (line.isEmpty() || line.startsWith(";")) // 跳过注释、空行
+        if (line.isEmpty()) // 跳过空行
         {
             lineNullCount++;
             if (lineNullCount > 2) // 最多连续两个空行
@@ -311,35 +326,36 @@ bool IniSettings::saveFile(const QString &fileName)
         }
 
         index = line.indexOf("="); // 等号索引
-        if (index < 0)
+        if (index < 0 || line.startsWith(";"))
         {
             out << line << "\n";
             continue;
         }
 
-        key = line.left(index).trimmed();      // 键
-        value = line.mid(index + 1).trimmed(); // 值
-
+        key = line.left(index).trimmed(); // 键
         if (group.isEmpty())
         {
-            if (m_mapKey.contains(key))
-            {
-                out << key << "=" << m_mapKey.value(key) << "\n";
-            }
-            else
-            {
-                out << line << "\n";
-            }
+            value = m_mapKey.value(key, ""); // 值
         }
         else
         {
-            if (m_mapGroupKey.contains(group + SUBGROUP_SEPARATOR + key))
+            value = m_mapGroupKey.value(group + SUBGROUP_SEPARATOR + key, ""); // 值
+        }
+        out << key << "=" << value << "\n";
+    }
+
+    // 新增组
+    foreach (QString group, m_mapGroupNew)
+    {
+        out << "\n";
+        out << "[" << group << "]\n";
+        foreach (QString key, m_mapGroupKey.keys())
+        {
+            if (key.startsWith(group + SUBGROUP_SEPARATOR))
             {
-                out << key << "=" << m_mapGroupKey.value(group + SUBGROUP_SEPARATOR + key) << "\n";
-            }
-            else
-            {
-                out << line << "\n";
+                QString childKey = key.mid(group.length() + 1);
+                childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
+                out << childKey << "=" << m_mapGroupKey.value(key) << "\n";
             }
         }
     }

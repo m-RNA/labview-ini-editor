@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: m-RNA m-RNA@qq.com
- * @LastEditTime: 2023-11-17 01:53:55
+ * @LastEditTime: 2023-11-18 21:40:47
  * @FilePath: \LabViewIniEditor\main.cpp
  * @Description:
  *
@@ -16,11 +16,13 @@
 
 #include "analysis_ini.h"
 #include "inisettings.h"
-void testIniSettings();
+void testReadIniSettings();
+void testWriteIniSetting();
 
 int main(int argc, char *argv[])
 {
-    testIniSettings();
+    testWriteIniSetting();
+    // testReadIniSettings();
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
@@ -35,7 +37,7 @@ int main(int argc, char *argv[])
     // return 0;
 }
 
-void testIniSettings()
+void testReadIniSettings()
 {
     IniSettings ini("test.ini", QTextCodec::codecForName("GB2312"));
     qDebug() << ini.fileName();
@@ -78,4 +80,21 @@ void testIniSettings()
         qDebug() << allKeys.at(i);
     }
     qDebug() << "---------------------";
+}
+
+void testWriteIniSetting()
+{
+    IniSettings ini("testWrite.ini", QTextCodec::codecForName("GB2312"));
+    qDebug() << ini.fileName();
+    qDebug() << ini.isLoad();
+    ini.beginGroup("test");
+    ini.setValue("test", "test");
+    ini.setValue("test1", "test1");
+
+    ini.beginGroup("中文");
+    ini.setValue("中文", "中文");
+    ini.setValue("中文1", "中文1");
+    
+
+    ini.endGroup();
 }

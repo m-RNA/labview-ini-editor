@@ -2,7 +2,7 @@
  * @Author: m-RNA m-RNA@qq.com
  * @Date: 2023-11-16 23:26:05
  * @LastEditors: m-RNA m-RNA@qq.com
- * @LastEditTime: 2023-11-18 19:53:54
+ * @LastEditTime: 2023-11-18 21:29:13
  * @FilePath: \LabViewIniEditor\inisettings.h
  * @Description:
  */
@@ -56,12 +56,10 @@ private:
     QString m_group = "";          // 当前组
     QTextCodec *m_codec = nullptr; // 编码方式
 
-    QMap<QString, QString> m_mapKey;             // 键值对（不包含组）
-    QMap<QString, QString> m_mapKeyDefault;      // 默认值（不包含组）
-    QStringList m_mapGroup;       // 组
-    
-    QMap<QString, QString> m_mapGroupKey;        // 组键
-    QMap<QString, QString> m_mapGroupKeyDefault; // 组键默认值
+    QMap<QString, QString> m_mapKey;      // 键值对（不包含组）
+    QStringList m_mapGroup;               // 组
+    QStringList m_mapGroupNew;            // 组默认值
+    QMap<QString, QString> m_mapGroupKey; // 组键
 };
 
 #endif // INISETTINGS_H
