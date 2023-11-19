@@ -1,8 +1,8 @@
 /*
  * @Author: 陈俊健
  * @Date: 2023-10-29 13:35:55
- * @LastEditors: 陈俊健
- * @LastEditTime: 2023-10-31 12:18:03
+ * @LastEditors: m-RNA m-RNA@qq.com
+ * @LastEditTime: 2023-11-19 17:25:41
  * @FilePath: \LabViewIniEditor\analysis_ini.h
  * @Description:
  *
@@ -85,7 +85,7 @@ public:
     int index = 0;     // 测试项序号
     bool enable = 0;   // 测试项是否启用
 
-    QVector<ConfigContent> contentList = {}; // 测试项内容列表
+    QVector<ConfigContent> contentList = {}; // 测试项内容列表,包含名称、值、单位
 };
 
 QVector<TestItem> analysis_protocol_ini(const QString &pathFile);
@@ -93,7 +93,7 @@ QVector<ConfigItem> analysis_config_ini(const QString &pathFile);
 
 TestItem analysis_StringToTestItem(const QStringList testItem);
 QStringList splitStringSquareBrackets(const QString &input, char separator);
-
+void printTestItem(const TestItem &ti);
 void printTestCmd(const TestCmd &tc);
 void printTestResult(const TestResult &tr);
 

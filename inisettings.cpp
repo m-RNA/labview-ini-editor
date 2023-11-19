@@ -1,10 +1,12 @@
-#include "inisettings.h"
+﻿#include "inisettings.h"
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
 
 #define SUBGROUP_SEPARATOR "/"
-
+#if _MSC_VER >=1600    // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#pragma execution_character_set("utf-8")
+#endif
 IniSettings::IniSettings(const QString &fileName, QTextCodec *codec, QObject *parent)
     : QObject(parent)
 {
@@ -102,7 +104,9 @@ void IniSettings::clear()
 /**
  * @brief 设置组
  */
-void IniSettings::beginGroup(const QString &prefix) { m_group = prefix; 
+void IniSettings::beginGroup(const QString &prefix)
+{
+    m_group = prefix;
     if (!m_mapGroup.contains(prefix))
     {
         m_mapGroupNew.append(prefix);
@@ -171,28 +175,12 @@ QStringList IniSettings::childKeys() const
  */
 QStringList IniSettings::allKeys() const
 {
-    QStringList list = m_mapKey.keys();
+    QStringList list = {};
     foreach (QString key, m_mapGroupKey.keys())
     {
-        if (!list.contains(key))
+        if (key.startsWith(m_group + SUBGROUP_SEPARATOR))
         {
-            list.append(key);
-        }
-    }
-    return list;
-}
-
-/**
- * @brief 获取所有键
- */
-QStringList IniSettings::allKeys(const QString &prefix) const
-{
-    QStringList list = m_mapKey.keys(prefix);
-    foreach (QString key, m_mapGroupKey.keys())
-    {
-        if (key.startsWith(prefix + SUBGROUP_SEPARATOR))
-        {
-            QString childKey = key.mid(prefix.length() + 1);
+            QString childKey = key.mid(m_group.length() + 1);
             childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
             if (!list.contains(childKey))
             {

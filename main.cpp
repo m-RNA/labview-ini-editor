@@ -1,8 +1,8 @@
-/*
+﻿/*
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: m-RNA m-RNA@qq.com
- * @LastEditTime: 2023-11-18 21:40:47
+ * @LastEditTime: 2023-11-19 17:39:03
  * @FilePath: \LabViewIniEditor\main.cpp
  * @Description:
  *
@@ -16,13 +16,18 @@
 
 #include "analysis_ini.h"
 #include "inisettings.h"
+
+#if _MSC_VER >=1600    // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#pragma execution_character_set("utf-8")
+#endif
+
 void testReadIniSettings();
 void testWriteIniSetting();
 
 int main(int argc, char *argv[])
 {
-    testWriteIniSetting();
-    // testReadIniSettings();
+//    testWriteIniSetting();
+//    testReadIniSettings();
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
@@ -94,7 +99,7 @@ void testWriteIniSetting()
     ini.beginGroup("中文");
     ini.setValue("中文", "中文");
     ini.setValue("中文1", "中文1");
-    
+
 
     ini.endGroup();
 }

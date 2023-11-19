@@ -1,6 +1,245 @@
-#include "labviewsetting.h"
+﻿#include "labviewsetting.h"
+#include "analysis_ini.h"
+#include <QDebug>
+#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#pragma execution_character_set("utf-8")
+#endif
+/**
+ * @brief 打印日志消息。
+ * @param str 要打印的日志消息。
+ */
+void logPrint(const QString &str) { qDebug() << str; }
 
-LabViewSetting::LabViewSetting()
+// 补齐长度函数
+void fillLength(QStringList &list, int length)
 {
+    if (list.size() < length)
+    {
+        for (int i = list.size(); i < length; i++)
+        {
+            list.append(list.at(list.size() - 1));
+        }
+    }
+}
 
+/**
+ * @brief 使用指定的文件名构造一个 LabViewSetting 对象。
+ * @param fileNameProtocol 协议文件的文件名。
+ * @param fileNameConfig 配置文件的文件名。
+ */
+LabViewSetting::LabViewSetting(QString fileNameProtocol, QString fileNameConfig)
+{
+    this->fileNameProtocol = fileNameProtocol;
+    this->fileNameConfig = fileNameConfig;
+
+    iniSettingsProtocol = new IniSettings(fileNameProtocol, QTextCodec::codecForName("GB2312"));
+    iniSettingsConfig = new IniSettings(fileNameConfig, QTextCodec::codecForName("GB2312"));
+
+    if (iniSettingsProtocol->isLoad() == false)
+    {
+        logPrint("协议文件加载失败");
+    }
+    if (iniSettingsConfig->isLoad() == false)
+    {
+        logPrint("配置文件加载失败");
+    }
+
+    analysisTestItem();
+}
+
+/**
+ * @brief 销毁 LabViewSetting 对象。
+ */
+LabViewSetting::~LabViewSetting()
+{
+    delete iniSettingsProtocol;
+    delete iniSettingsConfig;
+}
+
+/**
+ * @brief 清空测试项列表和配置项列表。
+ */
+void LabViewSetting::clear()
+{
+    testItemList.clear();
+    configItemList.clear();
+}
+
+/**
+ * @brief 获取测试项列表。
+ * @return 测试项列表。
+ */
+QList<TestItem> LabViewSetting::getTestItemList() const { return testItemList; }
+
+/**
+ * @brief 获取配置项列表。
+ * @return 配置项列表。
+ */
+QList<ConfigItem> LabViewSetting::getConfigItemList() const { return configItemList; }
+
+/**
+ * @brief 分析测试项。
+ */
+void LabViewSetting::analysisTestItem()
+{
+    testItemList.clear();
+    QStringList testItemNameList = {};
+    if (iniSettingsConfig->isLoad()) // 获取测试项名称列表
+    {
+        iniSettingsConfig->beginGroup("Test Item");
+        testItemNameList = iniSettingsConfig->allKeys();
+        iniSettingsConfig->endGroup();
+        foreach (QString testItemName, testItemNameList)
+        {
+            TestItem testItem = getTestItem(testItemName);
+            if (testItem.name != "")
+            {
+                testItemList.append(testItem);
+            }
+        }
+    }
+}
+
+/**
+ * @brief 使用指定的名称分析测试项。
+ * @param testItemName 要分析的测试项的名称。
+ * @return 分析后的测试项。
+ */
+TestItem LabViewSetting::getTestItem(const QString &testItemName)
+{
+    TestItem testItem;
+    testItem.name = testItemName;
+    testItem.cmdList = {};
+    if (iniSettingsProtocol->childGroups().contains(testItemName) == false) // 测试项名称不存在
+    {
+        return testItem;
+    }
+
+    iniSettingsProtocol->beginGroup(testItemName);
+    QString port = iniSettingsProtocol->value("端口选择");
+    QString sent = iniSettingsProtocol->value("发送");
+    QString receive = iniSettingsProtocol->value("接收");
+    QString param = iniSettingsProtocol->value("参数配置");
+    QString analysis = iniSettingsProtocol->value("解析");
+    QString function = iniSettingsProtocol->value("功能配置");
+    qDebug() << function;
+    iniSettingsProtocol->endGroup();
+
+    QStringList portList = splitStringSquareBrackets(port, ':');
+    QStringList sentList = splitStringSquareBrackets(sent, ':');
+    QStringList receiveList = splitStringSquareBrackets(receive, ':');
+    QStringList paramList = splitStringSquareBrackets(param, ':');
+    QStringList analysisContentList = splitStringSquareBrackets(analysis, ':');
+    if (paramList.size() < 8)
+    {
+        logPrint(testItemName + " 参数配置:参数不全");
+        return testItem;
+    }
+    QStringList paramListEnd = splitStringSquareBrackets(paramList.at(7), '|');
+    if (paramListEnd.size() < 2)
+    {
+        logPrint(testItemName + " 超时时间|显示结果:参数不全");
+        return testItem;
+    }
+    QStringList cmdTypeList = splitStringSquareBrackets(paramList.at(0), '&');
+    QStringList dataByteLenList = splitStringSquareBrackets(paramList.at(1), '&');
+    QStringList decimalList = splitStringSquareBrackets(paramList.at(2), '&');
+    QStringList byteOrderList = splitStringSquareBrackets(paramList.at(3), '&');
+    QStringList encodeWayList = splitStringSquareBrackets(paramList.at(4), '&');
+    QStringList signList = splitStringSquareBrackets(paramList.at(5), '&');
+    QStringList delayList = splitStringSquareBrackets(paramList.at(6), '&');
+    QStringList timeoutList = splitStringSquareBrackets(paramListEnd.at(0), '&');
+    QStringList resultShowList = splitStringSquareBrackets(paramListEnd.at(1), '&');
+
+    int cmdNum = sentList.size();
+    testItem.cmdNum = cmdNum;
+    // 填充长度
+    fillLength(portList, cmdNum);      // 端口选择
+    fillLength(receiveList, cmdNum);   // 接收
+    fillLength(cmdTypeList, cmdNum);   // 解析方式
+    fillLength(encodeWayList, cmdNum); // 编码方式
+    fillLength(delayList, cmdNum);     // 延时时间
+    fillLength(timeoutList, cmdNum);   // 超时时间
+
+    for (int i = 0; i < cmdNum; i++)
+    {
+        TestCmd testCmd;
+        testCmd.index = i;
+        testCmd.comName = portList.at(i).trimmed();               // 端口选择
+        testCmd.tx = sentList.at(i).trimmed();                    // 发送
+        testCmd.rx = receiveList.at(i).trimmed();                 // 接收
+        testCmd.cmdType = cmdTypeList.at(i).trimmed();            // 解析方式
+        testCmd.encodeWay = encodeWayList.at(i).trimmed();        // 编码方式
+        testCmd.cmdDelay = delayList.at(i).trimmed().toInt();     // 延时时间
+        testCmd.cmdTimeout = timeoutList.at(i).trimmed().toInt(); // 超时时间
+        testItem.cmdList.append(testCmd);
+    }
+
+    int resultNum = resultShowList.size();
+    testItem.resultNum = resultNum;
+    for (int i = 0; i < resultNum; i++)
+    {
+        TestResult testResult;
+        if (resultShowList.at(i).contains("<"))
+        {
+            // 截取 < 之前的字符串
+            testResult.index = resultShowList.at(i).mid(0, resultShowList.at(i).indexOf("<")).toInt();
+            // 截取<>之间的字符串,包含<>
+            testResult.show = resultShowList.at(i).mid(resultShowList.at(i).indexOf("<")).trimmed();
+        }
+        else
+        {
+            testResult.index = resultShowList.at(i).toInt();
+            if (testResult.index >= cmdNum)
+            {
+                logPrint(testItemName + " 解析:结果数量大于命令数量");
+                testResult.index = cmdNum - 1;
+            }
+        }
+
+        testItem.resultList.append(testResult);
+
+        // 记录最大的 index
+        if (testItem.resultIndexMax < testResult.index)
+        {
+            testItem.resultIndexMax = testResult.index;
+        }
+    }
+    int resultIndexMax = testItem.resultIndexMax;
+    qDebug() << "resultIndexMax:" << resultIndexMax << "resultNum:" << resultNum;
+    fillLength(dataByteLenList, resultIndexMax + 1);
+    fillLength(decimalList, resultIndexMax + 1);
+    fillLength(byteOrderList, resultIndexMax + 1);
+    fillLength(signList, resultIndexMax + 1);
+    fillLength(analysisContentList, resultIndexMax + 1);
+
+    for (int i = 0; i < resultNum; i++)
+    {
+        TestResult &testResult = testItem.resultList[i];
+        int index = testResult.index;
+        testResult.dataByteLen = dataByteLenList.at(index).trimmed().toInt(); // 每个数据项占用字节的长度
+        testResult.decimal = decimalList.at(index).trimmed().toInt();         // 小数点位置
+        testResult.byteOrder = byteOrderList.at(index).trimmed();             // 字节序 （LH、HL）
+        testResult.sign = signList.at(index).trimmed();                       // 符号
+
+        // 解析=双匹配&LADC[: ]1[,]&OK:双匹配&LADC[: ]1[,]&OK
+        QStringList anaList = splitStringSquareBrackets(analysisContentList.at(i).trimmed(), '&');
+
+        // 截取第一个 & 前的内容， 放到 analysisWay
+        testResult.analysisWay
+            = analysisContentList.at(i).trimmed().mid(0, analysisContentList.at(i).trimmed().indexOf("&"));
+        // 截取第一个 & 后的内容， 放到 analysisContent
+        testResult.analysisContent
+            = analysisContentList.at(i).trimmed().mid(analysisContentList.at(i).trimmed().indexOf("&") + 1);
+    }
+    // 功能配置=重发次数(45)
+    if (function.startsWith("重发次数"))
+    {
+        testItem.repeat
+            = function.mid(function.indexOf("(") + 1, function.indexOf(")") - function.indexOf("(") - 1).toInt();
+    }
+
+    // printTestItem(testItem);
+
+    return testItem;
 }

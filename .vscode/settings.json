@@ -28,6 +28,8 @@
         "vector": "cpp",
         "qmessagebox": "cpp",
         "qobject": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "qlist": "cpp",
+        "typeinfo": "cpp"
     }
 }

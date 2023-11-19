@@ -1,14 +1,15 @@
-/*
+﻿/*
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
- * @LastEditors: 陈俊健
- * @LastEditTime: 2023-11-02 02:21:35
+ * @LastEditors: m-RNA m-RNA@qq.com
+ * @LastEditTime: 2023-11-20 01:55:31
  * @FilePath: \LabViewIniEditor\mainwindow.cpp
  * @Description:
  *
  * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
  */
 #include "mainwindow.h"
+#include "labviewsetting.h"
 #include "test_item_interface.h"
 #include "test_result_interface.h"
 #include "ui_mainwindow.h"
@@ -18,6 +19,10 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QScrollBar>
+
+#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#pragma execution_character_set("utf-8")
+#endif
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -178,8 +183,11 @@ void MainWindow::on_actOpenIni_triggered()
         item->setText("   " + str);
     }
 
-    this->testItemList.clear();                                   // 清空
-    this->testItemList = analysis_protocol_ini(fileNameProtocol); // 解析 协议文件
+    labviewSetting = new LabViewSetting(fileNameProtocol, fileNameConfig);
+    this->testItemList.clear();                             // 清空
+    this->testItemList = labviewSetting->getTestItemList(); // 解析 协议文件
+
+    // this->testItemList = analysis_protocol_ini(fileNameProtocol); // 解析 协议文件
     ui->lwlTestItemPool->clear();
     for (int i = 0; i < this->testItemList.size(); i++) // 往 ListWidget 添加测试项
     {
@@ -272,8 +280,13 @@ void MainWindow::on_lwlTestItemPool_itemClicked(QListWidgetItem *item)
         TestResultInterface *item = new TestResultInterface(this);
         auto result = this->testItemList.at(testItemIndex).resultList.at(i);
         item->setUi_Result(i, result);
+        if (this->configItemList.at(configIndex).contentList.size() <= i)
+        {
+            qDebug() << "Warning: " << this->testItemList.at(testItemIndex).name << "可能没有配置显示结果";
+            break;
+        }
 
-        if (configIndex != -1)
+        if (configIndex != -1 )
         {
             auto config = this->configItemList.at(configIndex).contentList.at(i);
             item->setUi_Config(config);
@@ -462,7 +475,6 @@ void MainWindow::insertTestCmd(int itemListIndex, int cmdIndex, const TestCmd &c
         printTestCmd(cmd);
     }
 }
-
 
 void MainWindow::on_lwTestCmd_indexesMoved(const QModelIndexList &indexes)
 {

@@ -1,8 +1,8 @@
-/*
+﻿/*
  * @Author: 陈俊健
  * @Date: 2023-10-29 13:18:19
- * @LastEditors: 陈俊健
- * @LastEditTime: 2023-10-31 22:16:01
+ * @LastEditors: m-RNA m-RNA@qq.com
+ * @LastEditTime: 2023-11-20 00:51:44
  * @FilePath: \LabViewIniEditor\analysis_ini.cpp
  * @Description:
  *
@@ -13,6 +13,9 @@
 #include <QFile>
 #include <QTextCodec>
 #include <QTextStream>
+#if _MSC_VER >=1600    // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#pragma execution_character_set("utf-8")
+#endif
 
 const QStringList STR_TEST_TYPE = {
     "AT", "AT1", "68", "串口查询真", "串口查询假", "单按钮弹框", "双按钮弹框",
@@ -86,17 +89,6 @@ QVector<QStringList> analysis_ini_to_QStringList(const QString fileName)
     testItemList.append(testItem);
     file.close();
 
-    // 测试输出
-    for (int i = 0; i < testItemList.size(); i++)
-    {
-        QStringList testItem = testItemList.at(i);
-        qDebug() << "第" << i + 1 << "个测试项：";
-        for (int j = 0; j < testItem.size(); j++)
-        {
-            qDebug() << testItem.at(j);
-        }
-        qDebug() << "-----------------------";
-    }
     return testItemList;
 }
 
@@ -294,20 +286,6 @@ TestItem analysis_StringToTestItem(const QStringList testItem)
         testCmdObj.index = i + 1;                      // 命令序号
         testCmdObj.comName = testItem.at(1).trimmed(); // 端口选择（底板串口、产品串口、主机串口...）
         testCmdObj.tx = qslCmdList.at(i).trimmed();    // 发送内容
-        if (testCmdObj.tx.contains("<HEX>"))
-        {
-            // testCmdObj.cmdType = "AT<HEX>"; // 命令类型
-            // testCmdObj.tx = testCmdObj.tx.mid(0, testCmdObj.tx.size() - 5); // 读取时，先不去掉 <HEX>
-        }
-        else if (testCmdObj.tx.contains("<\\r\\n>"))
-        {
-            // testCmdObj.cmdType = "AT<\r\n>"; // 命令类型
-            // testCmdObj.tx = testCmdObj.tx.mid(0, testCmdObj.tx.size() - 6); // 读取时，先不去掉 <\r\n>
-        }
-        else if (testCmdObj.tx.contains("68"))
-        {
-            // testCmdObj.cmdType = "68"; // 命令类型
-        }
         testItemObj.cmdList.append(testCmdObj);
     }
 
@@ -536,7 +514,7 @@ TestItem analysis_StringToTestItem(const QStringList testItem)
         }
     }
 
-    printTestItem(testItemObj);
+    // printTestItem(testItemObj);
 
     return testItemObj;
 }
@@ -574,7 +552,6 @@ QVector<ConfigItem> analysis_config_ini(const QString &pathFile)
         return configItemList;
     QStringList qslUnit = vqslList.at(index);
     qslUnit.removeFirst(); // 移除第一行
-    qDebug() << "限定单位列表" << qslUnit;
 
     /**
     [Test Item]
@@ -624,7 +601,7 @@ QVector<ConfigItem> analysis_config_ini(const QString &pathFile)
                 configItem.contentList.append(cc);
             }
         }
-        printConfigItem(configItem);
+        // printConfigItem(configItem);
         configItemList.append(configItem);
     }
     return configItemList;

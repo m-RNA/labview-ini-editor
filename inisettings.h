@@ -2,7 +2,7 @@
  * @Author: m-RNA m-RNA@qq.com
  * @Date: 2023-11-16 23:26:05
  * @LastEditors: m-RNA m-RNA@qq.com
- * @LastEditTime: 2023-11-18 21:29:13
+ * @LastEditTime: 2023-11-19 18:19:30
  * @FilePath: \LabViewIniEditor\inisettings.h
  * @Description:
  */
@@ -33,7 +33,6 @@ public:
     QStringList childKeys() const;   // 获取子键
 
     QStringList allKeys() const;                      // 获取所有键
-    QStringList allKeys(const QString &prefix) const; // 获取所有键
     void remove(const QString &key);                  // 删除键
 
     bool contains(const QString &key) const; // 是否包含键

@@ -1,3 +1,11 @@
+﻿/*
+ * @Author: m-RNA m-RNA@qq.com
+ * @Date: 2023-11-03 00:56:06
+ * @LastEditors: m-RNA m-RNA@qq.com
+ * @LastEditTime: 2023-11-18 21:50:01
+ * @FilePath: \LabViewIniEditor\mainwindow.h
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 /*
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
@@ -16,6 +24,7 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QDockWidget>
+#include "labviewsetting.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -69,10 +78,12 @@ private:
 
     QString leTestItemName_Old = "";
 
-    QVector<TestItem> testItemList = {};
+    QList<TestItem> testItemList = {};
     QVector<ConfigItem> configItemList = {};
-    QVector<TestItemInterface *> testCmdInterfaceList = {};
-    QVector<QWidget *> testResultInterfaceList = {};
+    QList<TestItemInterface *> testCmdInterfaceList = {};
+    QList<QWidget *> testResultInterfaceList = {};
+
+    LabViewSetting *labviewSetting;
 
     int getTestItemIndex(const QString &name);
 };
