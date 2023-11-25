@@ -31,5 +31,9 @@
         "fstream": "cpp",
         "qlist": "cpp",
         "typeinfo": "cpp"
-    }
+    },
+    "cSpell.words": [
+        "LADC",
+        "vqsl"
+    ]
 }

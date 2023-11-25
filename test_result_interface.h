@@ -1,4 +1,4 @@
-/*
+﻿/*
  * @Author: 陈俊健
  * @Date: 2023-10-31 00:00:44
  * @LastEditors: 陈俊健
@@ -10,6 +10,9 @@
  */
 #ifndef TEST_RESULT_INTERFACE_H
 #define TEST_RESULT_INTERFACE_H
+#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#pragma execution_character_set("utf-8")
+#endif
 
 #include "analysis_ini.h"
 #include <QWidget>

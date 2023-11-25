@@ -1,6 +1,8 @@
-#ifndef TEST_ITEM_INTERFACE_H
+﻿#ifndef TEST_ITEM_INTERFACE_H
 #define TEST_ITEM_INTERFACE_H
-
+#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#pragma execution_character_set("utf-8")
+#endif
 #include "analysis_ini.h"
 #include <QWidget>
 

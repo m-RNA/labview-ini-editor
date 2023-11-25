@@ -1,4 +1,4 @@
-/*
+﻿/*
  * @Author: m-RNA m-RNA@qq.com
  * @Date: 2023-11-16 23:26:05
  * @LastEditors: m-RNA m-RNA@qq.com
@@ -8,6 +8,10 @@
  */
 #ifndef INISETTINGS_H
 #define INISETTINGS_H
+#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#pragma execution_character_set("utf-8")
+#endif
+
 #include <QMap>
 #include <QObject>
 #include <QString>

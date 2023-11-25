@@ -1,4 +1,4 @@
-/*
+﻿/*
  * @Author: 陈俊健
  * @Date: 2023-10-29 13:35:55
  * @LastEditors: m-RNA m-RNA@qq.com
@@ -10,6 +10,9 @@
  */
 #ifndef __ANALYSIS_INI_H__
 #define __ANALYSIS_INI_H__
+#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#pragma execution_character_set("utf-8")
+#endif
 
 #include <QString>
 #include <QStringList>

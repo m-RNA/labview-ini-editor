@@ -1,3 +1,7 @@
+﻿#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#pragma execution_character_set("utf-8")
+#endif
+
 #include "test_item_interface.h"
 #include "ui_test_item_interface.h"
 #include <QDebug>

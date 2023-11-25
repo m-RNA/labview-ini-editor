@@ -1,4 +1,4 @@
-/*
+﻿/*
  * @Author: 陈俊健
  * @Date: 2023-10-31 00:00:44
  * @LastEditors: 陈俊健
@@ -8,6 +8,10 @@
  *
  * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
  */
+#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#pragma execution_character_set("utf-8")
+#endif
+
 #include "test_result_interface.h"
 #include "ui_test_result_interface.h"
 
