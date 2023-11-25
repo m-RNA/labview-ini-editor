@@ -92,8 +92,14 @@ QString FindFile(QString path, QString obj, QString target)
 void MainWindow::on_actOpenIni_triggered()
 {
     QString pathName;
-    //"."表示在当前工作路径下寻找，“Ini files(*.ini)”表示指定
-    pathName = QFileDialog::getOpenFileName(this, "打开文件", "./", "Ini files(*.ini)");
+    QString pathName_Old = fileNameConfig.mid(0, fileNameConfig.lastIndexOf("/"));
+    if (pathName_Old == "")
+    {
+        //"."表示在当前工作路径下寻找
+        pathName_Old = "./";
+    }
+    // “Ini files(*.ini)”表示指定
+    pathName = QFileDialog::getOpenFileName(this, "打开文件", pathName_Old, "Ini files(*.ini)");
     if (pathName == "")
     {
         qDebug() << "未选择文件";
@@ -286,7 +292,7 @@ void MainWindow::on_lwlTestItemPool_itemClicked(QListWidgetItem *item)
             break;
         }
 
-        if (configIndex != -1 )
+        if (configIndex != -1)
         {
             auto config = this->configItemList.at(configIndex).contentList.at(i);
             item->setUi_Config(config);
@@ -479,4 +485,9 @@ void MainWindow::insertTestCmd(int itemListIndex, int cmdIndex, const TestCmd &c
 void MainWindow::on_lwTestCmd_indexesMoved(const QModelIndexList &indexes)
 {
     qDebug() << "on_lwTestCmd_indexesMoved" << indexes;
+}
+
+void MainWindow::on_actSave_triggered()
+{
+
 }

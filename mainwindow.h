@@ -71,6 +71,8 @@ private slots:
 
     void on_lwTestCmd_indexesMoved(const QModelIndexList &indexes);
 
+    void on_actSave_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString fileNameProtocol = "";
