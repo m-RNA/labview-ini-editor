@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: m-RNA m-RNA@qq.com
- * @LastEditTime: 2023-11-20 01:55:31
+ * @LastEditTime: 2023-11-27 02:26:59
  * @FilePath: \LabViewIniEditor\mainwindow.cpp
  * @Description:
  *
@@ -172,38 +172,15 @@ void MainWindow::on_actOpenIni_triggered()
         qDebug() << "未找到配置文件";
         return;
     }
-    this->configItemList.clear();                               // 清空
-    this->configItemList = analysis_config_ini(fileNameConfig); // 解析 配置文件
-    ui->lwlTestItemList->clear();
-    QStringList strConfigList;
-    for (int i = 0; i < this->configItemList.size(); i++) // 往 ListWidget 添加测试项
-    {
-        QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemList);
-        QCheckBox *checkBox = new QCheckBox(ui->lwlTestItemList);
-        checkBox->setChecked(this->configItemList.at(i).enable);
-        // checkBox->setText(this->configItemList.at(i).name);
-        ui->lwlTestItemList->setItemWidget(item, checkBox);
-
-        QString str = this->configItemList.at(i).name;
-        strConfigList << str;
-        item->setText("   " + str);
-    }
-
     labviewSetting = new LabViewSetting(fileNameProtocol, fileNameConfig);
     this->testItemList.clear();                             // 清空
     this->testItemList = labviewSetting->getTestItemList(); // 解析 协议文件
 
-    // this->testItemList = analysis_protocol_ini(fileNameProtocol); // 解析 协议文件
-    ui->lwlTestItemPool->clear();
-    for (int i = 0; i < this->testItemList.size(); i++) // 往 ListWidget 添加测试项
-    {
-        if (strConfigList.contains(this->testItemList.at(i).name))
-        {
-            continue;
-        }
-        QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemPool);
-        item->setText(this->testItemList.at(i).name);
-    }
+    this->configItemList.clear(); // 清空
+    // this->configItemList = analysis_config_ini(fileNameConfig); // 解析 配置文件
+    this->configItemList = labviewSetting->getConfigItemList(); // 解析 配置文件
+
+    updateTestItemListUi(); // 更新测试项列表
 }
 
 // void MainWindow::on_btnAddResultItem_clicked()
@@ -217,16 +194,21 @@ void MainWindow::on_actOpenIni_triggered()
 //     // ui->scrollArea_Result->verticalScrollBar()->setValue(ui->scrollArea_Result->verticalScrollBar()->maximum());
 // }
 
-void MainWindow::on_lwlTestItemPool_itemClicked(QListWidgetItem *item)
+/**
+ * @brief 加载测试项界面
+ *
+ * @param item 被点击的列表项
+ */
+void MainWindow::loadTestItemUi(QListWidgetItem *item)
 {
-    QString str = item->text().trimmed();
-    qDebug() << "点击 TestItemPool: " << str;
+    leTestItemName_Old = item->text().trimmed();
+    qDebug() << "点击: " << leTestItemName_Old;
 
     // 获取当前点击的测试项的索引
     int testItemIndex = -1;
     for (int i = 0; i < this->testItemList.size(); i++)
     {
-        if (str == this->testItemList.at(i).name)
+        if (leTestItemName_Old == this->testItemList.at(i).name)
         {
             testItemIndex = i;
             break;
@@ -238,47 +220,26 @@ void MainWindow::on_lwlTestItemPool_itemClicked(QListWidgetItem *item)
         return;
     }
 
+    ui->leTestItemName->setText(testItemList.at(testItemIndex).name);
+    ui->spbxRepeatTimes->setValue(testItemList.at(testItemIndex).repeat);
+
+    // 清空命令项
+    testCmdInterfaceList.clear();
+
     // 获取当前点击的配置项的索引
     int configIndex = -1;
     for (int i = 0; i < this->configItemList.size(); i++)
     {
-        if (str == this->configItemList.at(i).name)
+        if (leTestItemName_Old == this->configItemList.at(i).name)
         {
             configIndex = i;
             break;
         }
     }
 
-    ui->leTestItemName->setText(testItemList.at(testItemIndex).name);
-    ui->spbxRepeatTimes->setValue(testItemList.at(testItemIndex).repeat);
-
-    // 清空命令项
-    for (int i = 0; i < testCmdInterfaceList.size(); ++i)
-    {
-        // ui->vloCmdItem->removeWidget(testCmdInterfaceList.at(i));
-        ui->lwTestCmd->removeItemWidget(ui->lwTestCmd->item(i)); // 从列表中移除
-        testCmdInterfaceList.at(i)->deleteLater();
-    }
-    testCmdInterfaceList.clear();
-    ui->lwTestCmd->clear();
-
     // 清空结果项
-    for (int i = 0; i < testResultInterfaceList.size(); ++i)
-    {
-        //        ui->vloResultItem->removeWidget(testResultInterfaceList.at(i));
-        ui->lwTestResult->removeItemWidget(ui->lwTestResult->item(i)); // 从列表中移除
-        testResultInterfaceList.at(i)->deleteLater();
-    }
     testResultInterfaceList.clear();
     ui->lwTestResult->clear();
-
-    // 添加命令项
-    for (int i = 0; i < this->testItemList.at(testItemIndex).cmdList.size(); ++i)
-    {
-        TestItemInterface *item = new TestItemInterface(this);
-        item->setUi(i, this->testItemList.at(testItemIndex).cmdList.at(i));
-        addTestCmdInterface(item);
-    }
 
     // 添加结果项
     for (int i = 0; i < this->testItemList.at(testItemIndex).resultList.size(); ++i)
@@ -286,6 +247,7 @@ void MainWindow::on_lwlTestItemPool_itemClicked(QListWidgetItem *item)
         TestResultInterface *item = new TestResultInterface(this);
         auto result = this->testItemList.at(testItemIndex).resultList.at(i);
         item->setUi_Result(i, result);
+
         if (this->configItemList.at(configIndex).contentList.size() <= i)
         {
             qDebug() << "Warning: " << this->testItemList.at(testItemIndex).name << "可能没有配置显示结果";
@@ -299,19 +261,27 @@ void MainWindow::on_lwlTestItemPool_itemClicked(QListWidgetItem *item)
         }
 
         testResultInterfaceList.append(item);
-        //        ui->vloResultItem->insertWidget(ui->vloResultItem->count() - 2, item);
+        // ui->vloResultItem->insertWidget(ui->vloResultItem->count() - 2, item);
 
         QListWidgetItem *listItem = new QListWidgetItem(ui->lwTestResult);
         listItem->setSizeHint(QSize(0, 52));
         ui->lwTestResult->addItem(listItem);
         ui->lwTestResult->setItemWidget(listItem, item);
-
-        // 滚动到底部
-        // ui->scrollArea_Result->verticalScrollBar()->setValue(ui->scrollArea_Result->verticalScrollBar()->maximum());
     }
+    updateTestItemUi();
 }
 
-void MainWindow::on_lwlTestItemList_itemClicked(QListWidgetItem *item) { on_lwlTestItemPool_itemClicked(item); }
+void MainWindow::on_lwlTestItemList_itemSelectionChanged()
+{
+    QListWidgetItem *item = ui->lwlTestItemList->currentItem();
+    loadTestItemUi(item);
+}
+
+void MainWindow::on_lwlTestItemPool_itemSelectionChanged()
+{
+    QListWidgetItem *item = ui->lwlTestItemPool->currentItem();
+    loadTestItemUi(item);
+}
 
 void MainWindow::on_dwTestPool_visibilityChanged(bool visible)
 {
@@ -355,10 +325,28 @@ void MainWindow::on_actAbout_triggered()
 
 void MainWindow::on_leTestItemName_editingFinished()
 {
-    ui->leTestItemName->setText(ui->leTestItemName->text().trimmed());
-    //  do something
-
-    leTestItemName_Old = ui->leTestItemName->text();
+    // 获取当前点击的测试项的名称
+    QString str = ui->leTestItemName->text().trimmed();
+    if (str == "")
+    {
+        ui->leTestItemName->setText(leTestItemName_Old);
+        return;
+    }
+    ui->leTestItemName->setText(str);
+    // 获取当前点击的测试项的索引
+    int testItemIndex = getTestItemIndex(leTestItemName_Old);
+    if (testItemIndex == -1)
+    {
+        qDebug() << "未找到测试项";
+        return;
+    }
+    // 修改测试项名称
+    this->testItemList[testItemIndex].name = str;
+    this->configItemList[testItemIndex].name = str;
+    // 更新测试项界面
+    updateTestItemUi();
+    updateTestItemListUi();
+    leTestItemName_Old = str;
 }
 
 int MainWindow::getTestItemIndex(const QString &name)
@@ -398,15 +386,13 @@ void MainWindow::on_btnCopyTestICmd_clicked()
     TestCmd cmd = ((TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(testCmdIndex)))->getTestCmd();
 
     item->setUi(testCmdIndex + 1, this->testItemList.at(testItemIndex).cmdList.at(testCmdIndex));
-    insertTestCmd(testItemIndex, testCmdIndex + 1, cmd);
-    insertTestCmdInterface(testCmdIndex + 1, item);
-    ui->lwTestCmd->setCurrentRow(testCmdIndex + 1); // 滚动到复制的命令项
 
-    // 更新命令项的序号
-    for (int i = testCmdIndex; i < ui->lwTestCmd->count(); i++)
-    {
-        ((TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(i)))->setIndex(i);
-    }
+    insertTestCmd(this->testItemList[testItemIndex].cmdList, cmd, testCmdIndex + 1);
+    insertTestCmdInterface(testCmdIndex + 1, item);
+
+    // 更新命令项
+    loadTestCmdUi(this->testItemList.at(testItemIndex).cmdList);
+    ui->lwTestCmd->setCurrentRow(testCmdIndex + 1);
 }
 
 void MainWindow::on_btnAddTestICmd_clicked()
@@ -430,15 +416,89 @@ void MainWindow::on_btnAddTestICmd_clicked()
 
     // 在当前点击的命令项下方添加一个命令项
     TestCmd cmd;
-    insertTestCmd(testItemIndex, testCmdIndex + 1, cmd);
-    TestItemInterface *item = new TestItemInterface(this);
-    insertTestCmdInterface(testCmdIndex + 1, item);
+    insertTestCmd(this->testItemList[testItemIndex].cmdList, cmd, testCmdIndex + 1);
 
-    // 更新命令项的序号
-    for (int i = testCmdIndex; i < ui->lwTestCmd->count(); i++)
+    // 更新命令项
+    loadTestCmdUi(this->testItemList.at(testItemIndex).cmdList);
+    ui->lwTestCmd->setCurrentRow(testCmdIndex + 1);
+}
+
+void MainWindow::loadTestCmdUi(const QVector<TestCmd> &cmdList)
+{
+    ui->lwTestCmd->clear();
+    for (int i = 0; i < cmdList.size(); ++i)
     {
-        ((TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(i)))->setIndex(i);
+        TestItemInterface *item = new TestItemInterface(this);
+        item->setUi(i, cmdList.at(i));
+        addTestCmdInterface(item);
     }
+}
+
+void MainWindow::loadTestResultUi(const QVector<TestResult> &resultList)
+{
+    ui->lwTestResult->clear();
+    // 获取当前点击的测试项的索引
+    int testItemIndex = -1;
+    for (int i = 0; i < this->testItemList.size(); i++)
+    {
+        if (leTestItemName_Old == this->testItemList.at(i).name)
+        {
+            testItemIndex = i;
+            break;
+        }
+    }
+    if (testItemIndex == -1)
+    {
+        qDebug() << "未找到测试项";
+        return;
+    }
+    // 获取当前点击的配置项的索引
+    int configIndex = -1;
+    for (int i = 0; i < this->configItemList.size(); i++)
+    {
+        if (leTestItemName_Old == this->configItemList.at(i).name)
+        {
+            configIndex = i;
+            break;
+        }
+    }
+
+    for (int i = 0; i < resultList.size(); ++i)
+    {
+        TestResultInterface *item = new TestResultInterface(this);
+        item->setUi_Result(i, resultList.at(i));
+        if (this->configItemList.at(configIndex).contentList.size() <= i)
+        {
+            qDebug() << "Warning: " << this->testItemList.at(testItemIndex).name << "可能没有配置显示结果";
+            break;
+        }
+
+        if (configIndex != -1)
+        {
+            auto config = this->configItemList.at(configIndex).contentList.at(i);
+            item->setUi_Config(config);
+        }
+
+        addResultInterface(item);
+    }
+}
+
+void MainWindow::updateTestItemUi()
+{
+    // 获取当前点击的测试项的名称
+    QString str = ui->leTestItemName->text().trimmed();
+    // 获取当前点击的测试项的索引
+    int testItemIndex = getTestItemIndex(str);
+    if (testItemIndex == -1)
+    {
+        qDebug() << "未找到测试项";
+        return;
+    }
+    // 更新命令项
+    loadTestCmdUi(this->testItemList.at(testItemIndex).cmdList);
+
+    // 更新结果项
+    loadTestResultUi(this->testItemList.at(testItemIndex).resultList);
 }
 
 void MainWindow::addTestCmdInterface(TestItemInterface *item)
@@ -457,37 +517,104 @@ void MainWindow::insertTestCmdInterface(int index, TestItemInterface *item)
 
     QListWidgetItem *listItem = new QListWidgetItem(ui->lwTestCmd);
     listItem->setSizeHint(QSize(0, 52));
-    ui->lwTestCmd->insertItem(index, listItem);
-    ui->lwTestCmd->setItemWidget(listItem, item);
-    ui->lwTestCmd->setCurrentRow(index); // 滚动到该项
+    ui->lwTestCmd->insertItem(index, listItem);   // 插入到列表中
+    ui->lwTestCmd->setItemWidget(listItem, item); // 设置为该项的 Widget
+    ui->lwTestCmd->setCurrentRow(index);          // 滚动到该项
 }
 
-void MainWindow::insertTestCmd(int itemListIndex, int cmdIndex, const TestCmd &cmd)
+void MainWindow::addResultInterface(TestResultInterface *item)
 {
-    if (itemListIndex < 0 || itemListIndex >= this->testItemList.size())
+    insertResultInterface(testResultInterfaceList.size(), item);
+}
+
+void MainWindow::insertResultInterface(int index, TestResultInterface *item)
+{
+    if (index < 0 || index > testResultInterfaceList.size())
     {
-        qDebug() << "itemListIndex 越界";
+        qDebug() << "index 越界";
         return;
     }
-    if (cmdIndex < 0 || cmdIndex > this->testItemList[itemListIndex].cmdList.size())
+    testResultInterfaceList.insert(index, item);
+
+    QListWidgetItem *listItem = new QListWidgetItem(ui->lwTestResult);
+    listItem->setSizeHint(QSize(0, 52));
+    ui->lwTestResult->insertItem(index, listItem);   // 插入到列表中
+    ui->lwTestResult->setItemWidget(listItem, item); // 设置为该项的 Widget
+    ui->lwTestResult->setCurrentRow(index);          // 滚动到该项
+}
+
+void MainWindow::insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, int cmdIndex)
+{
+    if (cmdIndex < 0 || cmdIndex > cmdList.size())
     {
         qDebug() << "cmdIndex 越界";
         return;
     }
-    this->testItemList[itemListIndex].cmdList.insert(cmdIndex, cmd);
+    cmdList.insert(cmdIndex, cmd);
 
-    for (const auto &cmd : this->testItemList[itemListIndex].cmdList)
+    for (const auto &cmd : cmdList)
     {
         printTestCmd(cmd);
     }
 }
 
-void MainWindow::on_lwTestCmd_indexesMoved(const QModelIndexList &indexes)
+void MainWindow::on_actSave_triggered() {}
+
+void MainWindow::on_btnRemoveTestICmd_clicked()
 {
-    qDebug() << "on_lwTestCmd_indexesMoved" << indexes;
+    // 获取当前点击的测试项的名称
+    QString str = ui->leTestItemName->text().trimmed();
+    // 获取当前点击的测试项的索引
+    int testItemIndex = getTestItemIndex(str);
+    if (testItemIndex == -1)
+    {
+        qDebug() << "未找到测试项";
+        return;
+    }
+    // 获取当前点击的 lwTestCmd 的索引
+    int testCmdIndex = ui->lwTestCmd->currentRow();
+    if (testCmdIndex == -1)
+    {
+        qDebug() << "未选择命令项";
+        return;
+    }
+    qDebug() << "点击 TestCmd: " << str << " " << testCmdIndex;
+
+    // 删除当前点击的命令项
+    this->testItemList[testItemIndex].cmdList.remove(testCmdIndex);
+
+    // 更新命令项
+    loadTestCmdUi(this->testItemList.at(testItemIndex).cmdList);
+    if (testCmdIndex > 0)
+        testCmdIndex--;
+    ui->lwTestCmd->setCurrentRow(testCmdIndex);
 }
 
-void MainWindow::on_actSave_triggered()
+void MainWindow::updateTestItemListUi()
 {
+    ui->lwlTestItemList->clear();
+    QStringList strConfigList;
+    for (int i = 0; i < this->configItemList.size(); i++) // 往 ListWidget 添加测试项
+    {
+        QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemList);
+        QCheckBox *checkBox = new QCheckBox(ui->lwlTestItemList);
+        checkBox->setChecked(this->configItemList.at(i).enable);
+        // checkBox->setText(this->configItemList.at(i).name);
+        ui->lwlTestItemList->setItemWidget(item, checkBox);
 
+        QString str = this->configItemList.at(i).name;
+        strConfigList << str;
+        item->setText("   " + str);
+    }
+
+    ui->lwlTestItemPool->clear();
+    for (int i = 0; i < this->testItemList.size(); i++) // 往 ListWidget 添加测试项
+    {
+        if (strConfigList.contains(this->testItemList.at(i).name))
+        {
+            continue;
+        }
+        QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemPool);
+        item->setText(this->testItemList.at(i).name);
+    }
 }

@@ -13,7 +13,7 @@
 #include <QFile>
 #include <QTextCodec>
 #include <QTextStream>
-#if _MSC_VER >=1600    // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
 #endif
 
@@ -578,10 +578,10 @@ QVector<ConfigItem> analysis_config_ini(const QString &pathFile)
         */
         ConfigItem configItem;
         configItem.index = i;
-        configItem.name = getBeforeEqual(qslTestItem.at(i));
-        configItem.enable = getAfterEqual(qslTestItem.at(i)).toInt();
+        configItem.name = getBeforeEqual(qslTestItem.at(i));          // 测试项名称
+        configItem.enable = getAfterEqual(qslTestItem.at(i)).toInt(); // 是否启用
 
-        index = qStringListVectorHeadIndexOf(vqslList, "[" + configItem.name + "]");
+        index = qStringListVectorHeadIndexOf(vqslList, "[" + configItem.name + "]"); // 寻找测试项名称
         if (index != -1)
         {
             for (int k = 1; k < vqslList.at(index).size(); ++k)
