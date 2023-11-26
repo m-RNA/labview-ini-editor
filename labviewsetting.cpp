@@ -45,6 +45,7 @@ LabViewSetting::LabViewSetting(QString fileNameProtocol, QString fileNameConfig)
     }
 
     analysisTestItem();
+    analysisConfigItem();
 }
 
 /**
@@ -96,6 +97,69 @@ void LabViewSetting::analysisTestItem()
             {
                 testItemList.append(testItem);
             }
+        }
+    }
+}
+
+/**
+ * @brief 分析配置项。
+ */
+void LabViewSetting::analysisConfigItem()
+{
+    const QString TEST_ITEM_GROUP = "Test Item";
+    const QString UNIT_GROUP = "UNIT";
+
+    configItemList.clear();
+    if (iniSettingsConfig->isLoad()) // 获取配置项名称列表
+    {
+        iniSettingsConfig->beginGroup(TEST_ITEM_GROUP);
+        QStringList testItemNameList = iniSettingsConfig->allKeys(); // 获取测试项名称列表
+
+        iniSettingsConfig->beginGroup(UNIT_GROUP);
+        QStringList unitList = iniSettingsConfig->allKeys(); // 获取单位列表
+
+        foreach (QString testItemName, testItemNameList) // 遍历测试项名称列表
+        {
+            /**
+            [Test Item]
+            模组上电=1 ; 测试项名称 = 是否启用
+            ADC0and1=0 ; 测试项名称 = 是否启用
+            */
+            iniSettingsConfig->beginGroup(TEST_ITEM_GROUP);
+            ConfigItem configItem;
+            configItem.name = testItemName;                                     // 测试项名称
+            configItem.enable = iniSettingsConfig->value(testItemName).toInt(); // 是否启用
+            iniSettingsConfig->endGroup();
+
+            /**
+            [模组上电] ;测试项名称
+            模组上电=OK ; 限定名称 = 限定值
+
+            [ADC0and1] ;测试项名称
+            ADC0 = [800,1000] ; 限定名称 = [限定值1,限定值2]
+            ADC1 = [800,1000] ; 限定名称 = [限定值1,限定值2]
+            */
+            iniSettingsConfig->beginGroup(testItemName);
+            QStringList configContentList = iniSettingsConfig->allKeys();          // 获取配置项内容列表
+
+            foreach (QString configContent, configContentList)
+            {
+                iniSettingsConfig->beginGroup(testItemName);
+                ConfigContent cc;
+                cc.name = configContent; // 限定名称
+                cc.value = iniSettingsConfig->value(configContent);
+                foreach (QString unit, unitList)
+                {
+                    iniSettingsConfig->beginGroup(UNIT_GROUP);
+                    if (unit == cc.name)
+                    {
+                        cc.unit = iniSettingsConfig->value(unit);
+                        break;
+                    }
+                }
+                configItem.contentList.append(cc);
+            }
+            configItemList.append(configItem);
         }
     }
 }
