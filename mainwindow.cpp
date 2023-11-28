@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-11-29 00:08:57
+ * @LastEditTime: 2023-11-29 00:42:52
  * @FilePath: \LabViewIniEditor\mainwindow.cpp
  * @Description:
  *
@@ -300,6 +300,7 @@ void MainWindow::on_actAbout_triggered()
     QString day = data.mid(4, 2);
     QString author = "ChenJunJian";
     QString version = "0.0.0";
+    QString postscript = "Just For Fun! No Other Ideas."; // PS：只是为了好玩方便，没有其他想法
     QStringList monthList = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     for (int i = 0; i < monthList.size(); i++)
     {
@@ -313,13 +314,15 @@ void MainWindow::on_actAbout_triggered()
     QString strData = year + "/" + month + "/" + day;
 
     QMessageBox::about(this, "About",
-                       this->windowTitle() + "\n"
-                       "\n"
+                        this->windowTitle() + "\n"
+                        "\n"
                         "Author: "+ author+"\n"
+                        "Postscript: "+ postscript+"\n"
+                        "\n"
                         "Version: " + version + "\n"
                         "Build Data: " + strData + "\n"
                         "Build Time: " + time + "\n"
-                       "\n"
+                        "\n"
                         "CopyRight © "+ year + " by " + author + ", All Rights Reserved.");
 }
 
