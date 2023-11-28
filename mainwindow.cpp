@@ -1,8 +1,8 @@
 ﻿/*
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
- * @LastEditors: m-RNA m-RNA@qq.com
- * @LastEditTime: 2023-11-27 02:26:59
+ * @LastEditors: 陈俊健
+ * @LastEditTime: 2023-11-29 00:08:57
  * @FilePath: \LabViewIniEditor\mainwindow.cpp
  * @Description:
  *
@@ -245,7 +245,7 @@ void MainWindow::loadTestItemUi(QListWidgetItem *item)
     for (int i = 0; i < this->testItemList.at(testItemIndex).resultList.size(); ++i)
     {
         TestResultInterface *item = new TestResultInterface(this);
-        auto result = this->testItemList.at(testItemIndex).resultList.at(i);
+        TestResult result = this->testItemList.at(testItemIndex).resultList.at(i);
         item->setUi_Result(i, result);
 
         if (this->configItemList.at(configIndex).contentList.size() <= i)
@@ -256,7 +256,7 @@ void MainWindow::loadTestItemUi(QListWidgetItem *item)
 
         if (configIndex != -1)
         {
-            auto config = this->configItemList.at(configIndex).contentList.at(i);
+            ConfigContent config = this->configItemList.at(configIndex).contentList.at(i);
             item->setUi_Config(config);
         }
 
@@ -475,7 +475,7 @@ void MainWindow::loadTestResultUi(const QVector<TestResult> &resultList)
 
         if (configIndex != -1)
         {
-            auto config = this->configItemList.at(configIndex).contentList.at(i);
+            ConfigContent config = this->configItemList.at(configIndex).contentList.at(i);
             item->setUi_Config(config);
         }
 
@@ -552,9 +552,9 @@ void MainWindow::insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, in
     }
     cmdList.insert(cmdIndex, cmd);
 
-    for (const auto &cmd : cmdList)
+    for (const TestCmd &cmd : cmdList)
     {
-        printTestCmd(cmd);
+        cmd.print();
     }
 }
 

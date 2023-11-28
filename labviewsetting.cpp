@@ -1,5 +1,14 @@
-﻿#include "labviewsetting.h"
-#include "analysis_ini.h"
+﻿/*
+ * @Author: 陈俊健
+ * @Date: 2023-11-18 21:46:11
+ * @LastEditors: 陈俊健
+ * @LastEditTime: 2023-11-29 00:19:33
+ * @FilePath: \LabViewIniEditor\labviewsetting.cpp
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by Chenjunjian, All Rights Reserved. 
+ */
+#include "labviewsetting.h"
 #include <QDebug>
 #if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
@@ -140,7 +149,7 @@ void LabViewSetting::analysisConfigItem()
             ADC1 = [800,1000] ; 限定名称 = [限定值1,限定值2]
             */
             iniSettingsConfig->beginGroup(testItemName);
-            QStringList configContentList = iniSettingsConfig->allKeys();          // 获取配置项内容列表
+            QStringList configContentList = iniSettingsConfig->allKeys(); // 获取配置项内容列表
 
             foreach (QString configContent, configContentList)
             {
@@ -303,7 +312,108 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
             = function.mid(function.indexOf("(") + 1, function.indexOf(")") - function.indexOf("(") - 1).toInt();
     }
 
-    // printTestItem(testItem);
+    // testItem.print();
 
     return testItem;
+}
+
+void ConfigItem::print() const
+{
+    qDebug() << "配置名：" << name;
+    qDebug() << "序号" << index << "启用" << enable;
+    for (auto cc : contentList)
+    {
+        qDebug() << cc.name << "规格" << cc.value << "单位" << cc.unit;
+    }
+}
+
+void TestCmd::print() const
+{
+    qDebug() << "端口选择" << comName;
+    qDebug() << "发送" << tx;
+    qDebug() << "接收" << rx;
+    qDebug() << "解析方式" << cmdType;
+    qDebug() << "编码方式" << encodeWay;
+    qDebug() << "延时时间" << cmdDelay;
+    qDebug() << "超时时间" << cmdTimeout;
+}
+
+void TestResult::print() const
+{
+    qDebug() << "显示结果" << show;
+    qDebug() << "字节数" << dataByteLen;
+    qDebug() << "小数" << decimal;
+    qDebug() << "字节序" << byteOrder;
+    qDebug() << "符号" << sign;
+    qDebug() << "解析" << analysisWay << analysisContent;
+}
+
+void TestItem::print() const
+{
+    qDebug() << "测试名：" << name;
+    qDebug() << "重复次数" << repeat;
+    for (const auto &cmd : cmdList)
+    {
+        cmd.print();
+    }
+
+    for (const auto &result : resultList)
+    {
+        result.print();
+    }
+}
+
+/**
+ * @brief 将字符串按照无视方括号[]内容分割
+ * @param input 输入字符串
+ * @param separator 分隔符
+ * @return QStringList 分割后的字符串列表
+ * @note 算法思路：
+ * @note 1、遍历字符串中的每一个字符
+ * @note 2、如果遇到分隔符，且不在方括号中，则将当前命令添加到 commandList 中
+ * @note 3、如果遇到 [，则 insideSquareBrackets 置为 true
+ * @note 4、如果遇到 ]，则 insideSquareBrackets 置为 false
+ * @note 5、如果遇到其他字符，则将字符添加到当前命令中
+ * @note 6、如果当前命令不为空，则将当前命令添加到 commandList 中
+ * @note 7、返回 commandList
+ */
+QStringList splitStringSquareBrackets(const QString &input, char separator)
+{
+    QStringList commandList;           // 每个命令
+    QString cmd;                       // 当前命令
+    bool insideSquareBrackets = false; // 是否在方括号中
+
+    if (input.contains(separator) == false)
+        return QStringList(input);
+
+    for (const QChar &character : input)
+    {
+        if (character == separator && insideSquareBrackets == false) // 正常每次遇到 : 就是一个命令的结束
+        {
+            if (cmd.isEmpty())
+                continue;
+            // 当前命令不为空
+            commandList.append(cmd); // 将当前命令添加到 commandList 中
+            cmd.clear();             // 清空当前命令
+        }
+        else if (character == '[') // 取方括号中的内容，不包括 [ 和 ]
+        {
+            insideSquareBrackets = true;
+        }
+        else if (character == ']' && insideSquareBrackets) // 取方括号中的内容，不包括 [ 和 ]
+        {
+            insideSquareBrackets = false;
+        }
+        else
+        {
+            cmd.append(character); // 将字符添加到当前命令中
+        }
+    }
+
+    if (cmd.isEmpty() == false)
+    {
+        commandList.append(cmd);
+    }
+
+    return commandList;
 }

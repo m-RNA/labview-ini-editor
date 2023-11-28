@@ -30,7 +30,8 @@
         "qobject": "cpp",
         "fstream": "cpp",
         "qlist": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "qwidget": "cpp"
     },
     "cSpell.words": [
         "LADC",

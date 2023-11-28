@@ -11,7 +11,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "analysis_ini.h"
 #include "labviewsetting.h"
 #include "test_item_interface.h"
 #include "test_result_interface.h"

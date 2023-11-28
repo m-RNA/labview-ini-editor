@@ -14,7 +14,7 @@
 #pragma execution_character_set("utf-8")
 #endif
 
-#include "analysis_ini.h"
+#include "labviewsetting.h"
 #include <QWidget>
 
 namespace Ui

@@ -1,8 +1,8 @@
 ﻿/*
  * @Author: 陈俊健
  * @Date: 2023-10-29 13:18:19
- * @LastEditors: m-RNA m-RNA@qq.com
- * @LastEditTime: 2023-11-20 00:51:44
+ * @LastEditors: 陈俊健
+ * @LastEditTime: 2023-11-28 23:54:07
  * @FilePath: \LabViewIniEditor\analysis_ini.cpp
  * @Description:
  *
@@ -16,10 +16,6 @@
 #if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
 #endif
-
-const QStringList STR_TEST_TYPE = {
-    "AT", "AT1", "68", "串口查询真", "串口查询假", "单按钮弹框", "双按钮弹框",
-};
 
 /*
 1、要在形如如下格式文件中截取出每一个测试项：如下所示，有3个测试项目：开机检测、关机漏电流、底板初始化
@@ -115,6 +111,14 @@ QVector<QStringList> analysis_ini_to_QStringList(const QString fileName)
  * @param input 输入字符串
  * @param separator 分隔符
  * @return QStringList 分割后的字符串列表
+ * @note 算法思路：
+ * @note 1、遍历字符串中的每一个字符
+ * @note 2、如果遇到分隔符，且不在方括号中，则将当前命令添加到 commandList 中
+ * @note 3、如果遇到 [，则 insideSquareBrackets 置为 true
+ * @note 4、如果遇到 ]，则 insideSquareBrackets 置为 false
+ * @note 5、如果遇到其他字符，则将字符添加到当前命令中
+ * @note 6、如果当前命令不为空，则将当前命令添加到 commandList 中
+ * @note 7、返回 commandList
  */
 QStringList splitStringSquareBrackets(const QString &input, char separator)
 {
@@ -188,6 +192,10 @@ QStringList splitStringSquareBracketsToQString(const QString &input, char separa
     return qsl;
 }
 
+/**
+ * @brief 打印测试命令
+ * @param TestCmd 测试命令
+ */
 void printTestCmd(const TestCmd &tc)
 {
     qDebug() << tc.index << tc.brief << tc.comName;
@@ -197,6 +205,10 @@ void printTestCmd(const TestCmd &tc)
     qDebug() << "延时" << tc.cmdDelay << "超时" << tc.cmdTimeout;
 }
 
+/**
+ * @brief 打印测试结果
+ * @param TestResult 测试结果
+ */
 void printTestResult(const TestResult &tr)
 {
     qDebug() << tr.index << tr.show;
@@ -206,6 +218,10 @@ void printTestResult(const TestResult &tr)
     qDebug() << "解析" << tr.analysisWay << tr.analysisContent;
 }
 
+/**
+ * @brief 打印测试项
+ * @param TestItem 测试项
+ */
 void printTestItem(const TestItem &ti)
 {
     qDebug() << "测试名：" << ti.name;
@@ -219,9 +235,12 @@ void printTestItem(const TestItem &ti)
     {
         printTestResult(result);
     }
-    qDebug() << "-----------------------";
 }
 
+/**
+ * @brief 打印配置项
+ * @param ConfigItem 配置项
+ */
 void printConfigItem(const ConfigItem &ci)
 {
     qDebug() << "配置名：" << ci.name;
@@ -230,10 +249,14 @@ void printConfigItem(const ConfigItem &ci)
     {
         qDebug() << cc.name << "规格" << cc.value << "单位" << cc.unit;
     }
-
-    qDebug() << "-----------------------";
 }
 
+/**
+ * @brief 查找字符串列表中是否包含某个字符串
+ * @param list 字符串列表
+ * @param str 字符串
+ * @return int 字符串所在的行数，未找到返回 -1
+ */
 int qStringListIndexOf(const QStringList &list, const QString &str)
 {
     for (int i = 0; i < list.size(); i++)

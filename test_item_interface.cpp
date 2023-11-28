@@ -12,6 +12,13 @@
 
 const QStringList STR_TX_END = {"", "<\\r\\n>", "<HEX>"};
 
+#define TEST_TYPE_INDEX_68 2
+
+const QStringList STR_TEST_TYPE = {
+    "AT", "AT1", "68", "串口查询真", "串口查询假", "单按钮弹框", "双按钮弹框",
+};
+
+
 TestItemInterface::TestItemInterface(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::TestItemInterface)
@@ -86,12 +93,12 @@ void TestItemInterface::setUi(int index, const TestCmd &item)
 
 void TestItemInterface::setTxAndEndIndex(QString strTx)
 {
-    if (strTx.toUpper().endsWith("<HEX>"))
+    if (strTx.toUpper().endsWith("STR_TX_END.at(CB_TX_END_HEX)"))
     {
-        strTx = strTx.toUpper().remove("<HEX>");
+        strTx = strTx.toUpper().remove("STR_TX_END.at(CB_TX_END_HEX)");
         ui->cbTxEnd->setCurrentIndex(CB_TX_END_HEX); // <HEX>
     }
-    else if (strTx.toLower().endsWith("<\\r\\n>"))
+    else if (strTx.toLower().endsWith("STR_TX_END.at(CB_TX_END_R_N)"))
     {
         strTx = strTx.mid(0, strTx.length() - 6);
         ui->cbTxEnd->setCurrentIndex(CB_TX_END_R_N); // <\r\n>

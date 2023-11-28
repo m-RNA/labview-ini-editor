@@ -16,7 +16,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    analysis_ini.cpp \
     inisettings.cpp \
     labviewsetting.cpp \
     main.cpp \
@@ -25,7 +24,6 @@ SOURCES += \
     test_result_interface.cpp
 
 HEADERS += \
-    analysis_ini.h \
     inisettings.h \
     labviewsetting.h \
     mainwindow.h \

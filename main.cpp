@@ -13,8 +13,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QStringList>
-
-#include "analysis_ini.h"
+#include "labviewsetting.h"
 #include "inisettings.h"
 
 #if _MSC_VER >=1600    // MSVC2015>1899,对于MSVC2010以上版本都可以使用
