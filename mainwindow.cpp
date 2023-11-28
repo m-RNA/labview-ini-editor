@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-11-29 00:42:52
+ * @LastEditTime: 2023-11-29 01:28:02
  * @FilePath: \LabViewIniEditor\mainwindow.cpp
  * @Description:
  *
@@ -410,20 +410,18 @@ void MainWindow::on_btnAddTestICmd_clicked()
     }
     // 获取当前点击的 lwTestCmd 的索引
     int testCmdIndex = ui->lwTestCmd->currentRow();
-    if (testCmdIndex == -1)
-    {
-        qDebug() << "未选择命令项";
-        return;
-    }
     qDebug() << "点击 TestCmd: " << str << " " << testCmdIndex;
-
+    if (testCmdIndex == -1)
+        testCmdIndex = 0;
+    else
+        testCmdIndex++;
     // 在当前点击的命令项下方添加一个命令项
     TestCmd cmd;
-    insertTestCmd(this->testItemList[testItemIndex].cmdList, cmd, testCmdIndex + 1);
+    insertTestCmd(this->testItemList[testItemIndex].cmdList, cmd, testCmdIndex);
 
     // 更新命令项
     loadTestCmdUi(this->testItemList.at(testItemIndex).cmdList);
-    ui->lwTestCmd->setCurrentRow(testCmdIndex + 1);
+    ui->lwTestCmd->setCurrentRow(testCmdIndex);
 }
 
 void MainWindow::loadTestCmdUi(const QVector<TestCmd> &cmdList)
@@ -620,4 +618,18 @@ void MainWindow::updateTestItemListUi()
         QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemPool);
         item->setText(this->testItemList.at(i).name);
     }
+}
+
+void MainWindow::on_spbxRepeatTimes_valueChanged(int arg1)
+{
+    // 获取当前点击的测试项的名称
+    QString str = ui->leTestItemName->text().trimmed();
+    // 获取当前点击的测试项的索引
+    int testItemIndex = getTestItemIndex(str);
+    if (testItemIndex == -1)
+    {
+        qDebug() << "未找到测试项";
+        return;
+    }
+    this->testItemList[testItemIndex].repeat = arg1;
 }

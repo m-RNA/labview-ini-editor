@@ -57,6 +57,8 @@ private slots:
 
     void on_btnRemoveTestICmd_clicked();
 
+    void on_spbxRepeatTimes_valueChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
     QString fileNameProtocol = "";
