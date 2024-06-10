@@ -46,11 +46,12 @@ public:
 
     QString fileName() const; // 获取文件名
 
+    bool saveFile();
+
 private:
     bool loadFile();
     bool loadFile(const QString &fileName);
 
-    bool saveFile();
     bool saveFile(const QString &fileName);
 
     bool m_isLoad = false;
@@ -61,7 +62,7 @@ private:
 
     QMap<QString, QString> m_mapKey;      // 键值对（不包含组）
     QStringList m_mapGroup;               // 组
-    QStringList m_mapGroupNew;            // 组默认值
+    QStringList m_mapGroupNew;            // 新组
     QMap<QString, QString> m_mapGroupKey; // 组键
 };
 

@@ -4,7 +4,7 @@
 #include <QTextStream>
 
 #define SUBGROUP_SEPARATOR "/"
-#if _MSC_VER >=1600    // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
 #endif
 IniSettings::IniSettings(const QString &fileName, QTextCodec *codec, QObject *parent)
@@ -266,6 +266,10 @@ bool IniSettings::saveFile() { return saveFile(m_fileName); }
  */
 bool IniSettings::saveFile(const QString &fileName)
 {
+    if (fileName.isEmpty())
+    {
+        return false;
+    }
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -275,6 +279,7 @@ bool IniSettings::saveFile(const QString &fileName)
     QFile fileSave(fileName + ".ini");
     if (!fileSave.open(QIODevice::WriteOnly | QIODevice::Text))
     {
+        qDebug() << "打开文件失败";
         return false;
     }
 
@@ -295,7 +300,8 @@ bool IniSettings::saveFile(const QString &fileName)
     {
         line = in.readLine().trimmed(); // 读取一行并去除两端的空白
 
-        if (line.isEmpty()) // 跳过空行
+        // 空行处理
+        if (line.isEmpty())
         {
             lineNullCount++;
             if (lineNullCount > 2) // 最多连续两个空行
@@ -306,6 +312,26 @@ bool IniSettings::saveFile(const QString &fileName)
         }
         lineNullCount = 0;
 
+        // 注释处理
+        if (line.startsWith(";"))
+        {
+            out << line << "\n";
+            continue;
+        }
+        // 跳过特殊选项 [测试项名称] [MES链接]
+        if (line.startsWith("[测试项名称]") || line.startsWith("[MES链接]"))
+        {
+            do
+            {
+                out << line << "\n";
+                if ((!in.atEnd()))
+                    line = in.readLine().trimmed(); // 读取一行并去除两端的空白
+                else
+                    goto FILE_END;
+            } while ((!(line.startsWith("["))));
+        }
+
+        // 组处理
         if (line.startsWith("[") && line.endsWith("]")) // 组
         {
             group = line.mid(1, line.length() - 2);
@@ -331,22 +357,22 @@ bool IniSettings::saveFile(const QString &fileName)
         }
         out << key << "=" << value << "\n";
     }
-
+FILE_END:
     // 新增组
-    foreach (QString group, m_mapGroupNew)
-    {
-        out << "\n";
-        out << "[" << group << "]\n";
-        foreach (QString key, m_mapGroupKey.keys())
-        {
-            if (key.startsWith(group + SUBGROUP_SEPARATOR))
-            {
-                QString childKey = key.mid(group.length() + 1);
-                childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
-                out << childKey << "=" << m_mapGroupKey.value(key) << "\n";
-            }
-        }
-    }
+    // foreach (QString group, m_mapGroupNew)
+    // {
+    //     out << "\n";
+    //     out << "[" << group << "]\n";
+    //     foreach (QString key, m_mapGroupKey.keys())
+    //     {
+    //         if (key.startsWith(group + SUBGROUP_SEPARATOR))
+    //         {
+    //             QString childKey = key.mid(group.length() + 1);
+    //             childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
+    //             out << childKey << "=" << m_mapGroupKey.value(key) << "\n";
+    //         }
+    //     }
+    // }
 
     fileSave.flush(); // 刷新文件
     fileSave.close(); // 关闭文件
