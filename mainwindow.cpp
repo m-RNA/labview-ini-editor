@@ -2,8 +2,8 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-11-29 01:28:02
- * @FilePath: \LabViewIniEditor\mainwindow.cpp
+ * @LastEditTime: 2024-06-11 00:59:38
+ * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
  * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
@@ -24,13 +24,20 @@
 #pragma execution_character_set("utf-8")
 #endif
 
+#define TEST_CMD_HEIGHT    83
+#define TEST_RESULT_HEIGHT 52
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->dwTestPool->setVisible(false);
-    ui->actSownExtTestItem->setChecked(false);
+    // ui->dwTestPool->setVisible(false);
+    // ui->actSownExtTestItem->setChecked(false);
+    ui->lwTestCmd->setGridSize(QSize(0, TEST_CMD_HEIGHT));
+
+    connect(ui->lwTestCmd, &MyListWidget::itemsReordered, this, &MainWindow::onTestCmdReordered);
+    connect(ui->lwTestResult, &MyListWidget::itemsReordered, this, &MainWindow::onTestResultReordered);
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -133,26 +140,28 @@ void MainWindow::on_actOpenIni_triggered()
         // 获取协议文件名，移除版本号
         QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("协议文件"));
         qDebug() << "strTestObj: " << strTestObj;
-        QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
-        strPath = strPath.mid(0, strPath.lastIndexOf("/"));
-        strPath += "/配置文件/";
-        qDebug() << ": " << strPath;
-        fileNameConfig = strPath + FindFile(strPath, strTestObj, "配置文件");
+        // 设置标题
+        this->setWindowTitle(strTestObj);
+        // QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
+        // strPath = strPath.mid(0, strPath.lastIndexOf("/"));
+        // strPath += "/配置文件/";
+        // qDebug() << ": " << strPath;
+        // fileNameConfig = strPath + FindFile(strPath, strTestObj, "配置文件");
     }
-    else if (pathName.contains("配置文件"))
-    {
-        qDebug() << "打开配置文件";
-        fileNameConfig = pathName;
-        QStringList strQirList = pathName.split("/");
-        // 获取配置文件 前缀，移除版本号
-        QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("配置文件"));
-        qDebug() << "strTestObj: " << strTestObj;
-        QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
-        strPath = strPath.mid(0, strPath.lastIndexOf("/"));
-        strPath += "/协议文件/";
-        qDebug() << ": " << strPath;
-        fileNameProtocol = strPath + FindFile(strPath, strTestObj, "协议文件");
-    }
+    // else if (pathName.contains("配置文件"))
+    // {
+    //     qDebug() << "打开配置文件";
+    //     fileNameConfig = pathName;
+    //     QStringList strQirList = pathName.split("/");
+    //     // 获取配置文件 前缀，移除版本号
+    //     QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("配置文件"));
+    //     qDebug() << "strTestObj: " << strTestObj;
+    //     QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
+    //     strPath = strPath.mid(0, strPath.lastIndexOf("/"));
+    //     strPath += "/协议文件/";
+    //     qDebug() << ": " << strPath;
+    //     fileNameProtocol = strPath + FindFile(strPath, strTestObj, "协议文件");
+    // }
     else
     {
         qDebug() << "文件名需要包含“协议”或“配置”关键字";
@@ -160,27 +169,28 @@ void MainWindow::on_actOpenIni_triggered()
     }
     qDebug() << "pathName: " << pathName;
     qDebug() << "fileNameProtocol: " << fileNameProtocol;
-    qDebug() << "fileNameConfig: " << fileNameConfig;
+    // qDebug() << "fileNameConfig: " << fileNameConfig;
 
     if (fileNameProtocol == "")
     {
         qDebug() << "未找到协议文件";
         return;
     }
-    if (fileNameConfig == "")
-    {
-        qDebug() << "未找到配置文件";
-        return;
-    }
+    // if (fileNameConfig == "")
+    // {
+    //     qDebug() << "未找到配置文件";
+    //     return;
+    // }
     labviewSetting = new LabViewSetting(fileNameProtocol, fileNameConfig);
     this->testItemList.clear();                             // 清空
     this->testItemList = labviewSetting->getTestItemList(); // 解析 协议文件
 
-    this->configItemList.clear(); // 清空
+    // this->configItemList.clear(); // 清空
     // this->configItemList = analysis_config_ini(fileNameConfig); // 解析 配置文件
-    this->configItemList = labviewSetting->getConfigItemList(); // 解析 配置文件
+    // this->configItemList = labviewSetting->getConfigItemList(); // 解析 配置文件
 
-    updateTestItemListUi(); // 更新测试项列表
+    ui->actSave->setEnabled(true); // 保存按钮可用
+    updateTestItemListUi();        // 更新测试项列表
 }
 
 // void MainWindow::on_btnAddResultItem_clicked()
@@ -201,6 +211,16 @@ void MainWindow::on_actOpenIni_triggered()
  */
 void MainWindow::loadTestItemUi(QListWidgetItem *item)
 {
+    if (leTestItemName_Old != "")
+    {
+        // 获取当前点击的测试项的索引
+        int testItemIndex = getTestItemIndex(leTestItemName_Old);
+        if (testItemIndex == -1)
+            qDebug() << "未找到上一个测试项";
+        else
+            updateTestCmdListFromUi(this->testItemList[testItemIndex].cmdList);
+    }
+
     leTestItemName_Old = item->text().trimmed();
     qDebug() << "点击: " << leTestItemName_Old;
 
@@ -221,21 +241,25 @@ void MainWindow::loadTestItemUi(QListWidgetItem *item)
     }
 
     ui->leTestItemName->setText(testItemList.at(testItemIndex).name);
+    ui->spbxDataSize->setValue(testItemList.at(testItemIndex).dataByteLen);
+    ui->spbxDecPlace->setValue(testItemList.at(testItemIndex).decimal);
+    ui->spbxByteOrder->setCurrentText(testItemList.at(testItemIndex).byteOrder);
+    ui->cbSign->setCurrentText(testItemList.at(testItemIndex).sign);
     ui->spbxRepeatTimes->setValue(testItemList.at(testItemIndex).repeat);
 
     // 清空命令项
     testCmdInterfaceList.clear();
 
     // 获取当前点击的配置项的索引
-    int configIndex = -1;
-    for (int i = 0; i < this->configItemList.size(); i++)
-    {
-        if (leTestItemName_Old == this->configItemList.at(i).name)
-        {
-            configIndex = i;
-            break;
-        }
-    }
+    // int configIndex = -1;
+    // for (int i = 0; i < this->configItemList.size(); i++)
+    // {
+    //     if (leTestItemName_Old == this->configItemList.at(i).name)
+    //     {
+    //         configIndex = i;
+    //         break;
+    //     }
+    // }
 
     // 清空结果项
     testResultInterfaceList.clear();
@@ -248,23 +272,23 @@ void MainWindow::loadTestItemUi(QListWidgetItem *item)
         TestResult result = this->testItemList.at(testItemIndex).resultList.at(i);
         item->setUi_Result(i, result);
 
-        if (this->configItemList.at(configIndex).contentList.size() <= i)
-        {
-            qDebug() << "Warning: " << this->testItemList.at(testItemIndex).name << "可能没有配置显示结果";
-            break;
-        }
+        // if (this->configItemList.at(configIndex).contentList.size() <= i)
+        // {
+        //     qDebug() << "Warning: " << this->testItemList.at(testItemIndex).name << "可能没有配置显示结果";
+        //     break;
+        // }
 
-        if (configIndex != -1)
-        {
-            ConfigContent config = this->configItemList.at(configIndex).contentList.at(i);
-            item->setUi_Config(config);
-        }
+        // if (configIndex != -1)
+        // {
+        //     ConfigContent config = this->configItemList.at(configIndex).contentList.at(i);
+        //     item->setUi_Config(config);
+        // }
 
         testResultInterfaceList.append(item);
         // ui->vloResultItem->insertWidget(ui->vloResultItem->count() - 2, item);
 
         QListWidgetItem *listItem = new QListWidgetItem(ui->lwTestResult);
-        listItem->setSizeHint(QSize(0, 52));
+        listItem->setSizeHint(QSize(0, TEST_RESULT_HEIGHT));
         ui->lwTestResult->addItem(listItem);
         ui->lwTestResult->setItemWidget(listItem, item);
     }
@@ -314,7 +338,7 @@ void MainWindow::on_actAbout_triggered()
     QString strData = year + "/" + month + "/" + day;
 
     QMessageBox::about(this, "About",
-                        this->windowTitle() + "\n"
+                        "LabViewIniEditor-Demo\n"
                         "\n"
                         "Author: "+ author+"\n"
                         "Postscript: "+ postscript+"\n"
@@ -345,7 +369,7 @@ void MainWindow::on_leTestItemName_editingFinished()
     }
     // 修改测试项名称
     this->testItemList[testItemIndex].name = str;
-    this->configItemList[testItemIndex].name = str;
+    // this->configItemList[testItemIndex].name = str;
     // 更新测试项界面
     updateTestItemUi();
     updateTestItemListUi();
@@ -362,6 +386,20 @@ int MainWindow::getTestItemIndex(const QString &name)
         }
     }
     return -1;
+}
+
+TestItem *MainWindow::getTestItemCurrent(void)
+{
+    // 获取当前点击的测试项的名称
+    QString str = ui->leTestItemName->text().trimmed();
+    // 获取当前点击的测试项的索引
+    int testItemIndex = getTestItemIndex(str);
+    if (testItemIndex == -1)
+    {
+        qDebug() << "未找到测试项";
+        return nullptr;
+    }
+    return &this->testItemList[testItemIndex];
 }
 
 void MainWindow::on_btnCopyTestICmd_clicked()
@@ -402,12 +440,12 @@ void MainWindow::on_btnAddTestICmd_clicked()
 {
     QString str = ui->leTestItemName->text().trimmed();
     // 获取当前点击的测试项的索引
-    int testItemIndex = getTestItemIndex(str);
-    if (testItemIndex == -1)
-    {
-        qDebug() << "未找到测试项";
-        return;
-    }
+    // int testItemIndex = getTestItemIndex(str);
+    // if (testItemIndex == -1)
+    // {
+    //     qDebug() << "未找到测试项";
+    //     return;
+    // }
     // 获取当前点击的 lwTestCmd 的索引
     int testCmdIndex = ui->lwTestCmd->currentRow();
     qDebug() << "点击 TestCmd: " << str << " " << testCmdIndex;
@@ -417,10 +455,10 @@ void MainWindow::on_btnAddTestICmd_clicked()
         testCmdIndex++;
     // 在当前点击的命令项下方添加一个命令项
     TestCmd cmd;
-    insertTestCmd(this->testItemList[testItemIndex].cmdList, cmd, testCmdIndex);
+    // insertTestCmd(this->testItemList[testItemIndex].cmdList, cmd, testCmdIndex);
 
     // 更新命令项
-    loadTestCmdUi(this->testItemList.at(testItemIndex).cmdList);
+    // loadTestCmdUi(this->testItemList.at(testItemIndex).cmdList);
     ui->lwTestCmd->setCurrentRow(testCmdIndex);
 }
 
@@ -454,31 +492,31 @@ void MainWindow::loadTestResultUi(const QVector<TestResult> &resultList)
         return;
     }
     // 获取当前点击的配置项的索引
-    int configIndex = -1;
-    for (int i = 0; i < this->configItemList.size(); i++)
-    {
-        if (leTestItemName_Old == this->configItemList.at(i).name)
-        {
-            configIndex = i;
-            break;
-        }
-    }
+    // int configIndex = -1;
+    // for (int i = 0; i < this->configItemList.size(); i++)
+    // {
+    //     if (leTestItemName_Old == this->configItemList.at(i).name)
+    //     {
+    //         configIndex = i;
+    //         break;
+    //     }
+    // }
 
     for (int i = 0; i < resultList.size(); ++i)
     {
         TestResultInterface *item = new TestResultInterface(this);
         item->setUi_Result(i, resultList.at(i));
-        if (this->configItemList.at(configIndex).contentList.size() <= i)
-        {
-            qDebug() << "Warning: " << this->testItemList.at(testItemIndex).name << "可能没有配置显示结果";
-            break;
-        }
+        // if (this->configItemList.at(configIndex).contentList.size() <= i)
+        // {
+        //     qDebug() << "Warning: " << this->testItemList.at(testItemIndex).name << "可能没有配置显示结果";
+        //     break;
+        // }
 
-        if (configIndex != -1)
-        {
-            ConfigContent config = this->configItemList.at(configIndex).contentList.at(i);
-            item->setUi_Config(config);
-        }
+        // if (configIndex != -1)
+        // {
+        //     ConfigContent config = this->configItemList.at(configIndex).contentList.at(i);
+        //     item->setUi_Config(config);
+        // }
 
         addResultInterface(item);
     }
@@ -517,7 +555,7 @@ void MainWindow::insertTestCmdInterface(int index, TestItemInterface *item)
     testCmdInterfaceList.insert(index, item);
 
     QListWidgetItem *listItem = new QListWidgetItem(ui->lwTestCmd);
-    listItem->setSizeHint(QSize(0, 52));
+    listItem->setSizeHint(QSize(0, TEST_CMD_HEIGHT));
     ui->lwTestCmd->insertItem(index, listItem);   // 插入到列表中
     ui->lwTestCmd->setItemWidget(listItem, item); // 设置为该项的 Widget
     ui->lwTestCmd->setCurrentRow(index);          // 滚动到该项
@@ -538,7 +576,7 @@ void MainWindow::insertResultInterface(int index, TestResultInterface *item)
     testResultInterfaceList.insert(index, item);
 
     QListWidgetItem *listItem = new QListWidgetItem(ui->lwTestResult);
-    listItem->setSizeHint(QSize(0, 52));
+    listItem->setSizeHint(QSize(0, TEST_RESULT_HEIGHT));
     ui->lwTestResult->insertItem(index, listItem);   // 插入到列表中
     ui->lwTestResult->setItemWidget(listItem, item); // 设置为该项的 Widget
     ui->lwTestResult->setCurrentRow(index);          // 滚动到该项
@@ -559,19 +597,46 @@ void MainWindow::insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, in
     }
 }
 
-void MainWindow::on_actSave_triggered() {}
+void MainWindow::updateTestCmdListFromUi(QVector<TestCmd> &cmdList)
+{
+    cmdList.clear();
+    for (int i = 0; i < ui->lwTestCmd->count(); i++)
+    {
+        TestItemInterface *item = (TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(i));
+        cmdList.append(item->getTestCmd());
+    }
+}
+
+void MainWindow::on_actSave_triggered()
+{
+    if (labviewSetting == nullptr)
+    {
+        qDebug() << "未打开文件";
+        return;
+    }
+
+    // 获取当前的测试项的索引
+    int testItemIndex = getTestItemIndex(leTestItemName_Old);
+    if (testItemIndex == -1)
+        qDebug() << "未找到测试项";
+    else
+        updateTestCmdListFromUi(this->testItemList[testItemIndex].cmdList);
+
+    // 将界面testItem保存到 testItemList
+    // updateTestItemListFromUi();
+    labviewSetting->setTestItemList(testItemList);
+    // 将界面configItem保存到 configItemList
+    // labviewSetting->setConfigItemList(configItemList);
+
+    // 保存配置文件 & 协议文件
+    labviewSetting->saveFile();
+}
 
 void MainWindow::on_btnRemoveTestICmd_clicked()
 {
-    // 获取当前点击的测试项的名称
-    QString str = ui->leTestItemName->text().trimmed();
-    // 获取当前点击的测试项的索引
-    int testItemIndex = getTestItemIndex(str);
-    if (testItemIndex == -1)
-    {
-        qDebug() << "未找到测试项";
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
         return;
-    }
     // 获取当前点击的 lwTestCmd 的索引
     int testCmdIndex = ui->lwTestCmd->currentRow();
     if (testCmdIndex == -1)
@@ -579,13 +644,12 @@ void MainWindow::on_btnRemoveTestICmd_clicked()
         qDebug() << "未选择命令项";
         return;
     }
-    qDebug() << "点击 TestCmd: " << str << " " << testCmdIndex;
 
     // 删除当前点击的命令项
-    this->testItemList[testItemIndex].cmdList.remove(testCmdIndex);
+    testItem->cmdList.remove(testCmdIndex);
 
     // 更新命令项
-    loadTestCmdUi(this->testItemList.at(testItemIndex).cmdList);
+    loadTestCmdUi(testItem->cmdList);
     if (testCmdIndex > 0)
         testCmdIndex--;
     ui->lwTestCmd->setCurrentRow(testCmdIndex);
@@ -595,18 +659,18 @@ void MainWindow::updateTestItemListUi()
 {
     ui->lwlTestItemList->clear();
     QStringList strConfigList;
-    for (int i = 0; i < this->configItemList.size(); i++) // 往 ListWidget 添加测试项
-    {
-        QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemList);
-        QCheckBox *checkBox = new QCheckBox(ui->lwlTestItemList);
-        checkBox->setChecked(this->configItemList.at(i).enable);
-        // checkBox->setText(this->configItemList.at(i).name);
-        ui->lwlTestItemList->setItemWidget(item, checkBox);
+    // for (int i = 0; i < this->configItemList.size(); i++) // 往 ListWidget 添加测试项
+    // {
+    //     QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemList);
+    //     QCheckBox *checkBox = new QCheckBox(ui->lwlTestItemList);
+    //     checkBox->setChecked(this->configItemList.at(i).enable);
+    //     // checkBox->setText(this->configItemList.at(i).name);
+    //     ui->lwlTestItemList->setItemWidget(item, checkBox);
 
-        QString str = this->configItemList.at(i).name;
-        strConfigList << str;
-        item->setText("   " + str);
-    }
+    //     QString str = this->configItemList.at(i).name;
+    //     strConfigList << str;
+    //     item->setText("   " + str);
+    // }
 
     ui->lwlTestItemPool->clear();
     for (int i = 0; i < this->testItemList.size(); i++) // 往 ListWidget 添加测试项
@@ -620,16 +684,94 @@ void MainWindow::updateTestItemListUi()
     }
 }
 
+void MainWindow::updateTestItemListFromUi()
+{
+    // testItemList.clear();
+    // for (int i = 0; i < ui->lwlTestItemPool->count(); i++)
+    // {
+    //     QListWidgetItem *itemUi = ui->lwlTestItemPool->item(i);
+    //     TestItem testItem;
+    //     testItem.name = itemUi->text().trimmed();
+    //     testItem.byteOrder = ui->spbxByteOrder->currentText();
+    //     testItem.dataByteLen = ui->spbxDataSize->value();
+    //     testItem.decimal = ui->spbxDecPlace->value();
+    //     testItem.repeat = ui->spbxRepeatTimes->value();
+
+    //     QVector<TestCmd> cmdList;
+    //     for (int j = 0; j < ui->lwTestCmd->count(); j++)
+    //     {
+    //         TestItemInterface *item = (TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(j));
+    //         cmdList.append(item->getTestCmd());
+    //     }
+    //     testItemList.append(testItem);
+
+    // }
+}
+
 void MainWindow::on_spbxRepeatTimes_valueChanged(int arg1)
 {
-    // 获取当前点击的测试项的名称
-    QString str = ui->leTestItemName->text().trimmed();
-    // 获取当前点击的测试项的索引
-    int testItemIndex = getTestItemIndex(str);
-    if (testItemIndex == -1)
-    {
-        qDebug() << "未找到测试项";
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
         return;
+    testItem->repeat = arg1;
+}
+
+void MainWindow::on_spbxDataSize_valueChanged(int arg1)
+{
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    testItem->dataByteLen = arg1;
+}
+
+void MainWindow::on_spbxDecPlace_valueChanged(int arg1)
+{
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    testItem->decimal = arg1;
+}
+
+void MainWindow::on_spbxByteOrder_currentTextChanged(const QString &arg1)
+{
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    testItem->byteOrder = arg1;
+}
+
+void MainWindow::on_cbSign_currentTextChanged(const QString &arg1)
+{
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    testItem->sign = arg1;
+}
+
+void MainWindow::onTestCmdReordered(void)
+{
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    QVector<TestCmd> cmdList;
+    for (int i = 0; i < ui->lwTestCmd->count(); i++)
+    {
+        TestItemInterface *item = (TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(i));
+        cmdList.append(item->getTestCmd());
     }
-    this->testItemList[testItemIndex].repeat = arg1;
+    testItem->cmdList = cmdList;
+}
+
+void MainWindow::onTestResultReordered(void)
+{
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    QVector<TestResult> resultList;
+    for (int i = 0; i < ui->lwTestResult->count(); i++)
+    {
+        TestResultInterface *item = (TestResultInterface *) ui->lwTestResult->itemWidget(ui->lwTestResult->item(i));
+        resultList.append(item->getTestResult());
+    }
+    testItem->resultList = resultList;
 }

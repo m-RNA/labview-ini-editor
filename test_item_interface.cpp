@@ -67,7 +67,7 @@ void TestItemInterface::setUi(int index, const TestCmd &item)
     //    ui->spbxDataSize->setValue(item.dataByteLen);
     //    ui->spbxDecPlace->setValue(item.decimal);
     //    ui->spbxByteOrder->setCurrentText(item.byteOrder);
-    ui->cbEncode->setCurrentText(item.encodeWay);
+    //    ui->cbEncode->setCurrentText(item.encodeWay);
     //    ui->cbSign->setCurrentText(item.sign);
 
     ui->spbxDelay->setValue(item.cmdDelay);
@@ -127,7 +127,7 @@ TestCmd TestItemInterface::getTestCmd() const
 
     cmd.cmdType = ui->cbTestType->currentText();
 
-    cmd.encodeWay = ui->cbEncode->currentText();
+    // cmd.encodeWay = ui->cbEncode->currentText();
 
     cmd.cmdDelay = ui->spbxDelay->value();
     cmd.cmdTimeout = ui->spbxTimeout->value();

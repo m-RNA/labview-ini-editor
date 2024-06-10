@@ -2,8 +2,8 @@
  * @Author: 陈俊健
  * @Date: 2023-10-31 00:00:44
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-10-31 23:12:27
- * @FilePath: \LabViewIniEditor\test_result_interface.cpp
+ * @LastEditTime: 2024-06-10 18:07:29
+ * @FilePath: \LabViewIniEditor2024\test_result_interface.cpp
  * @Description:
  *
  * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
@@ -20,6 +20,13 @@ TestResultInterface::TestResultInterface(QWidget *parent)
     , ui(new Ui::TestResultInterface)
 {
     ui->setupUi(this);
+    ui->spbxByteOrder->setVisible(false);
+    ui->spbxDecPlace->setVisible(false);
+    ui->spbxDataSize->setVisible(false);
+    ui->cbSign->setVisible(false);
+    ui->label_3->setVisible(false);
+    ui->label_4->setVisible(false);
+    ui->label_5->setVisible(false);
 }
 
 TestResultInterface::~TestResultInterface() { delete ui; }
@@ -34,10 +41,10 @@ void TestResultInterface::setUi_Result(int index, const TestResult &item)
     if (item.show != "")
         ui->cbShow->setCurrentText(item.show);
 
-    ui->spbxDataSize->setValue(item.dataByteLen);
-    ui->spbxDecPlace->setValue(item.decimal);
-    ui->spbxByteOrder->setCurrentText(item.byteOrder);
-    ui->cbSign->setCurrentText(item.sign);
+    // ui->spbxDataSize->setValue(item.dataByteLen);
+    // ui->spbxDecPlace->setValue(item.decimal);
+    // ui->spbxByteOrder->setCurrentText(item.byteOrder);
+    // ui->cbSign->setCurrentText(item.sign);
 
     if (item.analysisWay != "")
     {
@@ -51,6 +58,16 @@ void TestResultInterface::setUi_Config(const ConfigContent &config)
     ui->leName->setText(config.name);
     ui->cbDataLimit->setCurrentText(config.value);
     ui->cbUnit->setCurrentText(config.unit);
+}
+
+TestResult TestResultInterface::getTestResult() const
+{
+    TestResult result;
+    result.index = ui->spinIndex->value();
+    result.show = ui->cbShow->currentText();
+    result.analysisWay = ui->cbAnalysis->currentText();
+    result.analysisContent = ui->leAnalysis->text();
+    return result;
 }
 
 // void TestResultInterface::on_cbDataLimit_currentTextChanged(const QString &arg1)

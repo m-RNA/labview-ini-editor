@@ -2,11 +2,11 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2023-11-29 00:19:33
- * @FilePath: \LabViewIniEditor\labviewsetting.cpp
- * @Description: 
- * 
- * Copyright (c) 2023 by Chenjunjian, All Rights Reserved. 
+ * @LastEditTime: 2024-06-10 16:22:48
+ * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
+ * @Description:
+ *
+ * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
  */
 #include "labviewsetting.h"
 #include <QDebug>
@@ -24,9 +24,10 @@ void fillLength(QStringList &list, int length)
 {
     if (list.size() < length)
     {
+        QString last = list.at(list.size() - 1);
         for (int i = list.size(); i < length; i++)
         {
-            list.append(list.at(list.size() - 1));
+            list.append(last);
         }
     }
 }
@@ -42,19 +43,19 @@ LabViewSetting::LabViewSetting(QString fileNameProtocol, QString fileNameConfig)
     this->fileNameConfig = fileNameConfig;
 
     iniSettingsProtocol = new IniSettings(fileNameProtocol, QTextCodec::codecForName("GB2312"));
-    iniSettingsConfig = new IniSettings(fileNameConfig, QTextCodec::codecForName("GB2312"));
+    // iniSettingsConfig = new IniSettings(fileNameConfig, QTextCodec::codecForName("GB2312"));
 
     if (iniSettingsProtocol->isLoad() == false)
     {
         logPrint("协议文件加载失败");
     }
-    if (iniSettingsConfig->isLoad() == false)
-    {
-        logPrint("配置文件加载失败");
-    }
+    // if (iniSettingsConfig->isLoad() == false)
+    // {
+    //     logPrint("配置文件加载失败");
+    // }
 
     analysisTestItem();
-    analysisConfigItem();
+    // analysisConfigItem();
 }
 
 /**
@@ -76,6 +77,18 @@ void LabViewSetting::clear()
 }
 
 /**
+ * @brief 保存文件。
+ * @return 保存成功返回 true，否则返回 false。
+ */
+bool LabViewSetting::saveFile(void)
+{
+    qDebug() << "保存文件";
+    iniSettingsProtocol->saveFile();
+    // iniSettingsConfig->saveFile();
+    return true;
+}
+
+/**
  * @brief 获取测试项列表。
  * @return 测试项列表。
  */
@@ -87,19 +100,90 @@ QList<TestItem> LabViewSetting::getTestItemList() const { return testItemList; }
  */
 QList<ConfigItem> LabViewSetting::getConfigItemList() const { return configItemList; }
 
+void LabViewSetting::setTestItemList(const QList<TestItem> &testItemList)
+{
+    this->testItemList = testItemList;
+
+    iniSettingsProtocol->clear();
+    for (const auto &testItem : testItemList)
+    {
+        QString port = "";     // 端口选择
+        QString sent = "";     // 发送
+        QString receive = "";  // 接收
+        QString param = "";    // 参数配置
+        QString analysis = ""; // 解析
+        QString function = "重发次数(" + QString::number(testItem.repeat) + ")";
+
+        for (auto testCmd : testItem.cmdList)
+        {
+            port += testCmd.comName + ":";
+            sent += testCmd.tx + ":";
+            receive += testCmd.rx + ":";
+            param += testCmd.cmdType + "&"; // 解析方式
+        }
+        param.chop(1);
+        param += ":";
+        param += QString::number(testItem.dataByteLen); // 每个数据项占用字节的长度
+        param += ":";
+        param += QString::number(testItem.decimal); // 小数点位置
+        param += ":";
+        param += testItem.byteOrder; // 字节序 （LH、HL）
+        param += ":";
+        param += testItem.encodeWay; // 编码方式
+        param += ":";
+        param += testItem.sign; // 符号
+        param += ":";
+        for (auto testCmd : testItem.cmdList)
+        {
+            param += QString::number(testCmd.cmdDelay) + "&"; // 延时时间
+        }
+        param.chop(1);
+        param += ":";
+        for (auto testCmd : testItem.cmdList)
+        {
+            param += QString::number(testCmd.cmdTimeout) + "&"; // 超时时间
+        }
+        param.chop(1);
+        param += "|";
+        for (auto testResult : testItem.resultList)
+        {
+            param += QString::number(testResult.index) + testResult.show + "&"; // 显示结果
+        }
+
+        for (auto testResult : testItem.resultList)
+        {
+            analysis += testResult.analysisWay + "&" + testResult.analysisContent + ":"; // 解析
+        }    
+
+        // 去掉最后一个符号
+        port.chop(1);
+        sent.chop(1);
+        receive.chop(1);
+        param.chop(1);
+        analysis.chop(1);
+
+        iniSettingsProtocol->beginGroup(testItem.name);
+        iniSettingsProtocol->setValue("端口选择", port);
+        iniSettingsProtocol->setValue("发送", sent);
+        iniSettingsProtocol->setValue("接收", receive);
+        iniSettingsProtocol->setValue("参数配置", param);
+        iniSettingsProtocol->setValue("解析", analysis);
+        iniSettingsProtocol->setValue("功能配置", function);
+        iniSettingsProtocol->endGroup();
+    }
+}
+
+void LabViewSetting::setConfigItemList(const QList<ConfigItem> &configItemList) {}
+
 /**
  * @brief 分析测试项。
  */
 void LabViewSetting::analysisTestItem()
 {
     testItemList.clear();
-    QStringList testItemNameList = {};
-    if (iniSettingsConfig->isLoad()) // 获取测试项名称列表
+    if (iniSettingsProtocol->isLoad()) // 获取测试项名称列表
     {
-        iniSettingsConfig->beginGroup("Test Item");
-        testItemNameList = iniSettingsConfig->allKeys();
-        iniSettingsConfig->endGroup();
-        foreach (QString testItemName, testItemNameList)
+        foreach (QString testItemName, iniSettingsProtocol->childGroups())
         {
             TestItem testItem = getTestItem(testItemName);
             if (testItem.name != "")
@@ -174,6 +258,11 @@ void LabViewSetting::analysisConfigItem()
 }
 
 /**
+[Test Item]
+key = value
+*/
+
+/**
  * @brief 使用指定的名称分析测试项。
  * @param testItemName 要分析的测试项的名称。
  * @return 分析后的测试项。
@@ -189,20 +278,21 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
     }
 
     iniSettingsProtocol->beginGroup(testItemName);
-    QString port = iniSettingsProtocol->value("端口选择");
-    QString sent = iniSettingsProtocol->value("发送");
-    QString receive = iniSettingsProtocol->value("接收");
-    QString param = iniSettingsProtocol->value("参数配置");
-    QString analysis = iniSettingsProtocol->value("解析");
-    QString function = iniSettingsProtocol->value("功能配置");
-    qDebug() << function;
+    QString port = iniSettingsProtocol->value("端口选择");     // 端口选择
+    QString sent = iniSettingsProtocol->value("发送");         // 发送
+    QString receive = iniSettingsProtocol->value("接收");      // 接收
+    QString param = iniSettingsProtocol->value("参数配置");    // 参数配置
+    QString analysis = iniSettingsProtocol->value("解析");     // 解析
+    QString function = iniSettingsProtocol->value("功能配置"); // 功能配置
     iniSettingsProtocol->endGroup();
 
-    QStringList portList = splitStringSquareBrackets(port, ':');
-    QStringList sentList = splitStringSquareBrackets(sent, ':');
-    QStringList receiveList = splitStringSquareBrackets(receive, ':');
-    QStringList paramList = splitStringSquareBrackets(param, ':');
-    QStringList analysisContentList = splitStringSquareBrackets(analysis, ':');
+    // 分割字符串，去掉方括号中的内容，返回字符串列表
+    QStringList portList = splitStringSquareBrackets(port, ':');                // 端口列表
+    QStringList sentList = splitStringSquareBrackets(sent, ':');                // 发送列表
+    QStringList receiveList = splitStringSquareBrackets(receive, ':');          // 接收列表
+    QStringList paramList = splitStringSquareBrackets(param, ':');              // 参数配置列表
+    QStringList analysisContentList = splitStringSquareBrackets(analysis, ':'); // 解析内容列表
+
     if (paramList.size() < 8)
     {
         logPrint(testItemName + " 参数配置:参数不全");
@@ -214,25 +304,25 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
         logPrint(testItemName + " 超时时间|显示结果:参数不全");
         return testItem;
     }
-    QStringList cmdTypeList = splitStringSquareBrackets(paramList.at(0), '&');
-    QStringList dataByteLenList = splitStringSquareBrackets(paramList.at(1), '&');
-    QStringList decimalList = splitStringSquareBrackets(paramList.at(2), '&');
-    QStringList byteOrderList = splitStringSquareBrackets(paramList.at(3), '&');
-    QStringList encodeWayList = splitStringSquareBrackets(paramList.at(4), '&');
-    QStringList signList = splitStringSquareBrackets(paramList.at(5), '&');
-    QStringList delayList = splitStringSquareBrackets(paramList.at(6), '&');
-    QStringList timeoutList = splitStringSquareBrackets(paramListEnd.at(0), '&');
-    QStringList resultShowList = splitStringSquareBrackets(paramListEnd.at(1), '&');
+    int cmdNum = sentList.size(); // 测试项命令数量
+    // testItem.cmdNum = cmdNum;
+    testItem.dataByteLen = paramList.at(1).toInt(); // 每个数据项占用字节的长度
+    testItem.decimal = paramList.at(2).toInt();     // 小数点位置
+    testItem.byteOrder = paramList.at(3);           // 字节序 （LH、HL）
+    testItem.encodeWay = paramList.at(4);           // 编码方式（HEX、H2S）
+    testItem.sign = paramList.at(5);                // 符号
 
-    int cmdNum = sentList.size();
-    testItem.cmdNum = cmdNum;
+    QStringList cmdTypeList = splitStringSquareBrackets(paramList.at(0), '&');       // 解析方式列表（AT、68
+    QStringList delayList = splitStringSquareBrackets(paramList.at(6), '&');         // 延时列表
+    QStringList timeoutList = splitStringSquareBrackets(paramListEnd.at(0), '&');    // 超时列表
+    QStringList resultShowList = splitStringSquareBrackets(paramListEnd.at(1), '&'); // 显示结果列表
+
     // 填充长度
-    fillLength(portList, cmdNum);      // 端口选择
-    fillLength(receiveList, cmdNum);   // 接收
-    fillLength(cmdTypeList, cmdNum);   // 解析方式
-    fillLength(encodeWayList, cmdNum); // 编码方式
-    fillLength(delayList, cmdNum);     // 延时时间
-    fillLength(timeoutList, cmdNum);   // 超时时间
+    fillLength(portList, cmdNum);    // 端口选择
+    fillLength(receiveList, cmdNum); // 接收
+    fillLength(cmdTypeList, cmdNum); // 解析方式
+    fillLength(delayList, cmdNum);   // 延时时间
+    fillLength(timeoutList, cmdNum); // 超时时间
 
     for (int i = 0; i < cmdNum; i++)
     {
@@ -242,7 +332,6 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
         testCmd.tx = sentList.at(i).trimmed();                    // 发送
         testCmd.rx = receiveList.at(i).trimmed();                 // 接收
         testCmd.cmdType = cmdTypeList.at(i).trimmed();            // 解析方式
-        testCmd.encodeWay = encodeWayList.at(i).trimmed();        // 编码方式
         testCmd.cmdDelay = delayList.at(i).trimmed().toInt();     // 延时时间
         testCmd.cmdTimeout = timeoutList.at(i).trimmed().toInt(); // 超时时间
         testItem.cmdList.append(testCmd);
@@ -263,11 +352,6 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
         else
         {
             testResult.index = resultShowList.at(i).toInt();
-            if (testResult.index >= cmdNum)
-            {
-                logPrint(testItemName + " 解析:结果数量大于命令数量");
-                testResult.index = cmdNum - 1;
-            }
         }
 
         testItem.resultList.append(testResult);
@@ -280,20 +364,12 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
     }
     int resultIndexMax = testItem.resultIndexMax;
     qDebug() << "resultIndexMax:" << resultIndexMax << "resultNum:" << resultNum;
-    fillLength(dataByteLenList, resultIndexMax + 1);
-    fillLength(decimalList, resultIndexMax + 1);
-    fillLength(byteOrderList, resultIndexMax + 1);
-    fillLength(signList, resultIndexMax + 1);
     fillLength(analysisContentList, resultIndexMax + 1);
 
     for (int i = 0; i < resultNum; i++)
     {
         TestResult &testResult = testItem.resultList[i];
-        int index = testResult.index;
-        testResult.dataByteLen = dataByteLenList.at(index).trimmed().toInt(); // 每个数据项占用字节的长度
-        testResult.decimal = decimalList.at(index).trimmed().toInt();         // 小数点位置
-        testResult.byteOrder = byteOrderList.at(index).trimmed();             // 字节序 （LH、HL）
-        testResult.sign = signList.at(index).trimmed();                       // 符号
+        // int index = testResult.index;
 
         // 解析=双匹配&LADC[: ]1[,]&OK:双匹配&LADC[: ]1[,]&OK
         QStringList anaList = splitStringSquareBrackets(analysisContentList.at(i).trimmed(), '&');
@@ -305,6 +381,7 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
         testResult.analysisContent
             = analysisContentList.at(i).trimmed().mid(analysisContentList.at(i).trimmed().indexOf("&") + 1);
     }
+
     // 功能配置=重发次数(45)
     if (function.startsWith("重发次数"))
     {
@@ -332,35 +409,37 @@ void TestCmd::print() const
     qDebug() << "端口选择" << comName;
     qDebug() << "发送" << tx;
     qDebug() << "接收" << rx;
-    qDebug() << "解析方式" << cmdType;
-    qDebug() << "编码方式" << encodeWay;
+    qDebug() << "命令类型" << cmdType;
     qDebug() << "延时时间" << cmdDelay;
     qDebug() << "超时时间" << cmdTimeout;
 }
 
 void TestResult::print() const
 {
-    qDebug() << "显示结果" << show;
-    qDebug() << "字节数" << dataByteLen;
-    qDebug() << "小数" << decimal;
-    qDebug() << "字节序" << byteOrder;
-    qDebug() << "符号" << sign;
+    qDebug() << "显示结果" << index << show;
     qDebug() << "解析" << analysisWay << analysisContent;
 }
 
 void TestItem::print() const
 {
     qDebug() << "测试名：" << name;
-    qDebug() << "重复次数" << repeat;
+
     for (const auto &cmd : cmdList)
     {
         cmd.print();
     }
+    qDebug() << "字节数" << dataByteLen;
+    qDebug() << "小数" << decimal;
+    qDebug() << "字节序" << byteOrder;
+    qDebug() << "编码方式" << encodeWay;
+    qDebug() << "符号" << sign;
 
     for (const auto &result : resultList)
     {
         result.print();
     }
+
+    qDebug() << "重复次数" << repeat;
 }
 
 /**

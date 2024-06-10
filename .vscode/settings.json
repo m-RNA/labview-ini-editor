@@ -31,7 +31,12 @@
         "fstream": "cpp",
         "qlist": "cpp",
         "typeinfo": "cpp",
-        "qwidget": "cpp"
+        "qwidget": "cpp",
+        "atomic": "cpp",
+        "unordered_map": "cpp",
+        "limits": "cpp",
+        "system_error": "cpp",
+        "qlistwidget": "cpp"
     },
     "cSpell.words": [
         "LADC",
