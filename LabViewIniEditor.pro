@@ -26,6 +26,7 @@ SOURCES += \
 HEADERS += \
     inisettings.h \
     labviewsetting.h \
+    mylistwidget.h \
     mainwindow.h \
     test_item_interface.h \
     test_result_interface.h
