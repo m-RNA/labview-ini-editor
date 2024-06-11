@@ -403,7 +403,7 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;冒号&lt;span style=&quot; font-weight:600;&quot;&gt;:&lt;/span&gt;与号&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;amp; &lt;/span&gt;竖线&lt;span style=&quot; font-weight:600;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;&lt;p&gt;需用方括号[ ]括起来&lt;/p&gt;&lt;p&gt;如 [:] [&amp;amp;] [|]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;冒号&lt;span style=&quot; font-weight:600;&quot;&gt;: &lt;/span&gt;与号&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;amp; &lt;/span&gt;竖线&lt;span style=&quot; font-weight:600;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;&lt;p&gt;需用方括号&lt;span style=&quot; font-weight:600;&quot;&gt;[ ]&lt;/span&gt;括起来&lt;/p&gt;&lt;p&gt;如&lt;span style=&quot; font-weight:600;&quot;&gt; [:]  [&amp;amp;]  [|]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="placeholderText">
          <string>截取区间</string>

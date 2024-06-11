@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-31 00:00:44
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-11 21:06:46
+ * @LastEditTime: 2024-06-12 02:12:17
  * @FilePath: \LabViewIniEditor2024\test_result_interface.cpp
  * @Description:
  *
@@ -57,7 +57,10 @@ void TestResultInterface::setUi_Result(int index, const TestResult &item)
     if (item.analysisWay != "")
     {
         ui->cbAnalysis->setCurrentText(item.analysisWay);
-        ui->leAnalysis->setText(item.analysisContent);
+        QString content = item.analysisContent;
+        // if (content.contains("[:]"))
+        //     content.replace("[:]", ":");
+        ui->leAnalysis->setText(content);
     }
 }
 
@@ -71,10 +74,21 @@ void TestResultInterface::setUi_Config(const ConfigContent &config)
 TestResult TestResultInterface::getTestResult() const
 {
     TestResult result;
-    result.index = ui->spinIndex->value();
-    result.show = ui->cbShow->currentText();
-    result.analysisWay = ui->cbAnalysis->currentText();
-    result.analysisContent = ui->leAnalysis->text();
+    result.index = ui->spinIndex->value();              // 结果序号
+    result.show = ui->cbShow->currentText();            // 结果显示
+    result.analysisWay = ui->cbAnalysis->currentText(); // 截取、单匹配、双匹配
+    result.analysisContent = ui->leAnalysis->text();    // 数据截取区间、单匹配内容、双匹配内容
+
+    // 如果解析内容中包含 : | ，则需要用[]把":"括起来，即xxx:xxx -> xxx[:]xxx
+    // if (result.analysisContent.contains(":"))
+    //     result.analysisContent.replace(":", "[:]"); // 替换冒号
+    // if (result.analysisContent.contains("|"))
+    //     result.analysisContent.replace("|", "[|]"); // 替换竖线
+
+    if (result.show == "不移除")
+        result.show = "";
+    if (result.analysisWay == "不截取")
+        result.analysisWay = "NA";
     return result;
 }
 
