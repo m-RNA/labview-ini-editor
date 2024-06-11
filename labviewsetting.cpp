@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-10 16:22:48
+ * @LastEditTime: 2024-06-11 23:43:19
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -116,7 +116,12 @@ void LabViewSetting::setTestItemList(const QList<TestItem> &testItemList)
 
         for (auto testCmd : testItem.cmdList)
         {
-            port += testCmd.comName + ":";
+            port += testCmd.comName;
+            if (testCmd.brief.isEmpty() == false)
+            {
+                port += "<" + testCmd.brief + ">";
+            }
+            port += ":";
             sent += testCmd.tx + ":";
             receive += testCmd.rx + ":";
             param += testCmd.cmdType + "&"; // 解析方式
@@ -153,7 +158,7 @@ void LabViewSetting::setTestItemList(const QList<TestItem> &testItemList)
         for (auto testResult : testItem.resultList)
         {
             analysis += testResult.analysisWay + "&" + testResult.analysisContent + ":"; // 解析
-        }    
+        }
 
         // 去掉最后一个符号
         port.chop(1);
@@ -328,12 +333,24 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
     {
         TestCmd testCmd;
         testCmd.index = i;
-        testCmd.comName = portList.at(i).trimmed();               // 端口选择
-        testCmd.tx = sentList.at(i).trimmed();                    // 发送
-        testCmd.rx = receiveList.at(i).trimmed();                 // 接收
-        testCmd.cmdType = cmdTypeList.at(i).trimmed();            // 解析方式
-        testCmd.cmdDelay = delayList.at(i).trimmed().toInt();     // 延时时间
-        testCmd.cmdTimeout = timeoutList.at(i).trimmed().toInt(); // 超时时间
+        testCmd.comName = portList.at(i).trimmed(); // 端口选择
+        if (testCmd.comName.contains("<"))
+        {
+            // 截取<>之间的字符串,不包含<>
+            if (testCmd.comName.contains(">"))
+            {
+                testCmd.brief = testCmd.comName.mid(testCmd.comName.indexOf("<") + 1,
+                                                    testCmd.comName.indexOf(">") - testCmd.comName.indexOf("<") - 1);
+            }
+            // 截取 < 之前的字符串
+            testCmd.comName = testCmd.comName.mid(0, testCmd.comName.indexOf("<")).trimmed();
+        }
+
+        testCmd.tx = sentList.at(i).trimmed();                       // 发送
+        testCmd.rx = receiveList.at(i).trimmed();                    // 接收
+        testCmd.cmdType = cmdTypeList.at(i).trimmed();               // 解析方式
+        testCmd.cmdDelay = delayList.at(i).trimmed().toDouble();     // 延时时间
+        testCmd.cmdTimeout = timeoutList.at(i).trimmed().toDouble(); // 超时时间
         testItem.cmdList.append(testCmd);
     }
 
@@ -406,6 +423,9 @@ void ConfigItem::print() const
 
 void TestCmd::print() const
 {
+    qDebug() << "命令序号" << index;
+    qDebug() << "命令注释" << brief;
+
     qDebug() << "端口选择" << comName;
     qDebug() << "发送" << tx;
     qDebug() << "接收" << rx;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>826</width>
-    <height>665</height>
+    <width>850</width>
+    <height>657</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
-    <item row="0" column="1">
+    <item row="0" column="0">
      <widget class="QFrame" name="frame_3">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -82,8 +82,8 @@
             </property>
             <property name="font">
              <font>
-              <family>Microsoft YaHei UI</family>
-              <pointsize>12</pointsize>
+              <family>阿里巴巴普惠体 M</family>
+              <pointsize>16</pointsize>
              </font>
             </property>
             <property name="toolTip">
@@ -94,194 +94,269 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QLabel" name="label_7">
+            <property name="font">
+             <font>
+              <family>阿里巴巴普惠体 R</family>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>重发次数:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spbxRepeatTimes">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>阿里巴巴普惠体 R</family>
+              <pointsize>14</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>功能配置=重发次数( )</string>
+            </property>
+            <property name="suffix">
+             <string/>
+            </property>
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="value">
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <property name="leftMargin">
-          <number>4</number>
+        <widget class="QFrame" name="frame_6">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
          </property>
-         <item>
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>字节数:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="spbxDataSize">
-           <property name="toolTip">
-            <string>数据占用字节的长度</string>
-           </property>
-           <property name="suffix">
-            <string>Byte</string>
-           </property>
-           <property name="prefix">
-            <string/>
-           </property>
-           <property name="maximum">
-            <number>99</number>
-           </property>
-           <property name="value">
-            <number>2</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>小数位:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="spbxDecPlace">
-           <property name="toolTip">
-            <string>小数点位置</string>
-           </property>
-           <property name="suffix">
-            <string/>
-           </property>
-           <property name="prefix">
-            <string/>
-           </property>
-           <property name="maximum">
-            <number>99</number>
-           </property>
-           <property name="value">
-            <number>0</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="Line" name="line_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>字节顺序:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="spbxByteOrder">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;字节顺序：&lt;/p&gt;&lt;p&gt;LH 低位在前，高位在后&lt;/p&gt;&lt;p&gt;HL 高位在前，低位在后&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <item>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <property name="leftMargin">
+           <number>4</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>LH</string>
+             <string>字节数:</string>
             </property>
-           </item>
-           <item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spbxDataSize">
+            <property name="toolTip">
+             <string>数据占用字节的数</string>
+            </property>
+            <property name="suffix">
+             <string>Byte</string>
+            </property>
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="maximum">
+             <number>99</number>
+            </property>
+            <property name="value">
+             <number>2</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>HL</string>
+             <string>小数位:</string>
             </property>
-           </item>
-          </widget>
-         </item>
-         <item>
-          <widget class="Line" name="line_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>符号:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="cbSign">
-           <property name="toolTip">
-            <string>符号</string>
-           </property>
-           <property name="editable">
-            <bool>false</bool>
-           </property>
-           <item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spbxDecPlace">
+            <property name="toolTip">
+             <string>小数点位置</string>
+            </property>
+            <property name="suffix">
+             <string/>
+            </property>
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="maximum">
+             <number>99</number>
+            </property>
+            <property name="value">
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="Line" name="line_2">
+            <property name="minimumSize">
+             <size>
+              <width>12</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>0</string>
+             <string>字节顺序:</string>
             </property>
-           </item>
-           <item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="spbxByteOrder">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;字节顺序：&lt;/p&gt;&lt;p&gt;LH 低位在前，高位在后&lt;/p&gt;&lt;p&gt;HL 高位在前，低位在后&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>LH</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>HL</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_8">
             <property name="text">
-             <string>1</string>
+             <string>编码方式:</string>
             </property>
-           </item>
-          </widget>
-         </item>
-         <item>
-          <widget class="Line" name="line_4">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>重发次数:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="spbxRepeatTimes">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="font">
-            <font>
-             <family>Microsoft YaHei UI</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="toolTip">
-            <string>功能配置=重发次数( )</string>
-           </property>
-           <property name="suffix">
-            <string/>
-           </property>
-           <property name="prefix">
-            <string/>
-           </property>
-           <property name="value">
-            <number>0</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cbEncode">
+            <property name="minimumSize">
+             <size>
+              <width>51</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>编码方式：HEX、Hex To String</string>
+            </property>
+            <property name="toolTipDuration">
+             <number>-1</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>HEX</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>H2S</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>符号:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cbSign">
+            <property name="toolTip">
+             <string>符号</string>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>0</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
         <widget class="QSplitter" name="splitter">
@@ -314,7 +389,7 @@
            <property name="bottomMargin">
             <number>0</number>
            </property>
-           <item row="0" column="1">
+           <item row="0" column="0">
             <widget class="QGroupBox" name="groupBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -340,73 +415,7 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="btnRemoveTestICmd">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Microsoft YaHei UI</family>
-                  <pointsize>9</pointsize>
-                 </font>
-                </property>
-                <property name="toolTip">
-                 <string>点击 添加命令</string>
-                </property>
-                <property name="text">
-                 <string>移除</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="btnCopyTestICmd">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Microsoft YaHei UI</family>
-                  <pointsize>9</pointsize>
-                 </font>
-                </property>
-                <property name="toolTip">
-                 <string>点击 添加命令</string>
-                </property>
-                <property name="text">
-                 <string>复制</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QPushButton" name="btnAddTestICmd">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Microsoft YaHei UI</family>
-                  <pointsize>9</pointsize>
-                 </font>
-                </property>
-                <property name="toolTip">
-                 <string>点击 添加命令</string>
-                </property>
-                <property name="text">
-                 <string>添加</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0" colspan="3">
+              <item row="3" column="0" colspan="3">
                <widget class="MyListWidget" name="lwTestCmd">
                 <property name="toolTip">
                  <string>配置文件 [Test Item]</string>
@@ -459,6 +468,109 @@
                 <property name="sortingEnabled">
                  <bool>false</bool>
                 </property>
+               </widget>
+              </item>
+              <item row="1" column="0" colspan="3">
+               <widget class="QFrame" name="frame_7">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_4">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QPushButton" name="btnAddTestICmd">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Microsoft YaHei UI</family>
+                     <pointsize>9</pointsize>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>点击 添加命令</string>
+                   </property>
+                   <property name="text">
+                    <string>添加</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnCopyTestICmd">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Microsoft YaHei UI</family>
+                     <pointsize>9</pointsize>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>点击 添加命令</string>
+                   </property>
+                   <property name="text">
+                    <string>复制</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnRemoveTestICmd">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Microsoft YaHei UI</family>
+                     <pointsize>9</pointsize>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>点击 添加命令</string>
+                   </property>
+                   <property name="text">
+                    <string>移除</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_3">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
@@ -521,7 +633,7 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item row="1" column="0" colspan="3">
+              <item row="2" column="0" colspan="3">
                <widget class="MyListWidget" name="lwTestResult">
                 <property name="toolTip">
                  <string>配置文件 [Test Item]</string>
@@ -576,70 +688,107 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="btnCopyTestIResult">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>30</height>
-                 </size>
+              <item row="0" column="0" rowspan="2" colspan="3">
+               <widget class="QFrame" name="frame_8">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
                 </property>
-                <property name="font">
-                 <font>
-                  <family>Microsoft YaHei UI</family>
-                  <pointsize>9</pointsize>
-                 </font>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
                 </property>
-                <property name="toolTip">
-                 <string>点击 添加命令</string>
-                </property>
-                <property name="text">
-                 <string>复制</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QPushButton" name="btnAddTestResult">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Microsoft YaHei UI</family>
-                  <pointsize>9</pointsize>
-                 </font>
-                </property>
-                <property name="toolTip">
-                 <string>点击 添加命令</string>
-                </property>
-                <property name="text">
-                 <string>添加</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="btnRemoveTestIResult">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Microsoft YaHei UI</family>
-                  <pointsize>9</pointsize>
-                 </font>
-                </property>
-                <property name="toolTip">
-                 <string>点击 添加命令</string>
-                </property>
-                <property name="text">
-                 <string>移除</string>
-                </property>
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="3">
+                  <widget class="QPushButton" name="btnRemoveTestIResult">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Microsoft YaHei UI</family>
+                     <pointsize>9</pointsize>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>点击 添加命令</string>
+                   </property>
+                   <property name="text">
+                    <string>移除</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QPushButton" name="btnAddTestResult">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Microsoft YaHei UI</family>
+                     <pointsize>9</pointsize>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>点击 添加命令</string>
+                   </property>
+                   <property name="text">
+                    <string>添加</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QPushButton" name="btnCopyTestIResult">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Microsoft YaHei UI</family>
+                     <pointsize>9</pointsize>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>点击 添加命令</string>
+                   </property>
+                   <property name="text">
+                    <string>复制</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="4">
+                  <spacer name="horizontalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
@@ -659,7 +808,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>826</width>
+     <width>850</width>
      <height>22</height>
     </rect>
    </property>
@@ -937,7 +1086,7 @@
   </widget>
   <action name="actOpenIni">
    <property name="text">
-    <string>打开ini</string>
+    <string>打开INI</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -951,7 +1100,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>保存ini</string>
+    <string>保存INI</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -1070,7 +1219,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>导出SSCOM格式</string>
+    <string>导出SSCOM格式(*.ini)</string>
    </property>
   </action>
   <action name="action">
@@ -1078,7 +1227,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>导出格西烽火格式</string>
+    <string>导出格西烽火格式(*.bsp)</string>
    </property>
   </action>
  </widget>

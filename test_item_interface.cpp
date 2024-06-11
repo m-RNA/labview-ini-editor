@@ -18,12 +18,13 @@ const QStringList STR_TEST_TYPE = {
     "AT", "AT1", "68", "串口查询真", "串口查询假", "单按钮弹框", "双按钮弹框",
 };
 
-
 TestItemInterface::TestItemInterface(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::TestItemInterface)
 {
     ui->setupUi(this);
+
+    ui->cbEncode->setVisible(false);
 }
 
 TestItemInterface::~TestItemInterface() { delete ui; }
@@ -35,6 +36,8 @@ void TestItemInterface::on_leTx_editingFinished()
     // 去除最后的空格、回车、换行
     QString tx = ui->leTx->text();
     tx = tx.trimmed();
+    //
+    setTxAndEndIndex(tx);
     ui->leTx->setText(tx);
 }
 
@@ -58,6 +61,7 @@ void TestItemInterface::setUi(int index, const TestCmd &item)
     ui->lbIndex->setText(QString::number(index));
     //    ui->leBrief->setText(item.brief);
     ui->cbComName->setCurrentText(item.comName);
+    ui->leBrief->setText(item.brief);
 
     setTxAndEndIndex(item.tx);
     ui->leRx->setText(item.rx);
@@ -116,6 +120,7 @@ TestCmd TestItemInterface::getTestCmd() const
     TestCmd cmd;
     cmd.index = ui->lbIndex->text().toInt();
     cmd.comName = ui->cbComName->currentText();
+    cmd.brief = ui->leBrief->text();
 
     cmd.tx = ui->leTx->text();
     if (ui->cbTxEnd->currentIndex() == CB_TX_END_HEX)

@@ -21,12 +21,12 @@ public:
     int index = 0;      // 命令序号
     QString brief = ""; // 命令简介
 
-    QString comName = ""; // 端口选择（底板串口、产品串口、主机串口...）
-    QString tx = "";      // 发送内容
-    QString rx = "";      // 接收内容
-    QString cmdType = "AT"; // 命令类型（AT、AT1、68、串口查询真、串口查询假、单按钮弹框、双按钮弹框...)
-    int cmdDelay = 0;   // 命令延时
-    int cmdTimeout = 5; // 命令超时
+    QString comName = "";   // 端口选择（底板串口、产品串口、主机串口...）
+    QString tx = "";        // 发送内容
+    QString rx = "";        // 接收内容
+    QString cmdType = "AT"; // 命令类型（AT、AT1、68、串口查询真or假、单or双按钮弹框...)
+    double cmdDelay = 0;    // 命令延时
+    double cmdTimeout = 5;  // 命令超时
 
     void print() const;
 };

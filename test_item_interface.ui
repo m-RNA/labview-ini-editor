@@ -6,15 +6,33 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>478</width>
-    <height>105</height>
+    <width>460</width>
+    <height>115</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" rowspan="2">
+    <widget class="QLabel" name="lbIndex">
+     <property name="font">
+      <font>
+       <family>阿里巴巴普惠体 M</family>
+       <pointsize>14</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>序号</string>
+     </property>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
     <widget class="QFrame" name="frame_3">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -36,106 +54,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="lbIndex">
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>序号</string>
-        </property>
-        <property name="text">
-         <string>1</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="cbComName">
-        <property name="toolTip">
-         <string>端口选择</string>
-        </property>
-        <property name="editable">
-         <bool>true</bool>
-        </property>
-        <property name="currentIndex">
-         <number>1</number>
-        </property>
-        <item>
-         <property name="text">
-          <string>底板串口</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>产品串口</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>主机串口</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="cbTestType">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>解析方式：AT、AT1、68、串口查询真、串口查询假、单按钮弹框、双按钮弹框</string>
-        </property>
-        <property name="editable">
-         <bool>true</bool>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <item>
-         <property name="text">
-          <string>AT</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>AT1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>68</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>串口查询真</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>串口查询假</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>单按钮弹框</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>双按钮弹框</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="leComment">
+       <widget class="QLineEdit" name="leBrief">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>1</horstretch>
@@ -162,7 +81,7 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="1" column="1">
     <widget class="QFrame" name="frame">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -183,6 +102,45 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="QComboBox" name="cbComName">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>端口选择</string>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>底板串口</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>产品串口</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>主机串口</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>下载串口</string>
+         </property>
+        </item>
+       </widget>
+      </item>
       <item>
        <widget class="QLineEdit" name="leTx">
         <property name="sizePolicy">
@@ -238,18 +196,18 @@
         </item>
         <item>
          <property name="text">
-          <string>\r\n</string>
+          <string>&lt;\r\n&gt;</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>HEX</string>
+          <string>&lt;HEX&gt;</string>
          </property>
         </item>
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="spbxDelay">
+       <widget class="QDoubleSpinBox" name="spbxDelay">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -265,21 +223,21 @@
         <property name="toolTip">
          <string>命令发送延时时间</string>
         </property>
-        <property name="suffix">
-         <string>s</string>
-        </property>
         <property name="prefix">
          <string>延时</string>
         </property>
-        <property name="maximum">
-         <number>99</number>
+        <property name="suffix">
+         <string>s</string>
+        </property>
+        <property name="decimals">
+         <number>2</number>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="2" column="0" colspan="2">
     <widget class="QFrame" name="frame_2">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -300,6 +258,66 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="QComboBox" name="cbTestType">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>93</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>解析方式：AT、AT1、68、串口查询真、串口查询假、单按钮弹框、双按钮弹框</string>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>AT</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>AT1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>68</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>串口查询真</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>串口查询假</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>单按钮弹框</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>双按钮弹框</string>
+         </property>
+        </item>
+       </widget>
+      </item>
       <item>
        <widget class="QLineEdit" name="leRx">
         <property name="sizePolicy">
@@ -352,7 +370,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="spbxTimeout">
+       <widget class="QDoubleSpinBox" name="spbxTimeout">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -362,28 +380,171 @@
         <property name="toolTip">
          <string>数据接收超时时间</string>
         </property>
-        <property name="suffix">
-         <string>s</string>
-        </property>
         <property name="prefix">
          <string>超时</string>
         </property>
-        <property name="maximum">
-         <number>99</number>
+        <property name="suffix">
+         <string>s</string>
         </property>
-        <property name="value">
-         <number>5</number>
+        <property name="decimals">
+         <number>2</number>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="3" column="0" colspan="2">
+    <widget class="QFrame" name="frame_4">
+     <property name="toolTip">
+      <string>可以拖拽</string>
      </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>110</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="Line" name="line">
+        <property name="minimumSize">
+         <size>
+          <width>8</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_3">
+        <property name="minimumSize">
+         <size>
+          <width>8</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>154</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="Line" name="line_2">
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="lineWidth">
+         <number>1</number>
+        </property>
+        <property name="midLineWidth">
+         <number>0</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>154</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="Line" name="line_4">
+        <property name="minimumSize">
+         <size>
+          <width>8</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_5">
+        <property name="minimumSize">
+         <size>
+          <width>8</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>111</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
