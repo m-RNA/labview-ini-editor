@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-11 23:43:19
+ * @LastEditTime: 2024-06-12 02:20:06
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -389,7 +389,7 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
         // int index = testResult.index;
 
         // 解析=双匹配&LADC[: ]1[,]&OK:双匹配&LADC[: ]1[,]&OK
-        QStringList anaList = splitStringSquareBrackets(analysisContentList.at(i).trimmed(), '&');
+        // QStringList anaList = splitStringSquareBrackets(analysisContentList.at(i).trimmed(), '&');
 
         // 截取第一个 & 前的内容， 放到 analysisWay
         testResult.analysisWay
@@ -397,6 +397,10 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
         // 截取第一个 & 后的内容， 放到 analysisContent
         testResult.analysisContent
             = analysisContentList.at(i).trimmed().mid(analysisContentList.at(i).trimmed().indexOf("&") + 1);
+
+        // 如果解析内容中包含 :  ，则需要用[]把":"括起来，即xxx:xxx -> xxx[:]xxx
+        if (testResult.analysisContent.contains(":"))
+            testResult.analysisContent.replace(":", "[:]"); // 替换冒号
     }
 
     // 功能配置=重发次数(45)
