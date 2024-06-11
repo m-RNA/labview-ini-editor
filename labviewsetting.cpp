@@ -402,8 +402,16 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
     // 功能配置=重发次数(45)
     if (function.startsWith("重发次数"))
     {
-        testItem.repeat
-            = function.mid(function.indexOf("(") + 1, function.indexOf(")") - function.indexOf("(") - 1).toInt();
+        if (function.contains("(") && function.contains(")"))
+        {
+            testItem.repeat
+                = function.mid(function.indexOf("(") + 1, function.indexOf(")") - function.indexOf("(") - 1).toInt();
+        }
+        else if (function.contains("（") && function.contains("）"))
+        {
+            testItem.repeat
+                = function.mid(function.indexOf("（") + 1, function.indexOf("）") - function.indexOf("（") - 1).toInt();
+        }
     }
 
     // testItem.print();
