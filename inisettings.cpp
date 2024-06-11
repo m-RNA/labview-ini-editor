@@ -355,7 +355,7 @@ bool IniSettings::saveFile(const QString &fileName)
         {
             value = m_mapGroupKey.value(group + SUBGROUP_SEPARATOR + key, ""); // 值
         }
-        out << key << "=" << value << "\n";
+        out << key << " = " << value << "\n";
     }
 FILE_END:
     // 新增组
