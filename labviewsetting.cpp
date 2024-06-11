@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-12 02:20:06
+ * @LastEditTime: 2024-06-12 02:46:05
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -43,19 +43,17 @@ LabViewSetting::LabViewSetting(QString fileNameProtocol, QString fileNameConfig)
     this->fileNameConfig = fileNameConfig;
 
     iniSettingsProtocol = new IniSettings(fileNameProtocol, QTextCodec::codecForName("GB2312"));
-    // iniSettingsConfig = new IniSettings(fileNameConfig, QTextCodec::codecForName("GB2312"));
+    iniSettingsConfig = new IniSettings(fileNameConfig, QTextCodec::codecForName("GB2312"));
 
     if (iniSettingsProtocol->isLoad() == false)
-    {
         logPrint("协议文件加载失败");
-    }
-    // if (iniSettingsConfig->isLoad() == false)
-    // {
-    //     logPrint("配置文件加载失败");
-    // }
+    else
+        analysisTestItem();
 
-    analysisTestItem();
-    // analysisConfigItem();
+    if (iniSettingsConfig->isLoad() == false)
+        logPrint("配置文件加载失败");
+    else
+        analysisConfigItem();
 }
 
 /**
