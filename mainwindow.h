@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-09 17:49:28
+ * @LastEditTime: 2024-06-12 01:45:18
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -91,6 +91,7 @@ private:
     void updateTestItemUi();     // 更新测试项界面
     void updateTestItemListUi(); // 更新测试项列表界面
 
+    void updateTestItemFromUi(TestItem *testItem);
     void updateTestItemListFromUi(); // 从界面更新测试项列表
 
     void loadTestCmdUi(const QVector<TestCmd> &cmdList);
@@ -99,6 +100,7 @@ private:
 
     void insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, int cmdIndex);
     void updateTestCmdListFromUi(QVector<TestCmd> &cmdList);
+    void updateTestResultListFromUi(QVector<TestResult> &resultList);
 
     void addTestCmdInterface(TestItemInterface *item);
     void insertTestCmdInterface(int index, TestItemInterface *item);

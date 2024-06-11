@@ -2,8 +2,8 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-11 17:06:32
- * @FilePath: \labview-ini-editor\mainwindow.cpp
+ * @LastEditTime: 2024-06-12 01:46:34
+ * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
  * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
@@ -213,12 +213,8 @@ void MainWindow::loadTestItemUi(QListWidgetItem *item)
 {
     if (leTestItemName_Old != "")
     {
-        // 获取当前点击的测试项的索引
-        int testItemIndex = getTestItemIndex(leTestItemName_Old);
-        if (testItemIndex == -1)
-            qDebug() << "未找到上一个测试项";
-        else
-            updateTestCmdListFromUi(this->testItemList[testItemIndex].cmdList);
+        // 将界面testItem保存到 testItemList
+        updateTestItemFromUi(getTestItemCurrent());
     }
 
     leTestItemName_Old = item->text().trimmed();
@@ -607,6 +603,16 @@ void MainWindow::updateTestCmdListFromUi(QVector<TestCmd> &cmdList)
     }
 }
 
+void MainWindow::updateTestResultListFromUi(QVector<TestResult> &resultList)
+{
+    resultList.clear();
+    for (int i = 0; i < ui->lwTestResult->count(); i++)
+    {
+        TestResultInterface *item = (TestResultInterface *) ui->lwTestResult->itemWidget(ui->lwTestResult->item(i));
+        resultList.append(item->getTestResult());
+    }
+}
+
 void MainWindow::on_actSave_triggered()
 {
     if (labviewSetting == nullptr)
@@ -615,12 +621,8 @@ void MainWindow::on_actSave_triggered()
         return;
     }
 
-    // 获取当前的测试项的索引
-    int testItemIndex = getTestItemIndex(leTestItemName_Old);
-    if (testItemIndex == -1)
-        qDebug() << "未找到测试项";
-    else
-        updateTestCmdListFromUi(this->testItemList[testItemIndex].cmdList);
+    // 将界面testItem保存到 testItemList
+    updateTestItemFromUi(getTestItemCurrent());
 
     // 将界面testItem保存到 testItemList
     // updateTestItemListFromUi();
@@ -681,6 +683,22 @@ void MainWindow::updateTestItemListUi()
         }
         QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemPool);
         item->setText(this->testItemList.at(i).name);
+    }
+}
+
+void MainWindow::updateTestItemFromUi(TestItem *testItem)
+{
+    if (testItem != nullptr)
+    {
+        testItem->name = ui->leTestItemName->text().trimmed();
+        testItem->byteOrder = ui->spbxByteOrder->currentText();
+        testItem->dataByteLen = ui->spbxDataSize->value();
+        testItem->decimal = ui->spbxDecPlace->value();
+        testItem->repeat = ui->spbxRepeatTimes->value();
+        testItem->sign = ui->cbSign->currentText();
+
+        updateTestCmdListFromUi(testItem->cmdList);
+        updateTestResultListFromUi(testItem->resultList);
     }
 }
 
@@ -753,13 +771,7 @@ void MainWindow::onTestCmdReordered(void)
     TestItem *testItem = getTestItemCurrent();
     if (testItem == nullptr)
         return;
-    QVector<TestCmd> cmdList;
-    for (int i = 0; i < ui->lwTestCmd->count(); i++)
-    {
-        TestItemInterface *item = (TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(i));
-        cmdList.append(item->getTestCmd());
-    }
-    testItem->cmdList = cmdList;
+    updateTestCmdListFromUi(testItem->cmdList);
 }
 
 void MainWindow::onTestResultReordered(void)
@@ -767,11 +779,5 @@ void MainWindow::onTestResultReordered(void)
     TestItem *testItem = getTestItemCurrent();
     if (testItem == nullptr)
         return;
-    QVector<TestResult> resultList;
-    for (int i = 0; i < ui->lwTestResult->count(); i++)
-    {
-        TestResultInterface *item = (TestResultInterface *) ui->lwTestResult->itemWidget(ui->lwTestResult->item(i));
-        resultList.append(item->getTestResult());
-    }
-    testItem->resultList = resultList;
+    updateTestResultListFromUi(testItem->resultList);
 }
