@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-12 01:46:34
+ * @LastEditTime: 2024-06-12 02:40:44
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
     // ui->dwTestPool->setVisible(false);
     // ui->actSownExtTestItem->setChecked(false);
     ui->lwTestCmd->setGridSize(QSize(0, TEST_CMD_HEIGHT));
+
+    isNeedConfigFile = ui->actNeedConfigFile->isChecked();
 
     connect(ui->lwTestCmd, &MyListWidget::itemsReordered, this, &MainWindow::onTestCmdReordered);
     connect(ui->lwTestResult, &MyListWidget::itemsReordered, this, &MainWindow::onTestResultReordered);
@@ -142,11 +144,15 @@ void MainWindow::on_actOpenIni_triggered()
         qDebug() << "strTestObj: " << strTestObj;
         // 设置标题
         this->setWindowTitle(strTestObj);
-        // QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
-        // strPath = strPath.mid(0, strPath.lastIndexOf("/"));
-        // strPath += "/配置文件/";
-        // qDebug() << ": " << strPath;
-        // fileNameConfig = strPath + FindFile(strPath, strTestObj, "配置文件");
+
+        if (isNeedConfigFile == true)
+        {
+            QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
+            strPath = strPath.mid(0, strPath.lastIndexOf("/"));
+            strPath += "/配置文件/";
+            qDebug() << ": " << strPath;
+            fileNameConfig = strPath + FindFile(strPath, strTestObj, "配置文件");
+        }
     }
     // else if (pathName.contains("配置文件"))
     // {
@@ -169,25 +175,28 @@ void MainWindow::on_actOpenIni_triggered()
     }
     qDebug() << "pathName: " << pathName;
     qDebug() << "fileNameProtocol: " << fileNameProtocol;
-    // qDebug() << "fileNameConfig: " << fileNameConfig;
+    qDebug() << "fileNameConfig: " << fileNameConfig;
 
     if (fileNameProtocol == "")
     {
         qDebug() << "未找到协议文件";
         return;
     }
-    // if (fileNameConfig == "")
-    // {
-    //     qDebug() << "未找到配置文件";
-    //     return;
-    // }
+    if (fileNameConfig == "" && isNeedConfigFile == true)
+    {
+        qDebug() << "未找到配置文件";
+        return;
+    }
     labviewSetting = new LabViewSetting(fileNameProtocol, fileNameConfig);
+
     this->testItemList.clear();                             // 清空
     this->testItemList = labviewSetting->getTestItemList(); // 解析 协议文件
 
-    // this->configItemList.clear(); // 清空
-    // this->configItemList = analysis_config_ini(fileNameConfig); // 解析 配置文件
-    // this->configItemList = labviewSetting->getConfigItemList(); // 解析 配置文件
+    this->configItemList.clear(); // 清空
+    if (isNeedConfigFile == true)
+    {
+        this->configItemList = labviewSetting->getConfigItemList(); // 解析 配置文件
+    }
 
     ui->actSave->setEnabled(true); // 保存按钮可用
     updateTestItemListUi();        // 更新测试项列表
@@ -247,16 +256,18 @@ void MainWindow::loadTestItemUi(QListWidgetItem *item)
     testCmdInterfaceList.clear();
 
     // 获取当前点击的配置项的索引
-    // int configIndex = -1;
-    // for (int i = 0; i < this->configItemList.size(); i++)
-    // {
-    //     if (leTestItemName_Old == this->configItemList.at(i).name)
-    //     {
-    //         configIndex = i;
-    //         break;
-    //     }
-    // }
-
+    int configIndex = -1;
+    if (isNeedConfigFile == true)
+    {
+        for (int i = 0; i < this->configItemList.size(); i++)
+        {
+            if (leTestItemName_Old == this->configItemList.at(i).name)
+            {
+                configIndex = i;
+                break;
+            }
+        }
+    }
     // 清空结果项
     testResultInterfaceList.clear();
     ui->lwTestResult->clear();
@@ -268,18 +279,20 @@ void MainWindow::loadTestItemUi(QListWidgetItem *item)
         TestResult result = this->testItemList.at(testItemIndex).resultList.at(i);
         item->setUi_Result(i, result);
 
-        // if (this->configItemList.at(configIndex).contentList.size() <= i)
-        // {
-        //     qDebug() << "Warning: " << this->testItemList.at(testItemIndex).name << "可能没有配置显示结果";
-        //     break;
-        // }
+        if (isNeedConfigFile == true)
+        {
+            if (this->configItemList.at(configIndex).contentList.size() <= i)
+            {
+                qDebug() << "Warning: " << this->testItemList.at(testItemIndex).name << "可能没有配置显示结果";
+                break;
+            }
 
-        // if (configIndex != -1)
-        // {
-        //     ConfigContent config = this->configItemList.at(configIndex).contentList.at(i);
-        //     item->setUi_Config(config);
-        // }
-
+            if (configIndex != -1)
+            {
+                ConfigContent config = this->configItemList.at(configIndex).contentList.at(i);
+                item->setUi_Config(config);
+            }
+        }
         testResultInterfaceList.append(item);
         // ui->vloResultItem->insertWidget(ui->vloResultItem->count() - 2, item);
 
@@ -661,18 +674,21 @@ void MainWindow::updateTestItemListUi()
 {
     ui->lwlTestItemList->clear();
     QStringList strConfigList;
-    // for (int i = 0; i < this->configItemList.size(); i++) // 往 ListWidget 添加测试项
-    // {
-    //     QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemList);
-    //     QCheckBox *checkBox = new QCheckBox(ui->lwlTestItemList);
-    //     checkBox->setChecked(this->configItemList.at(i).enable);
-    //     // checkBox->setText(this->configItemList.at(i).name);
-    //     ui->lwlTestItemList->setItemWidget(item, checkBox);
+    if (isNeedConfigFile == true)
+    {
+        for (int i = 0; i < this->configItemList.size(); i++) // 往 ListWidget 添加测试项
+        {
+            QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemList);
+            QCheckBox *checkBox = new QCheckBox(ui->lwlTestItemList);
+            checkBox->setChecked(this->configItemList.at(i).enable);
+            // checkBox->setText(this->configItemList.at(i).name);
+            ui->lwlTestItemList->setItemWidget(item, checkBox);
 
-    //     QString str = this->configItemList.at(i).name;
-    //     strConfigList << str;
-    //     item->setText("   " + str);
-    // }
+            QString str = this->configItemList.at(i).name;
+            strConfigList << str;
+            item->setText("   " + str);
+        }
+    }
 
     ui->lwlTestItemPool->clear();
     for (int i = 0; i < this->testItemList.size(); i++) // 往 ListWidget 添加测试项
@@ -781,3 +797,5 @@ void MainWindow::onTestResultReordered(void)
         return;
     updateTestResultListFromUi(testItem->resultList);
 }
+
+void MainWindow::on_actNeedConfigFile_toggled(bool arg1) { isNeedConfigFile = arg1; }

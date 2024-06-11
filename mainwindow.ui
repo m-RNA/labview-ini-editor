@@ -1012,7 +1012,7 @@
     <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
-    <string>额外项</string>
+    <string>协议项</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -1240,7 +1240,7 @@
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>同时导入配置文件</string>

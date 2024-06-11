@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-12 01:45:18
+ * @LastEditTime: 2024-06-12 02:30:16
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -71,15 +71,18 @@ private slots:
 
     void onTestResultReordered(void);
 
+    void on_actNeedConfigFile_toggled(bool arg1);
+
 private:
     Ui::MainWindow *ui;
     QString fileNameProtocol = ""; // 协议文件名
     QString fileNameConfig = "";   // 配置文件名
+    bool isNeedConfigFile = false; // 是否需要导入配置文件
 
     QString leTestItemName_Old = ""; // 旧的测试项名称
 
-    QList<TestItem> testItemList = {}; // 测试项列表
-    // QList<ConfigItem> configItemList = {};                // 配置项列表
+    QList<TestItem> testItemList = {};                    // 测试项列表
+    QList<ConfigItem> configItemList = {};                // 配置项列表
     QList<TestItemInterface *> testCmdInterfaceList = {}; // 测试项命令界面列表
     QList<QWidget *> testResultInterfaceList = {};        // 测试项结果界面列表
 
