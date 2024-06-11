@@ -29,7 +29,10 @@ TestItemInterface::TestItemInterface(QWidget *parent)
 
 TestItemInterface::~TestItemInterface() { delete ui; }
 
-void TestItemInterface::on_leTx_textChanged(const QString &arg1) { setTxAndEndIndex(arg1); }
+void TestItemInterface::on_leTx_textChanged(const QString &arg1)
+{
+    // setTxAndEndIndex(arg1);
+}
 
 void TestItemInterface::on_leTx_editingFinished()
 {
@@ -97,12 +100,12 @@ void TestItemInterface::setUi(int index, const TestCmd &item)
 
 void TestItemInterface::setTxAndEndIndex(QString strTx)
 {
-    if (strTx.toUpper().endsWith("STR_TX_END.at(CB_TX_END_HEX)"))
+    if (strTx.toUpper().endsWith(STR_TX_END.at(CB_TX_END_HEX)))
     {
-        strTx = strTx.toUpper().remove("STR_TX_END.at(CB_TX_END_HEX)");
+        strTx = strTx.toUpper().remove(STR_TX_END.at(CB_TX_END_HEX));
         ui->cbTxEnd->setCurrentIndex(CB_TX_END_HEX); // <HEX>
     }
-    else if (strTx.toLower().endsWith("STR_TX_END.at(CB_TX_END_R_N)"))
+    else if (strTx.toLower().endsWith(STR_TX_END.at(CB_TX_END_R_N)))
     {
         strTx = strTx.mid(0, strTx.length() - 6);
         ui->cbTxEnd->setCurrentIndex(CB_TX_END_R_N); // <\r\n>
