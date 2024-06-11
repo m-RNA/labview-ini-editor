@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-31 00:00:44
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-10 18:07:29
+ * @LastEditTime: 2024-06-11 21:06:46
  * @FilePath: \LabViewIniEditor2024\test_result_interface.cpp
  * @Description:
  *
@@ -20,13 +20,21 @@ TestResultInterface::TestResultInterface(QWidget *parent)
     , ui(new Ui::TestResultInterface)
 {
     ui->setupUi(this);
+
+    // 结果项相关，移至MainWindow中，不再显示
     ui->spbxByteOrder->setVisible(false);
     ui->spbxDecPlace->setVisible(false);
     ui->spbxDataSize->setVisible(false);
     ui->cbSign->setVisible(false);
-    ui->label_3->setVisible(false);
-    ui->label_4->setVisible(false);
-    ui->label_5->setVisible(false);
+    ui->lbSign->setVisible(false);
+    ui->lbDataSize->setVisible(false);
+    ui->lbDecPlace->setVisible(false);
+    ui->lbUnit->setVisible(false);
+
+    // 仅打开配置文件时显示
+    ui->cbUnit->setVisible(false);
+    ui->cbDataLimit->setVisible(false);
+    ui->leName->setVisible(false);
 }
 
 TestResultInterface::~TestResultInterface() { delete ui; }
