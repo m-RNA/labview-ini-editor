@@ -2,8 +2,8 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-11 00:59:38
- * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
+ * @LastEditTime: 2024-06-11 17:06:32
+ * @FilePath: \labview-ini-editor\mainwindow.cpp
  * @Description:
  *
  * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
@@ -24,7 +24,7 @@
 #pragma execution_character_set("utf-8")
 #endif
 
-#define TEST_CMD_HEIGHT    83
+#define TEST_CMD_HEIGHT    105
 #define TEST_RESULT_HEIGHT 52
 
 MainWindow::MainWindow(QWidget *parent)
