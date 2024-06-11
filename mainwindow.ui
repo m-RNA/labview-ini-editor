@@ -39,6 +39,9 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QFrame" name="frame">
          <property name="sizePolicy">
@@ -837,9 +840,11 @@
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
-     <string>窗口</string>
+     <string>设置</string>
     </property>
     <addaction name="actSownExtTestItem"/>
+    <addaction name="separator"/>
+    <addaction name="actNeedConfigFile"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -1228,6 +1233,17 @@
    </property>
    <property name="text">
     <string>导出格西烽火格式(*.bsp)</string>
+   </property>
+  </action>
+  <action name="actNeedConfigFile">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>同时导入配置文件</string>
    </property>
   </action>
  </widget>
