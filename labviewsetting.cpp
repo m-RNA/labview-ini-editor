@@ -493,9 +493,11 @@ QStringList splitStringSquareBrackets(const QString &input, char separator)
     if (input.contains(separator) == false)
         return QStringList(input);
 
-    for (const QChar &character : input)
+    // 当[]的内容是 separator 时，需要将[]移去
+    QString temp = "";
+    for (int i = 0; i < input.size(); i++)
     {
-        if (character == separator && insideSquareBrackets == false) // 正常每次遇到 : 就是一个命令的结束
+        if (input.at(i) == separator && insideSquareBrackets == false) // 正常每次遇到 : 就是一个命令的结束
         {
             if (cmd.isEmpty())
                 continue;
@@ -503,17 +505,33 @@ QStringList splitStringSquareBrackets(const QString &input, char separator)
             commandList.append(cmd); // 将当前命令添加到 commandList 中
             cmd.clear();             // 清空当前命令
         }
-        else if (character == '[') // 取方括号中的内容，不包括 [ 和 ]
+        else if (input.at(i) == '[') // 取方括号中的内容，不包括 [ 和 ]
         {
             insideSquareBrackets = true;
         }
-        else if (character == ']' && insideSquareBrackets) // 取方括号中的内容，不包括 [ 和 ]
+        else if (input.at(i) == ']' && insideSquareBrackets) // 取方括号中的内容，不包括 [ 和 ]
         {
+            if (temp.contains(separator))
+            {
+                cmd.append(temp);
+            }
+            else
+            {
+                cmd.append("[" + temp + "]");
+            }
+            temp.clear();
             insideSquareBrackets = false;
         }
         else
         {
-            cmd.append(character); // 将字符添加到当前命令中
+            if (insideSquareBrackets == false)
+            {
+                cmd.append(input.at(i));
+            }
+            else
+            {
+                temp.append(input.at(i));
+            }
         }
     }
 
