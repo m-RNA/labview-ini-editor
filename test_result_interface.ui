@@ -6,27 +6,30 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>495</width>
-    <height>56</height>
+    <width>552</width>
+    <height>68</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" rowspan="2">
+    <widget class="QLabel" name="lbIndex">
+     <property name="font">
+      <font>
+       <family>黑体</family>
+       <pointsize>16</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>1</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
     <widget class="QFrame" name="frame_2">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -47,19 +50,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item>
-       <widget class="QLabel" name="lbIndex">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>1</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
@@ -99,6 +89,184 @@
         <item>
          <property name="text">
           <string>&lt;_空白&gt;</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cbAnalysis">
+        <property name="toolTip">
+         <string>截取、单匹配、双匹配</string>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>不截取</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>截取</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>单匹配</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>双匹配</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="leAnalysis">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;冒号&lt;span style=&quot; font-weight:600;&quot;&gt;: &lt;/span&gt;与号&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;amp; &lt;/span&gt;竖线&lt;span style=&quot; font-weight:600;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;&lt;p&gt;需用方括号&lt;span style=&quot; font-weight:600;&quot;&gt;[ ]&lt;/span&gt;括起来&lt;/p&gt;&lt;p&gt;如&lt;span style=&quot; font-weight:600;&quot;&gt; [:]  [&amp;amp;]  [|]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="placeholderText">
+         <string>截取区间</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="lbDataSize">
+        <property name="toolTip">
+         <string>数据占用字节的长度</string>
+        </property>
+        <property name="text">
+         <string>字节数:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spbxDataSize">
+        <property name="toolTip">
+         <string>数据占用字节的长度</string>
+        </property>
+        <property name="suffix">
+         <string/>
+        </property>
+        <property name="prefix">
+         <string/>
+        </property>
+        <property name="maximum">
+         <number>99</number>
+        </property>
+        <property name="value">
+         <number>2</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbDecPlace">
+        <property name="toolTip">
+         <string>小数点位置</string>
+        </property>
+        <property name="text">
+         <string>小数位:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spbxDecPlace">
+        <property name="toolTip">
+         <string>小数点位置</string>
+        </property>
+        <property name="suffix">
+         <string/>
+        </property>
+        <property name="prefix">
+         <string/>
+        </property>
+        <property name="maximum">
+         <number>99</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="spbxByteOrder">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;字节顺序：&lt;/p&gt;&lt;p&gt;LH 低位在前，高位在后&lt;/p&gt;&lt;p&gt;HL 高位在前，低位在后&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>LH</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>HL</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lbSign">
+        <property name="text">
+         <string>符号:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cbSign">
+        <property name="toolTip">
+         <string>符号</string>
+        </property>
+        <property name="editable">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>0</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>1</string>
          </property>
         </item>
        </widget>
@@ -230,184 +398,6 @@
           <string>MHz</string>
          </property>
         </item>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QFrame" name="frame">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="lbDataSize">
-        <property name="toolTip">
-         <string>数据占用字节的长度</string>
-        </property>
-        <property name="text">
-         <string>字节数:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spbxDataSize">
-        <property name="toolTip">
-         <string>数据占用字节的长度</string>
-        </property>
-        <property name="suffix">
-         <string/>
-        </property>
-        <property name="prefix">
-         <string/>
-        </property>
-        <property name="maximum">
-         <number>99</number>
-        </property>
-        <property name="value">
-         <number>2</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="lbDecPlace">
-        <property name="toolTip">
-         <string>小数点位置</string>
-        </property>
-        <property name="text">
-         <string>小数位:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spbxDecPlace">
-        <property name="toolTip">
-         <string>小数点位置</string>
-        </property>
-        <property name="suffix">
-         <string/>
-        </property>
-        <property name="prefix">
-         <string/>
-        </property>
-        <property name="maximum">
-         <number>99</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="spbxByteOrder">
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;字节顺序：&lt;/p&gt;&lt;p&gt;LH 低位在前，高位在后&lt;/p&gt;&lt;p&gt;HL 高位在前，低位在后&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <item>
-         <property name="text">
-          <string>LH</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>HL</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="lbSign">
-        <property name="text">
-         <string>符号:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="cbSign">
-        <property name="toolTip">
-         <string>符号</string>
-        </property>
-        <property name="editable">
-         <bool>false</bool>
-        </property>
-        <item>
-         <property name="text">
-          <string>0</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>1</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="cbAnalysis">
-        <property name="toolTip">
-         <string>截取、单匹配、双匹配</string>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <item>
-         <property name="text">
-          <string>不截取</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>截取</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>单匹配</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>双匹配</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="leAnalysis">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;冒号&lt;span style=&quot; font-weight:600;&quot;&gt;: &lt;/span&gt;与号&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;amp; &lt;/span&gt;竖线&lt;span style=&quot; font-weight:600;&quot;&gt;|&lt;/span&gt;&lt;/p&gt;&lt;p&gt;需用方括号&lt;span style=&quot; font-weight:600;&quot;&gt;[ ]&lt;/span&gt;括起来&lt;/p&gt;&lt;p&gt;如&lt;span style=&quot; font-weight:600;&quot;&gt; [:]  [&amp;amp;]  [|]&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="placeholderText">
-         <string>截取区间</string>
-        </property>
        </widget>
       </item>
      </layout>
