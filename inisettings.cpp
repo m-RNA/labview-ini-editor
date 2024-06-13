@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
+#include <QDateTime>
 
 #define SUBGROUP_SEPARATOR "/"
 #if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
@@ -275,13 +276,29 @@ bool IniSettings::saveFile(const QString &fileName)
     {
         return false;
     }
-    // 创建新文件
-    QFile fileSave(fileName + ".ini");
-    if (!fileSave.open(QIODevice::WriteOnly | QIODevice::Text))
+
+    // 创建新文件，来备份原文件，时间
+    QFile fileBackup(fileName + QDateTime::currentDateTime().toString(".yyyyMMddhhmmss") + ".backup");
+    if (!fileBackup.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         qDebug() << "打开文件失败";
         return false;
     }
+
+    // 复制原文件内容到新文件
+    QTextStream in(&file);
+    in.setCodec(m_codec); // 设置编码方式
+
+    QTextStream out(&fileBackup);
+    out.setCodec(m_codec);
+    while (!in.atEnd())
+    {
+        QString line = in.readLine();
+        out << line << "\n";
+    }
+    fileBackup.flush();
+    fileBackup.close();
+    file.close(); // 关闭文件
 
     // 在原文件修改，不是重新写入，同时保留原文件中的注释
     QString line;                 // 读取的每一行数据
@@ -291,10 +308,18 @@ bool IniSettings::saveFile(const QString &fileName)
     QString value;                // 等号后面的值
     int index;                    // 等号索引
 
-    QTextStream in(&file);      // 新建文本流对象
-    in.setCodec(m_codec);       // 设置编码方式
-    QTextStream out(&fileSave); // 新建文本流对象
-    out.setCodec(m_codec);      // 设置编码方式
+    // 写入新文件
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return false;
+    }
+    if (!fileBackup.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return false;
+    }
+
+    in.setDevice(&fileBackup); // 设置设备
+    out.setDevice(&file);      // 设置设备
 
     while (!in.atEnd()) // 按行读取文件内容
     {
@@ -374,8 +399,8 @@ FILE_END:
     //     }
     // }
 
-    fileSave.flush(); // 刷新文件
-    fileSave.close(); // 关闭文件
-    file.close();     // 关闭文件
+    file.flush();       // 刷新文件
+    file.close();       // 关闭文件
+    fileBackup.close(); // 关闭文件
     return true;
 }
