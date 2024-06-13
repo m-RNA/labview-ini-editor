@@ -1,8 +1,8 @@
 ﻿#include "inisettings.h"
+#include <QDateTime>
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
-#include <QDateTime>
 
 #define SUBGROUP_SEPARATOR "/"
 #if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
@@ -343,8 +343,9 @@ bool IniSettings::saveFile(const QString &fileName)
             out << line << "\n";
             continue;
         }
-        // 跳过特殊选项 [测试项名称] [MES链接]
-        if (line.startsWith("[测试项名称]") || line.startsWith("[MES链接]"))
+        // 跳过特殊选项 [测试项名称] [MES链接] [测试开始] [测试结束]
+        if (line.startsWith("[测试项名称]") || line.startsWith("[MES链接]") || line.startsWith("[测试开始]")
+            || line.startsWith("[测试结束]"))
         {
             do
             {
@@ -353,7 +354,9 @@ bool IniSettings::saveFile(const QString &fileName)
                     line = in.readLine().trimmed(); // 读取一行并去除两端的空白
                 else
                     goto FILE_END;
-            } while ((!(line.startsWith("["))));
+            } while ((!(line.startsWith("[")))
+                     || ((line.startsWith("[测试项名称]")) || (line.startsWith("[MES链接]"))
+                         || (line.startsWith("[测试开始]")) || (line.startsWith("[测试结束]"))));
         }
 
         // 组处理
