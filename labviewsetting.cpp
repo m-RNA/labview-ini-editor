@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-15 18:29:40
+ * @LastEditTime: 2024-06-16 07:18:48
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -26,9 +26,12 @@ void logPrint(const QString &str) { qDebug() << str; }
  */
 void fillLength(QStringList &list, int length)
 {
-    if (list.size() < length)
+    int sizeOld = list.size();
+    QString last = "";
+    if (sizeOld < length)
     {
-        QString last = list.at(list.size() - 1);
+        if (sizeOld > 0)
+            last = list.at(list.size() - 1);
         for (int i = list.size(); i < length; i++)
         {
             list.append(last);
