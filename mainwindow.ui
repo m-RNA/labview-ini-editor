@@ -1091,7 +1091,7 @@
   </widget>
   <action name="actOpenIni">
    <property name="text">
-    <string>打开INI</string>
+    <string>打开协议INI</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>

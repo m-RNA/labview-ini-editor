@@ -151,23 +151,23 @@ void MainWindow::on_actOpenIni_triggered()
             this, "提示", "文件名不包含“协议文件”关键字，是否强制加载？", QMessageBox::Yes | QMessageBox::No);
         if (result == QMessageBox::No)
             return;
+    }
 
-        qDebug() << "打开协议文件";
-        fileNameProtocol = pathName;
-        // 获取协议文件名，移除版本号
-        QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("协议文件"));
-        qDebug() << "strTestObj: " << strTestObj;
-        // 设置标题
-        this->setWindowTitle(strTestObj);
+    qDebug() << "打开协议文件";
+    fileNameProtocol = pathName;
+    // 获取协议文件名，移除尾部
+    QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("协议文件"));
+    qDebug() << "strTestObj: " << strTestObj;
+    // 设置标题
+    this->setWindowTitle(strTestObj);
 
-        if (isNeedConfigFile == true)
-        {
-            QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
-            strPath = strPath.mid(0, strPath.lastIndexOf("/"));
-            strPath += "/配置文件/";
-            qDebug() << ": " << strPath;
-            fileNameConfig = strPath + FindFile(strPath, strTestObj, "配置文件");
-        }
+    if (isNeedConfigFile == true)
+    {
+        QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
+        strPath = strPath.mid(0, strPath.lastIndexOf("/"));
+        strPath += "/配置文件/";
+        qDebug() << ": " << strPath;
+        fileNameConfig = strPath + FindFile(strPath, strTestObj, "配置文件");
     }
 
     qDebug() << "pathName: " << pathName;
@@ -609,6 +609,7 @@ void MainWindow::insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, in
     for (const TestCmd &cmd : cmdList)
     {
         cmd.print();
+        qDebug();
     }
 }
 
