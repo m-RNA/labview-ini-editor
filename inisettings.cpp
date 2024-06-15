@@ -1,6 +1,7 @@
 ﻿#include "inisettings.h"
 #include <QDateTime>
 #include <QDebug>
+#include <QDir>
 #include <QFile>
 #include <QTextStream>
 
@@ -278,7 +279,14 @@ bool IniSettings::saveFile(const QString &fileName)
     }
 
     // 创建新文件，来备份原文件，时间
-    QFile fileBackup(fileName + QDateTime::currentDateTime().toString(".yyyyMMddhhmmss") + ".backup");
+    QString backupPath = fileName.mid(0, fileName.lastIndexOf("/")) + "/Backup/";
+    QDir dir;
+    if (!dir.exists(backupPath))
+    {
+        dir.mkpath(backupPath);
+    }
+    backupPath = backupPath + fileName.right(fileName.length() - fileName.lastIndexOf("/") - 1);
+    QFile fileBackup(backupPath + QDateTime::currentDateTime().toString(".yyyyMMddhhmmss") + ".ini");
     if (!fileBackup.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         qDebug() << "打开文件失败";
