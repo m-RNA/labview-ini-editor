@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-12 02:46:05
+ * @LastEditTime: 2024-06-15 18:29:40
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -19,7 +19,11 @@
  */
 void logPrint(const QString &str) { qDebug() << str; }
 
-// 补齐长度函数
+/**
+ * @brief 补齐长度函数。
+ * @param list 字符串列表。
+ * @param length 长度。
+ */
 void fillLength(QStringList &list, int length)
 {
     if (list.size() < length)
@@ -31,6 +35,18 @@ void fillLength(QStringList &list, int length)
         }
     }
 }
+
+/**
+ * @brief 协议文件是否加载。
+ * @return 加载成功返回 true，否则返回 false。
+ */
+bool LabViewSetting::isLoadProtocol(void) { return iniSettingsProtocol->isLoad(); }
+
+/**
+ * @brief 配置文件是否加载。
+ * @return 加载成功返回 true，否则返回 false。
+ */
+bool LabViewSetting::isLoadConfig(void) { return iniSettingsConfig->isLoad(); }
 
 /**
  * @brief 使用指定的文件名构造一个 LabViewSetting 对象。
@@ -45,12 +61,12 @@ LabViewSetting::LabViewSetting(QString fileNameProtocol, QString fileNameConfig)
     iniSettingsProtocol = new IniSettings(fileNameProtocol, QTextCodec::codecForName("GB2312"));
     iniSettingsConfig = new IniSettings(fileNameConfig, QTextCodec::codecForName("GB2312"));
 
-    if (iniSettingsProtocol->isLoad() == false)
+    if (isLoadProtocol() == false)
         logPrint("协议文件加载失败");
     else
         analysisTestItem();
 
-    if (iniSettingsConfig->isLoad() == false)
+    if (isLoadConfig() == false)
         logPrint("配置文件加载失败");
     else
         analysisConfigItem();

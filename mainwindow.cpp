@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-12 02:40:44
+ * @LastEditTime: 2024-06-15 19:07:43
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -101,7 +101,11 @@ QString FindFile(QString path, QString obj, QString target)
 void MainWindow::on_actOpenIni_triggered()
 {
     QString pathName;
-    QString pathName_Old = fileNameConfig.mid(0, fileNameConfig.lastIndexOf("/"));
+    QString pathName_Old = "";
+    if (fileNameProtocol != "")
+        pathName_Old = fileNameProtocol.mid(0, fileNameProtocol.lastIndexOf("/"));
+    else if (fileNameConfig != "")
+        pathName_Old = fileNameConfig.mid(0, fileNameConfig.lastIndexOf("/"));
     if (pathName_Old == "")
     {
         //"."表示在当前工作路径下寻找
@@ -124,21 +128,32 @@ void MainWindow::on_actOpenIni_triggered()
         qDebug() << "文件不存在";
         return;
     }
-    // if (pathName == fileNameProtocol || pathName == fileNameConfig)
-    // {
-    //     qDebug() << "文件未修改";
-    //     return;
-    // }
+    if (pathName == fileNameProtocol || pathName == fileNameConfig)
+    {
+        qDebug() << "该文件已打开";
+        // 弹窗提示：已经打开该文件，是否重新打开，
+        QMessageBox::StandardButton result
+            = QMessageBox::question(this, "提示", "该文件已打开，是否重新加载？", QMessageBox::Yes | QMessageBox::No);
+        if (result == QMessageBox::No)
+            return;
+    }
     // 协议文件 和 配置文件 分别放在同目录下的 协议文件 和 配置文件 文件夹下，如下：
     // C:NR90HCNA00NNA_IO测试程序_Rev01\协议文件\L-CM5TR01-90HCW_IO测试程序协议文件_Rev01.ini
     // C:NR90HCNA00NNA_IO测试程序_Rev01\配置文件\L-CM5TR01-90HCW_IO测试程序配置文件_Rev01.ini
     // 其中 L-CM5TR01-90HCW 表示测试对象， IO测试程序 表示测试程序， Rev01 表示版本号（版本号不同时，使用最新版本）
     // 因此要匹配“协议”或“配置”前的字符串，以判断是否为同一测试对象
-    if (pathName.contains("协议文件"))
+    QStringList strQirList = pathName.split("/");
+    QString fileName = strQirList.last();
+    if (fileName.contains("协议文件") == false)
     {
+        qDebug() << "文件名不包含“协议文件”关键字";
+        QMessageBox::StandardButton result = QMessageBox::question(
+            this, "提示", "文件名不包含“协议文件”关键字，是否强制加载？", QMessageBox::Yes | QMessageBox::No);
+        if (result == QMessageBox::No)
+            return;
+
         qDebug() << "打开协议文件";
         fileNameProtocol = pathName;
-        QStringList strQirList = pathName.split("/");
         // 获取协议文件名，移除版本号
         QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("协议文件"));
         qDebug() << "strTestObj: " << strTestObj;
@@ -154,40 +169,31 @@ void MainWindow::on_actOpenIni_triggered()
             fileNameConfig = strPath + FindFile(strPath, strTestObj, "配置文件");
         }
     }
-    // else if (pathName.contains("配置文件"))
-    // {
-    //     qDebug() << "打开配置文件";
-    //     fileNameConfig = pathName;
-    //     QStringList strQirList = pathName.split("/");
-    //     // 获取配置文件 前缀，移除版本号
-    //     QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("配置文件"));
-    //     qDebug() << "strTestObj: " << strTestObj;
-    //     QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
-    //     strPath = strPath.mid(0, strPath.lastIndexOf("/"));
-    //     strPath += "/协议文件/";
-    //     qDebug() << ": " << strPath;
-    //     fileNameProtocol = strPath + FindFile(strPath, strTestObj, "协议文件");
-    // }
-    else
-    {
-        qDebug() << "文件名需要包含“协议”或“配置”关键字";
-        return;
-    }
+
     qDebug() << "pathName: " << pathName;
     qDebug() << "fileNameProtocol: " << fileNameProtocol;
     qDebug() << "fileNameConfig: " << fileNameConfig;
 
-    if (fileNameProtocol == "")
-    {
-        qDebug() << "未找到协议文件";
-        return;
-    }
-    if (fileNameConfig == "" && isNeedConfigFile == true)
-    {
-        qDebug() << "未找到配置文件";
-        return;
-    }
     labviewSetting = new LabViewSetting(fileNameProtocol, fileNameConfig);
+    if (labviewSetting->isLoadProtocol() == false)
+    {
+        // 弹窗提示：协议文件加载失败
+        QMessageBox::warning(this, "警告", "协议文件加载失败", QMessageBox::Ok);
+        ui->lwlTestItemPool->clear();
+        return;
+    }
+    if (isNeedConfigFile == true)
+    {
+        if (labviewSetting->isLoadConfig() == false)
+        {
+            // 弹窗提示：配置文件加载失败
+            QMessageBox::warning(this, "警告", "配置文件加载失败", QMessageBox::Ok);
+            ui->lwlTestItemList->clear();
+            return;
+        }
+    }
+    else
+        ui->lwlTestItemList->clear();
 
     this->testItemList.clear();                             // 清空
     this->testItemList = labviewSetting->getTestItemList(); // 解析 协议文件

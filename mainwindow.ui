@@ -812,7 +812,7 @@
      <x>0</x>
      <y>0</y>
      <width>850</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -886,7 +886,7 @@
     <set>QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
-    <string>测试项</string>
+    <string>配置项</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>

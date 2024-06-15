@@ -2,7 +2,7 @@
  * @Author: m-RNA m-RNA@qq.com
  * @Date: 2023-11-18 21:46:10
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-09 01:20:31
+ * @LastEditTime: 2024-06-15 18:36:21
  * @FilePath: \LabViewIniEditor2024\labviewsetting.h
  * @Description:
  *
@@ -94,6 +94,8 @@ public:
     void clear();
 
     bool saveFile(void);
+    bool isLoadProtocol(void);
+    bool isLoadConfig(void);
 
     QList<TestItem> getTestItemList() const;
     QList<ConfigItem> getConfigItemList() const;
