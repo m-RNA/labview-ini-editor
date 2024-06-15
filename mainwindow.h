@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-12 02:30:16
+ * @LastEditTime: 2024-06-16 00:39:00
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -91,24 +91,22 @@ private:
     int getTestItemIndex(const QString &name); // 获取测试项序号
     TestItem *getTestItemCurrent(void);        // 获取当前测试项
 
-    void updateTestItemUi();     // 更新测试项界面
-    void updateTestItemListUi(); // 更新测试项列表界面
+    void uiUpdateTestCmd(const QVector<TestCmd> &cmdList);
+    void uiUpdateTestResult(const QVector<TestResult> &resultList);
+    void uiUpdateTestItem(QString testItemName);
+    void uiUpdateTestItemList(); // 更新测试项列表界面
 
-    void updateTestItemFromUi(TestItem *testItem);
-    void updateTestItemListFromUi(); // 从界面更新测试项列表
+    void uiAddTestCmd(TestItemInterface *item);
+    void uiInsertTestCmd(int index, TestItemInterface *item);
 
-    void loadTestCmdUi(const QVector<TestCmd> &cmdList);
-    void loadTestResultUi(const QVector<TestResult> &resultList);
-    void loadTestItemUi(QListWidgetItem *item);
+    void uiAddResult(TestResultInterface *item);
+    void uiInsertResult(int index, TestResultInterface *item);
 
     void insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, int cmdIndex);
+
     void updateTestCmdListFromUi(QVector<TestCmd> &cmdList);
     void updateTestResultListFromUi(QVector<TestResult> &resultList);
-
-    void addTestCmdInterface(TestItemInterface *item);
-    void insertTestCmdInterface(int index, TestItemInterface *item);
-
-    void addResultInterface(TestResultInterface *item);
-    void insertResultInterface(int index, TestResultInterface *item);
+    void updateTestItemFromUi(TestItem *testItem);
+    void updateTestItemListFromUi(); // 从界面更新测试项列表
 };
 #endif // MAINWINDOW_H
