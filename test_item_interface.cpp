@@ -100,6 +100,8 @@ void TestItemInterface::setUi(int index, const TestCmd &item)
 
 void TestItemInterface::setTxAndEndIndex(QString strTx)
 {
+    if (strTx.isEmpty())
+        return;
     if (strTx.toUpper().endsWith(STR_TX_END.at(CB_TX_END_HEX)))
     {
         strTx = strTx.toUpper().remove(STR_TX_END.at(CB_TX_END_HEX));
@@ -126,12 +128,17 @@ TestCmd TestItemInterface::getTestCmd() const
     cmd.brief = ui->leBrief->text();
 
     cmd.tx = ui->leTx->text();
+    if (cmd.tx.isEmpty())
+        cmd.tx = "NA";
+
     if (ui->cbTxEnd->currentIndex() == CB_TX_END_HEX)
         cmd.tx += STR_TX_END.at(CB_TX_END_HEX);
     else if (ui->cbTxEnd->currentIndex() == CB_TX_END_R_N)
         cmd.tx += STR_TX_END.at(CB_TX_END_R_N);
 
     cmd.rx = ui->leRx->text();
+    if (cmd.rx.isEmpty())
+        cmd.rx = "NA";
 
     cmd.cmdType = ui->cbTestType->currentText();
 

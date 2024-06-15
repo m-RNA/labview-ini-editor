@@ -156,7 +156,7 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>发送数据</string>
+         <string>发送数据（NA为不发送）</string>
         </property>
         <property name="text">
          <string/>
@@ -333,7 +333,7 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>接收数据匹配字段</string>
+         <string>接收数据匹配字段（NA为不匹配）</string>
         </property>
         <property name="text">
          <string>OK</string>
