@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-16 03:59:47
+ * @LastEditTime: 2024-06-16 06:48:46
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -69,32 +69,33 @@ private:
 
     QString leTestItemName_Old = ""; // 旧的测试项名称
 
-    QList<TestItem> testItemList = {};                    // 测试项列表
-    QList<ConfigItem> configItemList = {};                // 配置项列表
-    QList<TestItemInterface *> testCmdInterfaceList = {}; // 测试项命令界面列表
-    QList<QWidget *> testResultInterfaceList = {};        // 测试项结果界面列表
+    QList<TestItem> testItemList = {};     // 测试项列表
+    QList<ConfigItem> configItemList = {}; // 配置项列表
 
     LabViewSetting *labviewSetting; // LabView设置
 
     int getTestItemIndex(const QString &name); // 获取测试项序号
     TestItem *getTestItemCurrent(void);        // 获取当前测试项
 
-    void uiUpdateTestCmd(const QVector<TestCmd> &cmdList);
-    void uiUpdateTestResult(const QVector<TestResult> &resultList);
-    void uiUpdateTestItem(QString testItemName);
-    void uiUpdateTestItemList(); // 更新测试项列表界面
+    void uiUpdateTestCmd(const QVector<TestCmd> &cmdList);          // 更新测试命令界面
+    void uiUpdateTestResult(const QVector<TestResult> &resultList); // 更新测试结果界面
+    void uiUpdateTestItem(QString testItemName);                    // 更新测试项界面
+    void uiUpdateTestItemList();                                    // 更新测试项列表界面
 
-    void uiAddTestCmd(TestItemInterface *item);
-    void uiAddResult(TestResultInterface *item);
+    void uiAddTestCmd(TestItemInterface *item);  // 界面添加测试命令
+    void uiAddResult(TestResultInterface *item); // 界面添加测试结果
 
-    void uiInsertTestCmd(int index, TestItemInterface *item);
-    void uiInsertResult(int index, TestResultInterface *item);
+    void uiInsertTestCmd(int index, TestItemInterface *item);  // 界面插入测试命令
+    void uiInsertResult(int index, TestResultInterface *item); // 界面插入测试结果
 
-    void insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, int cmdIndex);
+    void uiRemoveTestCmd(int index); // 界面删除测试命令
+    void uiRemoveResult(int index);  // 界面删除测试结果
 
-    void updateTestCmdListFromUi(QVector<TestCmd> &cmdList);
-    void updateTestResultListFromUi(QVector<TestResult> &resultList);
-    void updateTestItemFromUi(TestItem *testItem);
-    void updateTestItemListFromUi(); // 从界面更新测试项列表
+    void insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, int cmdIndex); // 插入测试命令
+
+    void updateTestCmdListFromUi(QVector<TestCmd> &cmdList);          // 从界面更新测试命令列表
+    void updateTestResultListFromUi(QVector<TestResult> &resultList); // 从界面更新测试结果列表
+    void updateTestItemFromUi(TestItem *testItem);                    // 从界面更新测试项
+    void updateTestItemListFromUi();                                  // 从界面更新测试项列表
 };
 #endif // MAINWINDOW_H

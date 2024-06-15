@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-16 04:00:12
+ * @LastEditTime: 2024-06-16 06:44:17
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -358,41 +358,31 @@ void MainWindow::on_cbSign_currentTextChanged(const QString &arg1)
 
 void MainWindow::on_btnAddTestICmd_clicked()
 {
-    QString str = ui->leTestItemName->text().trimmed();
-    // 获取当前点击的测试项的索引
-    int testItemIndex = getTestItemIndex(str);
-    if (testItemIndex == -1)
-    {
-        qDebug() << "未找到测试项";
+    // 获取当前点击的测试项
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
         return;
-    }
     // 获取当前点击的 lwTestCmd 的索引
     int testCmdIndex = ui->lwTestCmd->currentRow();
-    qDebug() << "点击 TestCmd: " << str << " " << testCmdIndex;
     if (testCmdIndex == -1)
         testCmdIndex = 0;
     else
         testCmdIndex++;
     // 在当前点击的命令项下方添加一个命令项
     TestCmd cmd;
-    insertTestCmd(this->testItemList[testItemIndex].cmdList, cmd, testCmdIndex);
+    insertTestCmd(testItem->cmdList, cmd, testCmdIndex);
 
     // 更新命令项
-    uiUpdateTestCmd(this->testItemList.at(testItemIndex).cmdList);
+    uiUpdateTestCmd(testItem->cmdList);
     ui->lwTestCmd->setCurrentRow(testCmdIndex);
 }
 
 void MainWindow::on_btnCopyTestICmd_clicked()
 {
-    // 获取当前点击的测试项的名称
-    QString str = ui->leTestItemName->text().trimmed();
-    // 获取当前点击的测试项的索引
-    int testItemIndex = getTestItemIndex(str);
-    if (testItemIndex == -1)
-    {
-        qDebug() << "未找到测试项";
+    // 获取当前点击的测试项
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
         return;
-    }
     // 获取当前点击的 lwTestCmd 的索引
     int testCmdIndex = ui->lwTestCmd->currentRow();
     if (testCmdIndex == -1)
@@ -400,19 +390,13 @@ void MainWindow::on_btnCopyTestICmd_clicked()
         qDebug() << "未选择命令项";
         return;
     }
-    qDebug() << "点击 TestCmd: " << str << " " << testCmdIndex;
 
     // 在当前点击的命令项下方添加一个命令项
-    TestItemInterface *item = new TestItemInterface(this);
     TestCmd cmd = ((TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(testCmdIndex)))->getTestCmd();
-
-    item->setUi(testCmdIndex + 1, this->testItemList.at(testItemIndex).cmdList.at(testCmdIndex));
-
-    insertTestCmd(this->testItemList[testItemIndex].cmdList, cmd, testCmdIndex + 1);
-    uiInsertTestCmd(testCmdIndex + 1, item);
+    insertTestCmd(testItem->cmdList, cmd, testCmdIndex + 1);
 
     // 更新命令项
-    uiUpdateTestCmd(this->testItemList.at(testItemIndex).cmdList);
+    uiUpdateTestCmd(testItem->cmdList);
     ui->lwTestCmd->setCurrentRow(testCmdIndex + 1);
 }
 
@@ -433,22 +417,11 @@ void MainWindow::on_btnRemoveTestICmd_clicked()
     testItem->cmdList.remove(testCmdIndex);
 
     // 更新命令项
-    uiUpdateTestCmd(testItem->cmdList);
-    if (testCmdIndex > 0)
+    uiRemoveTestCmd(testCmdIndex);
+    if (testCmdIndex >= ui->lwTestCmd->count())
         testCmdIndex--;
     ui->lwTestCmd->setCurrentRow(testCmdIndex);
 }
-
-// void MainWindow::on_btnAddResultItem_clicked()
-//{
-//     //    // 往 scrollArea_Result 添加一个 TestResult
-//     //    TestResultInterface *item = new TestResultInterface(this);
-//     //    item->setIndex(testResultInterfaceList.size());
-//     //    testResultInterfaceList.append(item);
-//     //    ui->vloResultItem->insertWidget(ui->vloResultItem->count() - 2, item);
-//     //    // 滚动到底部
-//     // ui->scrollArea_Result->verticalScrollBar()->setValue(ui->scrollArea_Result->verticalScrollBar()->maximum());
-// }
 
 void MainWindow::onTestCmdReordered(void)
 {
@@ -494,12 +467,42 @@ TestItem *MainWindow::getTestItemCurrent(void)
 
 void MainWindow::uiUpdateTestCmd(const QVector<TestCmd> &cmdList)
 {
-    ui->lwTestCmd->clear();
-    for (int i = 0; i < cmdList.size(); ++i)
+    if (cmdList.size() == 0)
     {
-        TestItemInterface *item = new TestItemInterface(this);
-        item->setUi(i, cmdList.at(i));
-        uiAddTestCmd(item);
+        ui->lwTestCmd->clear();
+        return;
+    }
+    if (cmdList.size() < ui->lwTestCmd->count())
+    {
+        int times = ui->lwTestCmd->count();
+        for (int i = 0; i < times; i++)
+        {
+            if (i < cmdList.size())
+            {
+                ((TestItemInterface *) (ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(i))))->setUi(i, cmdList.at(i));
+            }
+            else
+            {
+                // 删除多余的命令项
+                uiRemoveTestCmd(ui->lwTestCmd->count() - 1);
+            }
+        }
+    }
+    else
+    {
+        for (int i = 0; i < cmdList.size(); i++)
+        {
+            if (i < ui->lwTestCmd->count())
+            {
+                ((TestItemInterface *) (ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(i))))->setUi(i, cmdList.at(i));
+            }
+            else
+            {
+                TestItemInterface *uiTestItem = new TestItemInterface(this);
+                uiTestItem->setUi(i, cmdList.at(i));
+                uiAddTestCmd(uiTestItem);
+            }
+        }
     }
 }
 
@@ -509,7 +512,7 @@ void MainWindow::uiUpdateTestResult(const QVector<TestResult> &resultList)
     for (int i = 0; i < resultList.size(); ++i)
     {
         TestResultInterface *item = new TestResultInterface(this);
-        item->setUi_Result(i, resultList.at(i));
+        item->setUi(i, resultList.at(i));
         uiAddResult(item);
     }
 }
@@ -575,18 +578,17 @@ void MainWindow::uiUpdateTestItemList()
     }
 }
 
-void MainWindow::uiAddTestCmd(TestItemInterface *item) { uiInsertTestCmd(testCmdInterfaceList.size(), item); }
+void MainWindow::uiAddTestCmd(TestItemInterface *item) { uiInsertTestCmd(ui->lwTestCmd->count(), item); }
 
-void MainWindow::uiAddResult(TestResultInterface *item) { uiInsertResult(testResultInterfaceList.size(), item); }
+void MainWindow::uiAddResult(TestResultInterface *item) { uiInsertResult(ui->lwTestResult->count(), item); }
 
 void MainWindow::uiInsertTestCmd(int index, TestItemInterface *item)
 {
-    if (index < 0 || index > testCmdInterfaceList.size())
+    if (index < 0 || index > ui->lwTestCmd->count())
     {
         qDebug() << "index 越界";
         return;
     }
-    testCmdInterfaceList.insert(index, item);
 
     QListWidgetItem *listItem = new QListWidgetItem(ui->lwTestCmd);
     listItem->setSizeHint(QSize(0, TEST_CMD_HEIGHT));
@@ -597,18 +599,37 @@ void MainWindow::uiInsertTestCmd(int index, TestItemInterface *item)
 
 void MainWindow::uiInsertResult(int index, TestResultInterface *item)
 {
-    if (index < 0 || index > testResultInterfaceList.size())
+    if (index < 0 || index > ui->lwTestResult->count())
     {
         qDebug() << "index 越界";
         return;
     }
-    testResultInterfaceList.insert(index, item);
 
     QListWidgetItem *listItem = new QListWidgetItem(ui->lwTestResult);
     listItem->setSizeHint(QSize(0, TEST_RESULT_HEIGHT));
     ui->lwTestResult->insertItem(index, listItem);   // 插入到列表中
     ui->lwTestResult->setItemWidget(listItem, item); // 设置为该项的 Widget
     ui->lwTestResult->setCurrentRow(index);          // 滚动到该项
+}
+
+void MainWindow::uiRemoveTestCmd(int index)
+{
+    if (index < 0 || index >= ui->lwTestCmd->count())
+    {
+        qDebug() << "index 越界";
+        return;
+    }
+    ui->lwTestCmd->takeItem(index);
+}
+
+void MainWindow::uiRemoveResult(int index)
+{
+    if (index < 0 || index >= ui->lwTestResult->count())
+    {
+        qDebug() << "index 越界";
+        return;
+    }
+    ui->lwTestResult->takeItem(index);
 }
 
 void MainWindow::insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, int cmdIndex)
@@ -619,12 +640,6 @@ void MainWindow::insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, in
         return;
     }
     cmdList.insert(cmdIndex, cmd);
-
-    for (const TestCmd &cmd : cmdList)
-    {
-        cmd.print();
-        qDebug();
-    }
 }
 
 void MainWindow::updateTestCmdListFromUi(QVector<TestCmd> &cmdList)

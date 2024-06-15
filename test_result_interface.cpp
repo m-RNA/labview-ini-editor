@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-31 00:00:44
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-12 02:12:17
+ * @LastEditTime: 2024-06-16 06:26:55
  * @FilePath: \LabViewIniEditor2024\test_result_interface.cpp
  * @Description:
  *
@@ -41,7 +41,7 @@ TestResultInterface::~TestResultInterface() { delete ui; }
 
 void TestResultInterface::setIndex(int index) { ui->lbIndex->setText(QString::number(index)); }
 
-void TestResultInterface::setUi_Result(int index, const TestResult &item)
+void TestResultInterface::setUi(int index, const TestResult &item)
 {
     ui->lbIndex->setText(QString::number(index));
 
@@ -62,13 +62,6 @@ void TestResultInterface::setUi_Result(int index, const TestResult &item)
         //     content.replace("[:]", ":");
         ui->leAnalysis->setText(content);
     }
-}
-
-void TestResultInterface::setUi_Config(const ConfigContent &config)
-{
-    ui->leName->setText(config.name);
-    ui->cbDataLimit->setCurrentText(config.value);
-    ui->cbUnit->setCurrentText(config.unit);
 }
 
 TestResult TestResultInterface::getTestResult() const

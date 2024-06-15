@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-31 00:00:44
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-10 18:07:16
+ * @LastEditTime: 2024-06-16 06:25:44
  * @FilePath: \LabViewIniEditor2024\test_result_interface.h
  * @Description:
  *
@@ -31,8 +31,7 @@ public:
     ~TestResultInterface();
 
     void setIndex(int index);
-    void setUi_Result(int index, const TestResult &item);
-    void setUi_Config(const ConfigContent &config);
+    void setUi(int index, const TestResult &item);
 
     // 从界面获取数据
     TestResult getTestResult() const;
