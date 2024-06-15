@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-15 19:07:43
+ * @LastEditTime: 2024-06-16 01:03:06
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     // ui->dwTestPool->setVisible(false);
     // ui->actSownExtTestItem->setChecked(false);
     ui->lwTestCmd->setGridSize(QSize(0, TEST_CMD_HEIGHT));
+    ui->lwTestResult->setGridSize(QSize(0, TEST_RESULT_HEIGHT));
 
     isNeedConfigFile = ui->actNeedConfigFile->isChecked();
 
@@ -195,7 +196,13 @@ void MainWindow::on_actOpenIni_triggered()
     else
         ui->lwlTestItemList->clear();
 
-    this->testItemList.clear();                             // 清空
+    // 清空界面
+    ui->leTestItemName->clear();
+    ui->lwTestCmd->clear();
+    ui->lwTestResult->clear();
+    ui->spbxDecPlace->setValue(0);
+
+    this->testItemList.clear();
     this->testItemList = labviewSetting->getTestItemList(); // 解析 协议文件
 
     this->configItemList.clear(); // 清空
