@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-16 00:39:00
+ * @LastEditTime: 2024-06-16 03:59:47
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -36,42 +36,30 @@ public:
 private slots:
 
     void on_actOpenIni_triggered();
+    void on_actSave_triggered();
+
+    void on_actAbout_triggered();
+    void on_actSownExtTestItem_triggered(bool checked);
+    void on_actNeedConfigFile_toggled(bool arg1);
 
     void on_dwTestPool_visibilityChanged(bool visible);
 
-    void on_actSownExtTestItem_triggered(bool checked);
-
-    void on_actAbout_triggered();
-
-    void on_btnAddTestICmd_clicked();
-
-    void on_btnCopyTestICmd_clicked();
-
-    void on_btnRemoveTestICmd_clicked();
-
-    void on_leTestItemName_editingFinished();
-
-    void on_actSave_triggered();
-
     void on_lwlTestItemList_itemSelectionChanged();
-
     void on_lwlTestItemPool_itemSelectionChanged();
 
+    void on_leTestItemName_editingFinished();
     void on_spbxRepeatTimes_valueChanged(int arg1);
-
     void on_spbxDataSize_valueChanged(int arg1);
-
     void on_spbxDecPlace_valueChanged(int arg1);
-
     void on_spbxByteOrder_currentTextChanged(const QString &arg1);
-
     void on_cbSign_currentTextChanged(const QString &arg1);
 
-    void onTestCmdReordered(void);
+    void on_btnAddTestICmd_clicked();
+    void on_btnCopyTestICmd_clicked();
+    void on_btnRemoveTestICmd_clicked();
 
-    void onTestResultReordered(void);
-
-    void on_actNeedConfigFile_toggled(bool arg1);
+    void onTestCmdReordered(void);    // 测试项命令重排序
+    void onTestResultReordered(void); // 测试项结果重排序
 
 private:
     Ui::MainWindow *ui;
@@ -97,9 +85,9 @@ private:
     void uiUpdateTestItemList(); // 更新测试项列表界面
 
     void uiAddTestCmd(TestItemInterface *item);
-    void uiInsertTestCmd(int index, TestItemInterface *item);
-
     void uiAddResult(TestResultInterface *item);
+
+    void uiInsertTestCmd(int index, TestItemInterface *item);
     void uiInsertResult(int index, TestResultInterface *item);
 
     void insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, int cmdIndex);

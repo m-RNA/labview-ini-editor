@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-16 01:06:22
+ * @LastEditTime: 2024-06-16 04:00:12
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -215,70 +215,26 @@ void MainWindow::on_actOpenIni_triggered()
     uiUpdateTestItemList();        // 更新测试项列表
 }
 
-// void MainWindow::on_btnAddResultItem_clicked()
-//{
-//     //    // 往 scrollArea_Result 添加一个 TestResult
-//     //    TestResultInterface *item = new TestResultInterface(this);
-//     //    item->setIndex(testResultInterfaceList.size());
-//     //    testResultInterfaceList.append(item);
-//     //    ui->vloResultItem->insertWidget(ui->vloResultItem->count() - 2, item);
-//     //    // 滚动到底部
-//     // ui->scrollArea_Result->verticalScrollBar()->setValue(ui->scrollArea_Result->verticalScrollBar()->maximum());
-// }
-
-/**
- * @brief 加载测试项界面
- *
- * @param item 被点击的列表项
- */
-void MainWindow::uiUpdateTestItem(QString testItemName)
+void MainWindow::on_actSave_triggered()
 {
-    // 更新界面前，检查是否有未保存的测试项
-    if (leTestItemName_Old != "")
+    if (labviewSetting == nullptr)
     {
-        updateTestItemFromUi(getTestItemCurrent());
-    }
-
-    leTestItemName_Old = testItemName;
-    qDebug() << "点击: " << leTestItemName_Old;
-
-    int testItemIndex = getTestItemIndex(leTestItemName_Old);
-    if (testItemIndex == -1)
-    {
-        qDebug() << "未找到测试项";
+        qDebug() << "未打开文件";
         return;
     }
 
-    ui->leTestItemName->setText(testItemList.at(testItemIndex).name);
-    ui->spbxDataSize->setValue(testItemList.at(testItemIndex).dataByteLen);
-    ui->spbxDecPlace->setValue(testItemList.at(testItemIndex).decimal);
-    ui->spbxByteOrder->setCurrentText(testItemList.at(testItemIndex).byteOrder);
-    ui->cbSign->setCurrentText(testItemList.at(testItemIndex).sign);
-    ui->spbxRepeatTimes->setValue(testItemList.at(testItemIndex).repeat);
+    // 将界面testItem保存到 testItemList
+    updateTestItemFromUi(getTestItemCurrent());
 
-    uiUpdateTestCmd(testItemList.at(testItemIndex).cmdList);       // 更新命令项
-    uiUpdateTestResult(testItemList.at(testItemIndex).resultList); // 更新结果项
+    // 将界面testItem保存到 testItemList
+    // updateTestItemListFromUi();
+    labviewSetting->setTestItemList(testItemList);
+    // 将界面configItem保存到 configItemList
+    // labviewSetting->setConfigItemList(configItemList);
+
+    // 保存配置文件 & 协议文件
+    labviewSetting->saveFile();
 }
-
-void MainWindow::on_lwlTestItemList_itemSelectionChanged()
-{
-    QListWidgetItem *item = ui->lwlTestItemList->currentItem();
-    uiUpdateTestItem(item->text().trimmed());
-}
-
-void MainWindow::on_lwlTestItemPool_itemSelectionChanged()
-{
-    QListWidgetItem *item = ui->lwlTestItemPool->currentItem();
-    uiUpdateTestItem(item->text().trimmed());
-}
-
-void MainWindow::on_dwTestPool_visibilityChanged(bool visible)
-{
-    qDebug() << "on_dwTestPool_visibilityChanged" << visible;
-    ui->actSownExtTestItem->setChecked(visible);
-}
-
-void MainWindow::on_actSownExtTestItem_triggered(bool checked) { ui->dwTestPool->setVisible(checked); }
 
 void MainWindow::on_actAbout_triggered()
 {
@@ -316,6 +272,24 @@ void MainWindow::on_actAbout_triggered()
                         "CopyRight © "+ year + " by " + author + ", All Rights Reserved.");
 }
 
+void MainWindow::on_actSownExtTestItem_triggered(bool checked) { ui->dwTestPool->setVisible(checked); }
+
+void MainWindow::on_actNeedConfigFile_toggled(bool arg1) { isNeedConfigFile = arg1; }
+
+void MainWindow::on_dwTestPool_visibilityChanged(bool visible) { ui->actSownExtTestItem->setChecked(visible); }
+
+void MainWindow::on_lwlTestItemList_itemSelectionChanged()
+{
+    QListWidgetItem *item = ui->lwlTestItemList->currentItem();
+    uiUpdateTestItem(item->text().trimmed());
+}
+
+void MainWindow::on_lwlTestItemPool_itemSelectionChanged()
+{
+    QListWidgetItem *item = ui->lwlTestItemPool->currentItem();
+    uiUpdateTestItem(item->text().trimmed());
+}
+
 void MainWindow::on_leTestItemName_editingFinished()
 {
     // 获取当前点击的测试项的名称
@@ -342,30 +316,70 @@ void MainWindow::on_leTestItemName_editingFinished()
     leTestItemName_Old = str;
 }
 
-int MainWindow::getTestItemIndex(const QString &name)
+void MainWindow::on_spbxRepeatTimes_valueChanged(int arg1)
 {
-    for (int i = 0; i < this->testItemList.size(); i++)
-    {
-        if (name == this->testItemList.at(i).name)
-        {
-            return i;
-        }
-    }
-    return -1;
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    testItem->repeat = arg1;
 }
 
-TestItem *MainWindow::getTestItemCurrent(void)
+void MainWindow::on_spbxDataSize_valueChanged(int arg1)
 {
-    // 获取当前点击的测试项的名称
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    testItem->dataByteLen = arg1;
+}
+
+void MainWindow::on_spbxDecPlace_valueChanged(int arg1)
+{
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    testItem->decimal = arg1;
+}
+
+void MainWindow::on_spbxByteOrder_currentTextChanged(const QString &arg1)
+{
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    testItem->byteOrder = arg1;
+}
+
+void MainWindow::on_cbSign_currentTextChanged(const QString &arg1)
+{
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    testItem->sign = arg1;
+}
+
+void MainWindow::on_btnAddTestICmd_clicked()
+{
     QString str = ui->leTestItemName->text().trimmed();
     // 获取当前点击的测试项的索引
     int testItemIndex = getTestItemIndex(str);
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项";
-        return nullptr;
+        return;
     }
-    return &this->testItemList[testItemIndex];
+    // 获取当前点击的 lwTestCmd 的索引
+    int testCmdIndex = ui->lwTestCmd->currentRow();
+    qDebug() << "点击 TestCmd: " << str << " " << testCmdIndex;
+    if (testCmdIndex == -1)
+        testCmdIndex = 0;
+    else
+        testCmdIndex++;
+    // 在当前点击的命令项下方添加一个命令项
+    TestCmd cmd;
+    insertTestCmd(this->testItemList[testItemIndex].cmdList, cmd, testCmdIndex);
+
+    // 更新命令项
+    uiUpdateTestCmd(this->testItemList.at(testItemIndex).cmdList);
+    ui->lwTestCmd->setCurrentRow(testCmdIndex);
 }
 
 void MainWindow::on_btnCopyTestICmd_clicked()
@@ -402,30 +416,80 @@ void MainWindow::on_btnCopyTestICmd_clicked()
     ui->lwTestCmd->setCurrentRow(testCmdIndex + 1);
 }
 
-void MainWindow::on_btnAddTestICmd_clicked()
+void MainWindow::on_btnRemoveTestICmd_clicked()
 {
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    // 获取当前点击的 lwTestCmd 的索引
+    int testCmdIndex = ui->lwTestCmd->currentRow();
+    if (testCmdIndex == -1)
+    {
+        qDebug() << "未选择命令项";
+        return;
+    }
+
+    // 删除当前点击的命令项
+    testItem->cmdList.remove(testCmdIndex);
+
+    // 更新命令项
+    uiUpdateTestCmd(testItem->cmdList);
+    if (testCmdIndex > 0)
+        testCmdIndex--;
+    ui->lwTestCmd->setCurrentRow(testCmdIndex);
+}
+
+// void MainWindow::on_btnAddResultItem_clicked()
+//{
+//     //    // 往 scrollArea_Result 添加一个 TestResult
+//     //    TestResultInterface *item = new TestResultInterface(this);
+//     //    item->setIndex(testResultInterfaceList.size());
+//     //    testResultInterfaceList.append(item);
+//     //    ui->vloResultItem->insertWidget(ui->vloResultItem->count() - 2, item);
+//     //    // 滚动到底部
+//     // ui->scrollArea_Result->verticalScrollBar()->setValue(ui->scrollArea_Result->verticalScrollBar()->maximum());
+// }
+
+void MainWindow::onTestCmdReordered(void)
+{
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    updateTestCmdListFromUi(testItem->cmdList);
+}
+
+void MainWindow::onTestResultReordered(void)
+{
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    updateTestResultListFromUi(testItem->resultList);
+}
+
+int MainWindow::getTestItemIndex(const QString &name)
+{
+    for (int i = 0; i < this->testItemList.size(); i++)
+    {
+        if (name == this->testItemList.at(i).name)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+TestItem *MainWindow::getTestItemCurrent(void)
+{
+    // 获取当前点击的测试项的名称
     QString str = ui->leTestItemName->text().trimmed();
     // 获取当前点击的测试项的索引
     int testItemIndex = getTestItemIndex(str);
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项";
-        return;
+        return nullptr;
     }
-    // 获取当前点击的 lwTestCmd 的索引
-    int testCmdIndex = ui->lwTestCmd->currentRow();
-    qDebug() << "点击 TestCmd: " << str << " " << testCmdIndex;
-    if (testCmdIndex == -1)
-        testCmdIndex = 0;
-    else
-        testCmdIndex++;
-    // 在当前点击的命令项下方添加一个命令项
-    TestCmd cmd;
-    insertTestCmd(this->testItemList[testItemIndex].cmdList, cmd, testCmdIndex);
-
-    // 更新命令项
-    uiUpdateTestCmd(this->testItemList.at(testItemIndex).cmdList);
-    ui->lwTestCmd->setCurrentRow(testCmdIndex);
+    return &this->testItemList[testItemIndex];
 }
 
 void MainWindow::uiUpdateTestCmd(const QVector<TestCmd> &cmdList)
@@ -450,7 +514,70 @@ void MainWindow::uiUpdateTestResult(const QVector<TestResult> &resultList)
     }
 }
 
+void MainWindow::uiUpdateTestItem(QString testItemName)
+{
+    // 更新界面前，检查是否有未保存的测试项
+    if (leTestItemName_Old != "")
+    {
+        updateTestItemFromUi(getTestItemCurrent());
+    }
+
+    leTestItemName_Old = testItemName;
+    qDebug() << "点击: " << leTestItemName_Old;
+
+    int testItemIndex = getTestItemIndex(leTestItemName_Old);
+    if (testItemIndex == -1)
+    {
+        qDebug() << "未找到测试项";
+        return;
+    }
+
+    ui->leTestItemName->setText(testItemList.at(testItemIndex).name);
+    ui->spbxDataSize->setValue(testItemList.at(testItemIndex).dataByteLen);
+    ui->spbxDecPlace->setValue(testItemList.at(testItemIndex).decimal);
+    ui->spbxByteOrder->setCurrentText(testItemList.at(testItemIndex).byteOrder);
+    ui->cbSign->setCurrentText(testItemList.at(testItemIndex).sign);
+    ui->spbxRepeatTimes->setValue(testItemList.at(testItemIndex).repeat);
+
+    uiUpdateTestCmd(testItemList.at(testItemIndex).cmdList);       // 更新命令项
+    uiUpdateTestResult(testItemList.at(testItemIndex).resultList); // 更新结果项
+}
+
+void MainWindow::uiUpdateTestItemList()
+{
+    ui->lwlTestItemList->clear();
+    QStringList strConfigList;
+    if (isNeedConfigFile == true)
+    {
+        for (int i = 0; i < this->configItemList.size(); i++) // 往 ListWidget 添加测试项
+        {
+            QString str = this->configItemList.at(i).name;
+            strConfigList << str;
+
+            QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemList);
+            item->setText("   " + str);
+
+            QCheckBox *checkBox = new QCheckBox(ui->lwlTestItemList);
+            checkBox->setChecked(this->configItemList.at(i).enable);
+            ui->lwlTestItemList->setItemWidget(item, checkBox);
+        }
+    }
+
+    ui->lwlTestItemPool->clear();
+    for (int i = 0; i < this->testItemList.size(); i++) // 往 ListWidget 添加测试项
+    {
+        if (strConfigList.contains(this->testItemList.at(i).name))
+        {
+            continue;
+        }
+        QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemPool);
+        item->setText(this->testItemList.at(i).name);
+    }
+}
+
 void MainWindow::uiAddTestCmd(TestItemInterface *item) { uiInsertTestCmd(testCmdInterfaceList.size(), item); }
+
+void MainWindow::uiAddResult(TestResultInterface *item) { uiInsertResult(testResultInterfaceList.size(), item); }
 
 void MainWindow::uiInsertTestCmd(int index, TestItemInterface *item)
 {
@@ -467,8 +594,6 @@ void MainWindow::uiInsertTestCmd(int index, TestItemInterface *item)
     ui->lwTestCmd->setItemWidget(listItem, item); // 设置为该项的 Widget
     ui->lwTestCmd->setCurrentRow(index);          // 滚动到该项
 }
-
-void MainWindow::uiAddResult(TestResultInterface *item) { uiInsertResult(testResultInterfaceList.size(), item); }
 
 void MainWindow::uiInsertResult(int index, TestResultInterface *item)
 {
@@ -522,82 +647,6 @@ void MainWindow::updateTestResultListFromUi(QVector<TestResult> &resultList)
     }
 }
 
-void MainWindow::on_actSave_triggered()
-{
-    if (labviewSetting == nullptr)
-    {
-        qDebug() << "未打开文件";
-        return;
-    }
-
-    // 将界面testItem保存到 testItemList
-    updateTestItemFromUi(getTestItemCurrent());
-
-    // 将界面testItem保存到 testItemList
-    // updateTestItemListFromUi();
-    labviewSetting->setTestItemList(testItemList);
-    // 将界面configItem保存到 configItemList
-    // labviewSetting->setConfigItemList(configItemList);
-
-    // 保存配置文件 & 协议文件
-    labviewSetting->saveFile();
-}
-
-void MainWindow::on_btnRemoveTestICmd_clicked()
-{
-    TestItem *testItem = getTestItemCurrent();
-    if (testItem == nullptr)
-        return;
-    // 获取当前点击的 lwTestCmd 的索引
-    int testCmdIndex = ui->lwTestCmd->currentRow();
-    if (testCmdIndex == -1)
-    {
-        qDebug() << "未选择命令项";
-        return;
-    }
-
-    // 删除当前点击的命令项
-    testItem->cmdList.remove(testCmdIndex);
-
-    // 更新命令项
-    uiUpdateTestCmd(testItem->cmdList);
-    if (testCmdIndex > 0)
-        testCmdIndex--;
-    ui->lwTestCmd->setCurrentRow(testCmdIndex);
-}
-
-void MainWindow::uiUpdateTestItemList()
-{
-    ui->lwlTestItemList->clear();
-    QStringList strConfigList;
-    if (isNeedConfigFile == true)
-    {
-        for (int i = 0; i < this->configItemList.size(); i++) // 往 ListWidget 添加测试项
-        {
-            QString str = this->configItemList.at(i).name;
-            strConfigList << str;
-
-            QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemList);
-            item->setText("   " + str);
-
-            QCheckBox *checkBox = new QCheckBox(ui->lwlTestItemList);
-            checkBox->setChecked(this->configItemList.at(i).enable);
-            ui->lwlTestItemList->setItemWidget(item, checkBox);
-        }
-    }
-
-    ui->lwlTestItemPool->clear();
-    for (int i = 0; i < this->testItemList.size(); i++) // 往 ListWidget 添加测试项
-    {
-        if (strConfigList.contains(this->testItemList.at(i).name))
-        {
-            continue;
-        }
-        QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemPool);
-        item->setText(this->testItemList.at(i).name);
-    }
-}
-
 void MainWindow::updateTestItemFromUi(TestItem *testItem)
 {
     if (testItem != nullptr)
@@ -637,61 +686,3 @@ void MainWindow::updateTestItemListFromUi()
 
     // }
 }
-
-void MainWindow::on_spbxRepeatTimes_valueChanged(int arg1)
-{
-    TestItem *testItem = getTestItemCurrent();
-    if (testItem == nullptr)
-        return;
-    testItem->repeat = arg1;
-}
-
-void MainWindow::on_spbxDataSize_valueChanged(int arg1)
-{
-    TestItem *testItem = getTestItemCurrent();
-    if (testItem == nullptr)
-        return;
-    testItem->dataByteLen = arg1;
-}
-
-void MainWindow::on_spbxDecPlace_valueChanged(int arg1)
-{
-    TestItem *testItem = getTestItemCurrent();
-    if (testItem == nullptr)
-        return;
-    testItem->decimal = arg1;
-}
-
-void MainWindow::on_spbxByteOrder_currentTextChanged(const QString &arg1)
-{
-    TestItem *testItem = getTestItemCurrent();
-    if (testItem == nullptr)
-        return;
-    testItem->byteOrder = arg1;
-}
-
-void MainWindow::on_cbSign_currentTextChanged(const QString &arg1)
-{
-    TestItem *testItem = getTestItemCurrent();
-    if (testItem == nullptr)
-        return;
-    testItem->sign = arg1;
-}
-
-void MainWindow::onTestCmdReordered(void)
-{
-    TestItem *testItem = getTestItemCurrent();
-    if (testItem == nullptr)
-        return;
-    updateTestCmdListFromUi(testItem->cmdList);
-}
-
-void MainWindow::onTestResultReordered(void)
-{
-    TestItem *testItem = getTestItemCurrent();
-    if (testItem == nullptr)
-        return;
-    updateTestResultListFromUi(testItem->resultList);
-}
-
-void MainWindow::on_actNeedConfigFile_toggled(bool arg1) { isNeedConfigFile = arg1; }
