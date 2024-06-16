@@ -72,7 +72,7 @@ private:
     QList<TestItem> testItemList = {};     // 测试项列表
     QList<ConfigItem> configItemList = {}; // 配置项列表
 
-    LabViewSetting *labviewSetting; // LabView设置
+    LabViewSetting *labviewSetting = nullptr; // LabView设置
 
     int getTestItemIndex(const QString &name); // 获取测试项序号
     TestItem *getTestItemCurrent(void);        // 获取当前测试项

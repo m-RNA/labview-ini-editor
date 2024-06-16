@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-16 06:44:17
+ * @LastEditTime: 2024-06-17 04:00:25
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -174,7 +174,12 @@ void MainWindow::on_actOpenIni_triggered()
     qDebug() << "pathName: " << pathName;
     qDebug() << "fileNameProtocol: " << fileNameProtocol;
     qDebug() << "fileNameConfig: " << fileNameConfig;
-
+    // 删除原来的设置
+    if (labviewSetting != nullptr)
+    {
+        delete labviewSetting;
+        labviewSetting = nullptr;
+    }
     labviewSetting = new LabViewSetting(fileNameProtocol, fileNameConfig);
     if (labviewSetting->isLoadProtocol() == false)
     {
@@ -241,33 +246,32 @@ void MainWindow::on_actAbout_triggered()
     QString data = __DATE__;
     QString time = __TIME__;
     QString year = data.mid(7, 4);
+    QString month = data.mid(0, 3);
+    QString day = data.mid(4, 2);
     QString author = "ChenJunJian";
     QString version = "0.0.0";
     QString postscript = "Just For Fun! No Other Ideas."; // PS：只是为了好玩方便，没有其他想法
+    QStringList monthList = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    for (int i = 0; i < monthList.size(); i++)
+    {
+        if (month == monthList.at(i))
+        {
+            month = QString::number(i + 1);
+            break;
+        }
+    }
 
-    // 计算时间差，几天前编译的版本
-    QDateTime current_date_time = QDateTime::currentDateTime();
-    QDateTime compile_date_time = QDateTime::fromString(QString(data + " " + time), "MMM dd yyyy hh:mm:ss");
-    QString daySub;
-    int days = compile_date_time.daysTo(current_date_time);
-    if (days == 0)
-        daySub = "Today";
-    else if (days == 1)
-        daySub = "Yesterday";
-    else
-        daySub = QString::number(days) + " days ago";
-
-    QString strData = current_date_time.toString("yyyy/MM/dd hh:mm:ss");
+    QString strData = year + "/" + month + "/" + day;
 
     QMessageBox::about(this, "About",
                         "LabViewIniEditor-Demo\n"
-                        "For EMBB & CIOT\n"
+                        "For EMBB\n"
                         "\n"
                         "Author: "+ author+"\n"
                         "Postscript: "+ postscript+"\n"
                         "\n"
                         "Version: " + version + "\n"
-                        "Build Data: " + strData + "(" + daySub + ")"+ "\n"
+                        "Build Data: " + strData +" " + time + "\n"
                         "\n"
                         "CopyRight © "+ year + " by " + author + ", All Rights Reserved.");
 }
