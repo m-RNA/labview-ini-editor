@@ -30,11 +30,11 @@ int main(int argc, char *argv[])
 //    testReadIniSettings();
     QApplication a(argc, argv);
     MainWindow w;
-    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiBOLD.TTF");
-    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiHEAVY.TTF");
-    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiLIGHT.TTF");
+//    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiBOLD.TTF");
+//    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiHEAVY.TTF");
+//    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiLIGHT.TTF");
     QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiMEDIUM.TTF");
-    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiREGULAR.TTF");
+//    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiREGULAR.TTF");
 
     w.show();
     return a.exec();
