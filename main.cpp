@@ -15,6 +15,7 @@
 #include <QStringList>
 #include "labviewsetting.h"
 #include "inisettings.h"
+#include <QFontDatabase>
 
 #if _MSC_VER >=1600    // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
@@ -29,6 +30,12 @@ int main(int argc, char *argv[])
 //    testReadIniSettings();
     QApplication a(argc, argv);
     MainWindow w;
+    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiBOLD.TTF");
+    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiHEAVY.TTF");
+    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiLIGHT.TTF");
+    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiMEDIUM.TTF");
+    QFontDatabase::addApplicationFont(":/Resource/alibabapuhtiREGULAR.TTF");
+
     w.show();
     return a.exec();
 
