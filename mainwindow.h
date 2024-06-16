@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-16 06:48:46
+ * @LastEditTime: 2024-06-17 04:16:34
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -57,6 +57,10 @@ private slots:
     void on_btnAddTestICmd_clicked();
     void on_btnCopyTestICmd_clicked();
     void on_btnRemoveTestICmd_clicked();
+
+    void on_btnAddTestResult_clicked();
+    void on_btnCopyTestIResult_clicked();
+    void on_btnRemoveTestIResult_clicked();
 
     void onTestCmdReordered(void);    // 测试项命令重排序
     void onTestResultReordered(void); // 测试项结果重排序

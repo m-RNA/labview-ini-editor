@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 04:00:25
+ * @LastEditTime: 2024-06-17 04:26:14
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -425,6 +425,73 @@ void MainWindow::on_btnRemoveTestICmd_clicked()
     if (testCmdIndex >= ui->lwTestCmd->count())
         testCmdIndex--;
     ui->lwTestCmd->setCurrentRow(testCmdIndex);
+}
+
+void MainWindow::on_btnAddTestResult_clicked()
+{
+    // 获取当前点击的测试项
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    // 获取当前点击的 lwTestResult 的索引
+    int testResultIndex = ui->lwTestResult->currentRow();
+    if (testResultIndex == -1)
+        testResultIndex = 0;
+    else
+        testResultIndex++;
+    // 在当前点击的结果项下方添加一个结果项
+    TestResult result;
+    testItem->resultList.insert(testResultIndex, result);
+
+    // 更新结果项
+    uiUpdateTestResult(testItem->resultList);
+    ui->lwTestResult->setCurrentRow(testResultIndex);
+}
+
+void MainWindow::on_btnCopyTestIResult_clicked()
+{
+    // 获取当前点击的测试项
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    // 获取当前点击的 lwTestResult 的索引
+    int testResultIndex = ui->lwTestResult->currentRow();
+    if (testResultIndex == -1)
+    {
+        qDebug() << "未选择结果项";
+        return;
+    }
+
+    // 在当前点击的结果项下方添加一个结果项
+    TestResult result = ((TestResultInterface *) ui->lwTestResult->itemWidget(ui->lwTestResult->item(testResultIndex)))
+                            ->getTestResult();
+    testItem->resultList.insert(testResultIndex + 1, result);
+
+    // 更新结果项
+    uiUpdateTestResult(testItem->resultList);
+    ui->lwTestResult->setCurrentRow(testResultIndex + 1);
+}
+
+void MainWindow::on_btnRemoveTestIResult_clicked() {
+    TestItem *testItem = getTestItemCurrent();
+    if (testItem == nullptr)
+        return;
+    // 获取当前点击的 lwTestResult 的索引
+    int testResultIndex = ui->lwTestResult->currentRow();
+    if (testResultIndex == -1)
+    {
+        qDebug() << "未选择结果项";
+        return;
+    }
+
+    // 删除当前点击的结果项
+    testItem->resultList.remove(testResultIndex);
+
+    // 更新结果项
+    uiRemoveResult(testResultIndex);
+    if (testResultIndex >= ui->lwTestResult->count())
+        testResultIndex--;
+    ui->lwTestResult->setCurrentRow(testResultIndex);
 }
 
 void MainWindow::onTestCmdReordered(void)
