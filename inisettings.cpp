@@ -17,7 +17,10 @@ IniSettings::IniSettings(const QString &fileName, QTextCodec *codec, QObject *pa
     m_isLoad = loadFile(fileName); // 加载文件
 }
 
-IniSettings::~IniSettings() { saveFile(); }
+IniSettings::~IniSettings()
+{
+    // saveFile();
+}
 
 bool IniSettings::isLoad() { return m_isLoad; }
 
@@ -101,6 +104,7 @@ void IniSettings::clear()
     m_mapKey.clear();
     m_mapGroup.clear();
     m_mapGroupKey.clear();
+    m_mapGroupNew.clear();
 }
 
 /**
@@ -395,20 +399,20 @@ bool IniSettings::saveFile(const QString &fileName)
     }
 FILE_END:
     // 新增组
-    // foreach (QString group, m_mapGroupNew)
-    // {
-    //     out << "\n";
-    //     out << "[" << group << "]\n";
-    //     foreach (QString key, m_mapGroupKey.keys())
-    //     {
-    //         if (key.startsWith(group + SUBGROUP_SEPARATOR))
-    //         {
-    //             QString childKey = key.mid(group.length() + 1);
-    //             childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
-    //             out << childKey << "=" << m_mapGroupKey.value(key) << "\n";
-    //         }
-    //     }
-    // }
+    foreach (QString group, m_mapGroupNew)
+    {
+        out << "\n";
+        out << "[" << group << "]\n";
+        foreach (QString key, m_mapGroupKey.keys())
+        {
+            if (key.startsWith(group + SUBGROUP_SEPARATOR))
+            {
+                QString childKey = key.mid(group.length() + 1);
+                childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
+                out << childKey << "=" << m_mapGroupKey.value(key) << "\n";
+            }
+        }
+    }
 
     file.flush();       // 刷新文件
     file.close();       // 关闭文件

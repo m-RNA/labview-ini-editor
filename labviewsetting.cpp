@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-16 07:18:48
+ * @LastEditTime: 2024-06-17 03:30:25
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -121,7 +121,7 @@ void LabViewSetting::setTestItemList(const QList<TestItem> &testItemList)
 {
     this->testItemList = testItemList;
 
-    iniSettingsProtocol->clear();
+    // iniSettingsProtocol->clear();
     for (const auto &testItem : testItemList)
     {
         QString port = "";     // 端口选择
