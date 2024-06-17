@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 10:22:12
+ * @LastEditTime: 2024-06-17 11:29:49
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -16,6 +16,14 @@
 
 const QStringList keyOrderProtocol = {
     "端口选择", "发送", "接收", "参数配置", "解析", "功能配置",
+};
+
+// [测试项名称] [MES链接] [测试开始] [测试结束]
+const QStringList passTestItemList = {
+    "测试项名称",
+    "MES链接",
+    "测试开始",
+    "测试结束",
 };
 
 /**
@@ -215,6 +223,8 @@ void LabViewSetting::analysisTestItem()
     {
         foreach (QString testItemName, iniSettingsProtocol->childGroups())
         {
+            if (passTestItemList.contains(testItemName)) // 跳过测试项名称
+                continue;
             TestItem testItem = getTestItem(testItemName);
             if (testItem.name != "")
             {
@@ -571,3 +581,4 @@ QStringList splitStringSquareBrackets(const QString &input, char separator)
 
     return commandList;
 }
+
