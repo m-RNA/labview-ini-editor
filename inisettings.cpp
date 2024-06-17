@@ -131,7 +131,8 @@ void IniSettings::beginGroup(const QString &prefix)
     m_group = prefix;
     if (!m_mapGroup.contains(prefix))
     {
-        m_mapGroupNew.append(prefix);
+        if (!m_mapGroupNew.contains(prefix))
+            m_mapGroupNew.append(prefix);
     }
 }
 
@@ -551,11 +552,11 @@ bool IniSettings::saveFileOrderKey(const QStringList &keyOrder, const QString &g
             out << key << " = " << m_mapKey.value(key) << "\n";
     }
 
+    QStringList keyList = m_mapGroupKey.keys();
     foreach (QString group, m_mapGroup)
     {
         out << "\n\n";
         out << "[" << group << "]\n";
-        QStringList keyList = m_mapGroupKey.keys();
         // 按照顺序写入
         if (groupOrder == group || groupOrder == "")
         {
@@ -590,7 +591,22 @@ bool IniSettings::saveFileOrderKey(const QStringList &keyOrder, const QString &g
     {
         out << "\n\n";
         out << "[" << group << "]\n";
-        foreach (QString key, m_mapGroupKey.keys())
+        // 按照顺序写入
+        if (groupOrder == group || groupOrder == "")
+        {
+            foreach (QString key, keyOrder)
+            {
+                QString keyTemp = group + SUBGROUP_SEPARATOR + key;
+                if (keyList.contains(keyTemp))
+                {
+                    keyList.removeOne(keyTemp);
+                    out << key << " = " << m_mapGroupKey.value(keyTemp) << "\n";
+                }
+            }
+        }
+
+        // 剩余的写入
+        foreach (QString key, keyList)
         {
             if (key.startsWith(group + SUBGROUP_SEPARATOR))
             {
