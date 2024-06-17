@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/new/prefix1">
-        <file>alibabapuhtiMEDIUM.TTF</file>
         <file>labVIEW.ico</file>
     </qresource>
 </RCC>

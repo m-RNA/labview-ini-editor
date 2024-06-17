@@ -18,7 +18,6 @@
     <widget class="QLabel" name="lbIndex">
      <property name="font">
       <font>
-       <family>阿里巴巴普惠体 R</family>
        <pointsize>20</pointsize>
        <weight>50</weight>
        <bold>false</bold>
