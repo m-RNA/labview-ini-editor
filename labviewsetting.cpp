@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 11:58:17
+ * @LastEditTime: 2024-06-17 18:12:13
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -498,11 +498,12 @@ void TestResult::print() const
 
 void TestItem::print() const
 {
-    qDebug() << "测试名：" << name;
+    qDebug() << "\n\n测试名：" << name;
 
     for (const auto &cmd : cmdList)
     {
         cmd.print();
+        qDebug();
     }
     qDebug() << "字节数" << dataByteLen;
     qDebug() << "小数" << decimal;

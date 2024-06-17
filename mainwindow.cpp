@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 14:20:50
+ * @LastEditTime: 2024-06-17 18:12:43
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -554,7 +554,8 @@ void MainWindow::on_actTestItemCopy_triggered()
     ui->lwlTestItemPool->setCurrentRow(testItemIndex + 1);
 }
 
-void MainWindow::on_actTestItemDelete_triggered() {
+void MainWindow::on_actTestItemDelete_triggered()
+{
     // 获取当前点击的测试项的名称
     QString str = ui->leTestItemName->text().trimmed();
     // 获取当前点击的测试项的索引
