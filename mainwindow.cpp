@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 18:12:43
+ * @LastEditTime: 2024-06-17 19:12:38
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -686,16 +686,18 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
         qDebug() << "未找到测试项";
         return;
     }
+    const TestItem *testItem = &testItemList.at(testItemIndex);
+    // testItem->print();
 
-    ui->leTestItemName->setText(testItemList.at(testItemIndex).name);
-    ui->spbxDataSize->setValue(testItemList.at(testItemIndex).dataByteLen);
-    ui->spbxDecPlace->setValue(testItemList.at(testItemIndex).decimal);
-    ui->spbxByteOrder->setCurrentText(testItemList.at(testItemIndex).byteOrder);
-    ui->cbSign->setCurrentText(testItemList.at(testItemIndex).sign);
-    ui->spbxRepeatTimes->setValue(testItemList.at(testItemIndex).repeat);
+    ui->leTestItemName->setText(testItem->name);
+    ui->spbxDataSize->setValue(testItem->dataByteLen);
+    ui->spbxDecPlace->setValue(testItem->decimal);
+    ui->spbxByteOrder->setCurrentText(testItem->byteOrder);
+    ui->cbSign->setCurrentText(testItem->sign);
+    ui->spbxRepeatTimes->setValue(testItem->repeat);
 
-    uiUpdateTestCmd(testItemList.at(testItemIndex).cmdList);       // 更新命令项
-    uiUpdateTestResult(testItemList.at(testItemIndex).resultList); // 更新结果项
+    uiUpdateTestCmd(testItem->cmdList);       // 更新命令项
+    uiUpdateTestResult(testItem->resultList); // 更新结果项
 }
 
 void MainWindow::uiUpdateTestItemList()
