@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 04:26:14
+ * @LastEditTime: 2024-06-17 11:36:02
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -314,8 +314,9 @@ void MainWindow::on_leTestItemName_editingFinished()
     // 修改测试项名称
     this->testItemList[testItemIndex].name = str;
     // this->configItemList[testItemIndex].name = str;
+    labviewSetting->renameTestItemProtocol(leTestItemName_Old, str);
     // 更新测试项界面
-    uiUpdateTestItem(str);
+    // uiUpdateTestItem(str);
     uiUpdateTestItemList();
     leTestItemName_Old = str;
 }
@@ -472,7 +473,8 @@ void MainWindow::on_btnCopyTestIResult_clicked()
     ui->lwTestResult->setCurrentRow(testResultIndex + 1);
 }
 
-void MainWindow::on_btnRemoveTestIResult_clicked() {
+void MainWindow::on_btnRemoveTestIResult_clicked()
+{
     TestItem *testItem = getTestItemCurrent();
     if (testItem == nullptr)
         return;
@@ -640,12 +642,11 @@ void MainWindow::uiUpdateTestItemList()
     ui->lwlTestItemPool->clear();
     for (int i = 0; i < this->testItemList.size(); i++) // 往 ListWidget 添加测试项
     {
-        if (strConfigList.contains(this->testItemList.at(i).name))
-        {
+        QString testItemName = this->testItemList.at(i).name;
+        if (strConfigList.contains(testItemName))
             continue;
-        }
         QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemPool);
-        item->setText(this->testItemList.at(i).name);
+        item->setText(testItemName);
     }
 }
 

@@ -103,6 +103,8 @@ public:
     void setTestItemList(const QList<TestItem> &testItemList);
     void setConfigItemList(const QList<ConfigItem> &configItemList);
 
+    void renameTestItemProtocol(const QString &oldName, const QString &newName);
+
 private:
     void analysisTestItem();
     void analysisConfigItem();

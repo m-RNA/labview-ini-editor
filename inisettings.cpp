@@ -527,7 +527,6 @@ bool IniSettings::saveFileOrderKey(const QStringList &keyOrder, const QString &g
     QString key;   // 等号前面的键
     QString value; // 等号后面的值
 
-    // 新增组
     foreach (QString group, m_mapGroup)
     {
         out << "\n";
@@ -549,6 +548,22 @@ bool IniSettings::saveFileOrderKey(const QStringList &keyOrder, const QString &g
 
         // 剩余的写入
         foreach (QString key, keyList)
+        {
+            if (key.startsWith(group + SUBGROUP_SEPARATOR))
+            {
+                QString childKey = key.mid(group.length() + 1);
+                childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
+                out << childKey << " = " << m_mapGroupKey.value(key) << "\n";
+            }
+        }
+    }
+
+    // 新增组
+    foreach (QString group, m_mapGroupNew)
+    {
+        out << "\n";
+        out << "[" << group << "]\n";
+        foreach (QString key, m_mapGroupKey.keys())
         {
             if (key.startsWith(group + SUBGROUP_SEPARATOR))
             {
