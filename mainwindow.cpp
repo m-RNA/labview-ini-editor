@@ -407,6 +407,11 @@ void MainWindow::on_btnCopyTestICmd_clicked()
 
 void MainWindow::on_btnRemoveTestICmd_clicked()
 {
+    if (ui->lwTestCmd->count() == 1)
+    {
+        QMessageBox::warning(this, "警告", "至少保留一个命令项", QMessageBox::Ok);
+        return;
+    }
     TestItem *testItem = getTestItemCurrent();
     if (testItem == nullptr)
         return;
@@ -475,6 +480,11 @@ void MainWindow::on_btnCopyTestIResult_clicked()
 
 void MainWindow::on_btnRemoveTestIResult_clicked()
 {
+    if (ui->lwTestResult->count() == 1)
+    {
+        QMessageBox::warning(this, "警告", "至少保留一个结果项", QMessageBox::Ok);
+        return;
+    }
     TestItem *testItem = getTestItemCurrent();
     if (testItem == nullptr)
         return;
