@@ -237,7 +237,7 @@ QStringList IniSettings::childGroups() const
  */
 QStringList IniSettings::childKeys() const
 {
-    QStringList list; // 子键列表
+    QStringList list = {}; // 子键列表
     foreach (QString key, m_mapGroupKey.keys())
     {
         if (key.startsWith(m_group + SUBGROUP_SEPARATOR))
@@ -253,26 +253,56 @@ QStringList IniSettings::childKeys() const
     return list;
 }
 
-/**
- * @brief 获取所有键
- */
-QStringList IniSettings::allKeys() const
+QStringList IniSettings::childKeysOrder() const
 {
     QStringList list = {};
-    foreach (QString key, m_mapGroupKey.keys())
+    QFile file(m_fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        if (key.startsWith(m_group + SUBGROUP_SEPARATOR))
+        return list;
+    }
+    QTextStream in(&file);
+    in.setCodec(m_codec); // 设置编码方式
+
+    QString line;       // 读取的每一行数据
+    while (!in.atEnd()) // 按行读取文件内容
+    {
+        line = in.readLine().trimmed(); // 读取一行并去除两端的空白
+
+        if (line.isEmpty()) // 空行
+            continue;
+        if (line.startsWith(";")) // 注释
+            continue;
+
+        if (line.startsWith("[" + m_group + "]"))
         {
-            QString childKey = key.mid(m_group.length() + 1);
-            childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
-            if (!list.contains(childKey))
+            do
             {
-                list.append(childKey);
-            }
+                if ((!in.atEnd()))
+                    line = in.readLine().trimmed(); // 读取一行并去除两端的空白
+                else
+                    return list;
+
+                int index = line.indexOf("="); // 等号索引
+                if (index == -1)
+                    continue;
+                QString key = line.left(index).trimmed(); // 键
+                if (!list.contains(key))
+                {
+                    list.append(key);
+                }
+            } while (!(line.startsWith("[")));
         }
     }
     return list;
 }
+
+/**
+ * @brief 获取所有键
+ */
+QStringList IniSettings::allKeys() const { return childKeys(); }
+
+QStringList IniSettings::allKeysOrder() const { return childKeysOrder(); }
 
 /**
  * @brief 删除键

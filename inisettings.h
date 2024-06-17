@@ -36,9 +36,11 @@ public:
     void removeGroup(const QString &group);                             // 删除组
     void renameGroup(const QString &oldGroup, const QString &newGroup); // 重命名组
 
-    QStringList childGroups() const; // 获取子组
-    QStringList childKeys() const;   // 获取子键
-    QStringList allKeys() const;     // 获取所有键
+    QStringList childGroups() const;    // 获取子组
+    QStringList childKeys() const;      // 获取子键
+    QStringList childKeysOrder() const; // 获取子键（按照文件顺序）
+    QStringList allKeys() const;        // 获取所有键
+    QStringList allKeysOrder() const;   // 获取所有键（按照文件顺序）
 
     void remove(const QString &key);         // 删除键
     bool contains(const QString &key) const; // 是否包含键
