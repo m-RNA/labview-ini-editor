@@ -432,16 +432,19 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
         // 解析=双匹配&LADC[: ]1[,]&OK:双匹配&LADC[: ]1[,]&OK
         // QStringList anaList = splitStringSquareBrackets(analysisContentList.at(i).trimmed(), '&');
 
+        int indexSplit = analysisContentList.at(i).trimmed().indexOf("&");
         // 截取第一个 & 前的内容， 放到 analysisWay
-        testResult.analysisWay
-            = analysisContentList.at(i).trimmed().mid(0, analysisContentList.at(i).trimmed().indexOf("&"));
+        testResult.analysisWay = analysisContentList.at(i).trimmed().mid(0, indexSplit);
         // 截取第一个 & 后的内容， 放到 analysisContent
-        testResult.analysisContent
-            = analysisContentList.at(i).trimmed().mid(analysisContentList.at(i).trimmed().indexOf("&") + 1);
-
-        // 如果解析内容中包含 :  ，则需要用[]把":"括起来，即xxx:xxx -> xxx[:]xxx
-        if (testResult.analysisContent.contains(":"))
-            testResult.analysisContent.replace(":", "[:]"); // 替换冒号
+        if (indexSplit != -1)
+        {
+            testResult.analysisContent = analysisContentList.at(i).trimmed().mid(indexSplit + 1);
+            // 如果解析内容中包含 :  ，则需要用[]把":"括起来，即xxx:xxx -> xxx[:]xxx
+            if (testResult.analysisContent.contains(":"))
+                testResult.analysisContent.replace(":", "[:]"); // 替换冒号
+        }
+        else
+            testResult.analysisContent = "";
     }
 
     // 功能配置=重发次数(45)
