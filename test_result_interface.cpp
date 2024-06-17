@@ -81,7 +81,7 @@ TestResult TestResultInterface::getTestResult() const
     if (result.show == "不移除")
         result.show = "";
     if (result.analysisWay == "不截取")
-        result.analysisWay = "NA";
+        result.analysisWay = "";
     return result;
 }
 

@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 11:29:49
+ * @LastEditTime: 2024-06-17 11:58:17
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -187,7 +187,10 @@ void LabViewSetting::setTestItemList(const QList<TestItem> &testItemList)
 
         for (auto testResult : testItem.resultList)
         {
-            analysis += testResult.analysisWay + "&" + testResult.analysisContent + ":"; // 解析
+            if (testResult.analysisWay.isEmpty() || testResult.analysisContent.isEmpty())
+                analysis += "NA:"; // 解析
+            else
+                analysis += testResult.analysisWay + "&" + testResult.analysisContent + ":"; // 解析
         }
 
         // 去掉最后一个符号
@@ -202,7 +205,10 @@ void LabViewSetting::setTestItemList(const QList<TestItem> &testItemList)
         iniSettingsProtocol->setValue("发送", sent);
         iniSettingsProtocol->setValue("接收", receive);
         iniSettingsProtocol->setValue("参数配置", param);
-        iniSettingsProtocol->setValue("解析", analysis);
+        if (analysis != "NA" && analysis != "NA:NA")
+            iniSettingsProtocol->setValue("解析", analysis);
+        else
+            iniSettingsProtocol->remove("解析");
         if (testItem.repeat > 0)
             iniSettingsProtocol->setValue("功能配置", function);
         else
@@ -582,3 +588,8 @@ QStringList splitStringSquareBrackets(const QString &input, char separator)
     return commandList;
 }
 
+void LabViewSetting::renameTestItemProtocol(const QString &oldName, const QString &newName)
+{
+    iniSettingsProtocol->renameGroup(oldName, newName);
+    analysisTestItem();
+}
