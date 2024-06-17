@@ -10,7 +10,7 @@
 #define CB_TX_END_R_N 1
 #define CB_TX_END_HEX 2
 
-const QStringList STR_TX_END = {"", "<\\r\\n>", "<HEX>"};
+const QStringList STR_TX_END = {"NC", "<\\r\\n>", "<HEX>"};
 
 #define TEST_TYPE_INDEX_68 2
 
@@ -101,20 +101,23 @@ void TestItemInterface::setUi(int index, const TestCmd &item)
 void TestItemInterface::setTxAndEndIndex(QString strTx)
 {
     if (strTx.isEmpty())
+    {
+        ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_NC));
         return;
+    }
     if (strTx.toUpper().endsWith(STR_TX_END.at(CB_TX_END_HEX)))
     {
-        strTx = strTx.toUpper().remove(STR_TX_END.at(CB_TX_END_HEX));
-        ui->cbTxEnd->setCurrentIndex(CB_TX_END_HEX); // <HEX>
+        strTx = strTx.toUpper().mid(0, strTx.length() - STR_TX_END.at(CB_TX_END_HEX).length());
+        ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_HEX)); // <HEX>
     }
     else if (strTx.toLower().endsWith(STR_TX_END.at(CB_TX_END_R_N)))
     {
-        strTx = strTx.mid(0, strTx.length() - 6);
-        ui->cbTxEnd->setCurrentIndex(CB_TX_END_R_N); // <\r\n>
+        strTx = strTx.mid(0, strTx.length() - STR_TX_END.at(CB_TX_END_R_N).length());
+        ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_R_N)); // <\r\n>
     }
     else
     {
-        ui->cbTxEnd->setCurrentText(CB_TX_END_NC);
+        ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_NC));
     }
 
     ui->leTx->setText(strTx);
@@ -130,11 +133,8 @@ TestCmd TestItemInterface::getTestCmd() const
     cmd.tx = ui->leTx->text();
     if (cmd.tx.isEmpty())
         cmd.tx = "NA";
-
-    if (ui->cbTxEnd->currentIndex() == CB_TX_END_HEX)
-        cmd.tx += STR_TX_END.at(CB_TX_END_HEX);
-    else if (ui->cbTxEnd->currentIndex() == CB_TX_END_R_N)
-        cmd.tx += STR_TX_END.at(CB_TX_END_R_N);
+    else if (ui->cbTxEnd->currentText() != STR_TX_END.at(CB_TX_END_NC))
+        cmd.tx += ui->cbTxEnd->currentText();
 
     cmd.rx = ui->leRx->text();
     if (cmd.rx.isEmpty())
