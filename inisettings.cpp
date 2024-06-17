@@ -282,6 +282,8 @@ QStringList IniSettings::childKeysOrder() const
                     line = in.readLine().trimmed(); // 读取一行并去除两端的空白
                 else
                     return list;
+                if (line.startsWith(";")) // 注释
+                    continue;
 
                 int index = line.indexOf("="); // 等号索引
                 if (index == -1)
