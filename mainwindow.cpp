@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 19:12:38
+ * @LastEditTime: 2024-06-17 22:03:22
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -32,8 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    // ui->dwTestPool->setVisible(false);
-    // ui->actSownExtTestItem->setChecked(false);
+    ui->dwlTestItemExtra->setVisible(ui->actSownExtTestItem->isChecked()); //
+
     ui->lwTestCmd->setGridSize(QSize(0, TEST_CMD_HEIGHT));
     ui->lwTestResult->setGridSize(QSize(0, TEST_RESULT_HEIGHT));
 
@@ -185,7 +185,7 @@ void MainWindow::on_actOpenIni_triggered()
     {
         // 弹窗提示：协议文件加载失败
         QMessageBox::warning(this, "警告", "协议文件加载失败", QMessageBox::Ok);
-        ui->lwlTestItemPool->clear();
+        ui->lwlTestItemExtra->clear();
         return;
     }
     if (isNeedConfigFile == true)
@@ -194,12 +194,12 @@ void MainWindow::on_actOpenIni_triggered()
         {
             // 弹窗提示：配置文件加载失败
             QMessageBox::warning(this, "警告", "配置文件加载失败", QMessageBox::Ok);
-            ui->lwlTestItemList->clear();
+            ui->lwlTestItemConfig->clear();
             return;
         }
     }
     else
-        ui->lwlTestItemList->clear();
+        ui->lwlTestItemConfig->clear();
 
     // 清空界面
     ui->leTestItemName->clear();
@@ -276,23 +276,60 @@ void MainWindow::on_actAbout_triggered()
                         "CopyRight © "+ year + " by " + author + ", All Rights Reserved.");
 }
 
-void MainWindow::on_actSownExtTestItem_triggered(bool checked) { ui->dwTestPool->setVisible(checked); }
+void MainWindow::on_actSownExtTestItem_triggered(bool checked) { ui->dwlTestItemExtra->setVisible(checked); }
 
 void MainWindow::on_actNeedConfigFile_toggled(bool arg1) { isNeedConfigFile = arg1; }
 
-void MainWindow::on_dwTestPool_visibilityChanged(bool visible) { ui->actSownExtTestItem->setChecked(visible); }
+void MainWindow::on_dwlTestItemExtra_visibilityChanged(bool visible) { ui->actSownExtTestItem->setChecked(visible); }
 
-void MainWindow::on_lwlTestItemList_itemSelectionChanged()
+void MainWindow::on_lwlTestItemConfig_itemSelectionChanged()
 {
-    QListWidgetItem *item = ui->lwlTestItemList->currentItem();
+    if (labviewSetting == nullptr)
+        return;
+    QListWidgetItem *item = ui->lwlTestItemConfig->currentItem();
+    QString name = item->text().trimmed();
+    int testItemIndex = getTestItemIndex(name);
+    if (testItemIndex != -1)
+        uiUpdateTestItem(name);
+
+    QStringList keyList = labviewSetting->getConfigTestItemKey(name);
+    if (keyList.size() == 0)
+    {
+        qDebug() << "未找到配置组";
+        return;
+    }
+    // 添加测试项
+    ui->lwlTestItemConfigNode->clear();
+
+    if (keyList.size() > 0)
+    {
+        foreach (QString key, keyList) // 往 ListWidget 添加测试项
+        {
+            QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemConfigNode);
+            item->setText(key);
+        }
+        if (testItemIndex == -1)
+            uiUpdateTestItem(keyList.at(0));
+    }
+}
+
+void MainWindow::on_lwlTestItemExtra_itemSelectionChanged()
+{
+    QListWidgetItem *item = ui->lwlTestItemExtra->currentItem();
     uiUpdateTestItem(item->text().trimmed());
 }
 
-void MainWindow::on_lwlTestItemPool_itemSelectionChanged()
+void MainWindow::on_lwlTestItemConfigNode_itemSelectionChanged()
 {
-    QListWidgetItem *item = ui->lwlTestItemPool->currentItem();
+    QListWidgetItem *item = ui->lwlTestItemConfigNode->currentItem();
     uiUpdateTestItem(item->text().trimmed());
 }
+
+void MainWindow::on_lwlTestItemConfig_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
+
+void MainWindow::on_lwlTestItemExtra_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(true); }
+
+void MainWindow::on_lwlTestItemConfigNode_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
 
 void MainWindow::on_leTestItemName_editingFinished()
 {
@@ -509,7 +546,7 @@ void MainWindow::on_btnRemoveTestIResult_clicked()
 void MainWindow::on_actTestItemAdd_triggered()
 {
     // 获取当前点击的测试项的索引
-    int testItemIndex = ui->lwlTestItemPool->currentRow();
+    int testItemIndex = ui->lwlTestItemExtra->currentRow();
     if (testItemIndex == -1)
         testItemIndex = 0;
     else
@@ -529,7 +566,7 @@ void MainWindow::on_actTestItemAdd_triggered()
     ui->lwTestCmd->clear();
     ui->lwTestResult->clear();
     uiUpdateTestItemList();
-    ui->lwlTestItemPool->setCurrentRow(testItemIndex);
+    ui->lwlTestItemExtra->setCurrentRow(testItemIndex);
 }
 
 void MainWindow::on_actTestItemCopy_triggered()
@@ -551,7 +588,7 @@ void MainWindow::on_actTestItemCopy_triggered()
 
     // 更新测试项界面
     uiUpdateTestItemList();
-    ui->lwlTestItemPool->setCurrentRow(testItemIndex + 1);
+    ui->lwlTestItemExtra->setCurrentRow(testItemIndex + 1);
 }
 
 void MainWindow::on_actTestItemDelete_triggered()
@@ -572,7 +609,7 @@ void MainWindow::on_actTestItemDelete_triggered()
 
     // 更新测试项界面
     uiUpdateTestItemList();
-    ui->lwlTestItemPool->setCurrentRow(testItemIndex);
+    ui->lwlTestItemExtra->setCurrentRow(testItemIndex);
 }
 
 void MainWindow::onTestCmdReordered(void)
@@ -671,6 +708,12 @@ void MainWindow::uiUpdateTestResult(const QVector<TestResult> &resultList)
 
 void MainWindow::uiUpdateTestItem(QString testItemName)
 {
+    int testItemIndex = getTestItemIndex(testItemName);
+    if (testItemIndex == -1)
+    {
+        qDebug() << "未找到测试项";
+        return;
+    }
     // 更新界面前，检查是否有未保存的测试项
     if (leTestItemName_Old != "")
     {
@@ -678,14 +721,8 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
     }
 
     leTestItemName_Old = testItemName;
-    qDebug() << "点击: " << leTestItemName_Old;
+    qDebug() << "点击: " << testItemName;
 
-    int testItemIndex = getTestItemIndex(leTestItemName_Old);
-    if (testItemIndex == -1)
-    {
-        qDebug() << "未找到测试项";
-        return;
-    }
     const TestItem *testItem = &testItemList.at(testItemIndex);
     // testItem->print();
 
@@ -702,7 +739,7 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
 
 void MainWindow::uiUpdateTestItemList()
 {
-    ui->lwlTestItemList->clear();
+    ui->lwlTestItemConfig->clear();
     QStringList strConfigList;
     if (isNeedConfigFile == true)
     {
@@ -711,22 +748,22 @@ void MainWindow::uiUpdateTestItemList()
             QString str = this->configItemList.at(i).name;
             strConfigList << str;
 
-            QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemList);
+            QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemConfig);
             item->setText("   " + str);
 
-            QCheckBox *checkBox = new QCheckBox(ui->lwlTestItemList);
+            QCheckBox *checkBox = new QCheckBox(ui->lwlTestItemConfig);
             checkBox->setChecked(this->configItemList.at(i).enable);
-            ui->lwlTestItemList->setItemWidget(item, checkBox);
+            ui->lwlTestItemConfig->setItemWidget(item, checkBox);
         }
     }
 
-    ui->lwlTestItemPool->clear();
+    ui->lwlTestItemExtra->clear();
     for (int i = 0; i < this->testItemList.size(); i++) // 往 ListWidget 添加测试项
     {
         QString testItemName = this->testItemList.at(i).name;
         if (strConfigList.contains(testItemName))
             continue;
-        QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemPool);
+        QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemExtra);
         item->setText(testItemName);
     }
 }
@@ -834,9 +871,9 @@ void MainWindow::updateTestItemFromUi(TestItem *testItem)
 void MainWindow::updateTestItemListFromUi()
 {
     // testItemList.clear();
-    // for (int i = 0; i < ui->lwlTestItemPool->count(); i++)
+    // for (int i = 0; i < ui->lwlTestItemExtra->count(); i++)
     // {
-    //     QListWidgetItem *itemUi = ui->lwlTestItemPool->item(i);
+    //     QListWidgetItem *itemUi = ui->lwlTestItemExtra->item(i);
     //     TestItem testItem;
     //     testItem.name = itemUi->text().trimmed();
     //     testItem.byteOrder = ui->spbxByteOrder->currentText();

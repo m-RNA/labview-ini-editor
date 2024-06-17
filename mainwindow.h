@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 18:35:37
+ * @LastEditTime: 2024-06-17 22:03:08
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -42,10 +42,11 @@ private slots:
     void on_actSownExtTestItem_triggered(bool checked);
     void on_actNeedConfigFile_toggled(bool arg1);
 
-    void on_dwTestPool_visibilityChanged(bool visible);
+    void on_dwlTestItemExtra_visibilityChanged(bool visible);
 
-    void on_lwlTestItemList_itemSelectionChanged();
-    void on_lwlTestItemPool_itemSelectionChanged();
+    void on_lwlTestItemConfig_itemSelectionChanged();
+    void on_lwlTestItemExtra_itemSelectionChanged();
+    void on_lwlTestItemConfigNode_itemSelectionChanged();
 
     void on_leTestItemName_editingFinished();
     void on_spbxRepeatTimes_valueChanged(int arg1);
@@ -68,6 +69,10 @@ private slots:
 
     void onTestCmdReordered(void);    // 测试项命令重排序
     void onTestResultReordered(void); // 测试项结果重排序
+
+    void on_lwlTestItemConfig_itemClicked(QListWidgetItem *item);
+    void on_lwlTestItemExtra_itemClicked(QListWidgetItem *item);
+    void on_lwlTestItemConfigNode_itemClicked(QListWidgetItem *item);
 
 private:
     Ui::MainWindow *ui;
