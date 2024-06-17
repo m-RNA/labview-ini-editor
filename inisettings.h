@@ -1,9 +1,9 @@
 ﻿/*
  * @Author: m-RNA m-RNA@qq.com
  * @Date: 2023-11-16 23:26:05
- * @LastEditors: m-RNA m-RNA@qq.com
- * @LastEditTime: 2023-11-19 18:19:30
- * @FilePath: \LabViewIniEditor\inisettings.h
+ * @LastEditors: 陈俊健
+ * @LastEditTime: 2024-06-17 10:16:24
+ * @FilePath: \LabViewIniEditor2024\inisettings.h
  * @Description:
  */
 #ifndef INISETTINGS_H
@@ -33,12 +33,14 @@ public:
     void endGroup();                        // 结束组
     QString group() const;                  // 获取当前组
 
+    void removeGroup(const QString &group);                             // 删除组
+    void renameGroup(const QString &oldGroup, const QString &newGroup); // 重命名组
+
     QStringList childGroups() const; // 获取子组
     QStringList childKeys() const;   // 获取子键
+    QStringList allKeys() const;     // 获取所有键
 
-    QStringList allKeys() const;                      // 获取所有键
-    void remove(const QString &key);                  // 删除键
-
+    void remove(const QString &key);         // 删除键
     bool contains(const QString &key) const; // 是否包含键
 
     QString value(const QString &key, const QString &defaultValue = QString()) const; // 获取值
@@ -46,13 +48,15 @@ public:
 
     QString fileName() const; // 获取文件名
 
+    bool backupFile(const QString &backupPath = ""); // 备份文件
+
     bool saveFile();
+    bool saveFileOrderKey(const QStringList &keyOrder,
+                          const QString &groupOrder = ""); // 按照一定顺序保存文件
 
 private:
     bool loadFile();
     bool loadFile(const QString &fileName);
-
-    bool saveFile(const QString &fileName);
 
     bool m_isLoad = false;
 

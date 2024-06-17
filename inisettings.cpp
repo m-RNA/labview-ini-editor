@@ -9,6 +9,7 @@
 #if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
 #endif
+
 IniSettings::IniSettings(const QString &fileName, QTextCodec *codec, QObject *parent)
     : QObject(parent)
 {
@@ -128,6 +129,62 @@ void IniSettings::endGroup() { m_group = ""; }
  * @brief 获取组
  */
 QString IniSettings::group() const { return m_group; }
+
+/**
+ * @brief 删除组
+ * @param group 组名
+ */
+void IniSettings::removeGroup(const QString &group)
+{
+    if (m_mapGroup.contains(group))
+    {
+        m_mapGroup.removeOne(group);
+    }
+    else if (m_mapGroupNew.contains(group))
+    {
+        m_mapGroupNew.removeOne(group);
+    }
+    else
+        return;
+    foreach (QString key, m_mapGroupKey.keys())
+    {
+        if (key.startsWith(group + SUBGROUP_SEPARATOR))
+        {
+            m_mapGroupKey.remove(key);
+        }
+    }
+}
+
+/**
+ * @brief 重命名组
+ * @param oldGroup 原来的组
+ * @param newGroup 新的组
+ */
+void IniSettings::renameGroup(const QString &oldGroup, const QString &newGroup)
+{
+    if (m_mapGroup.contains(oldGroup))
+    {
+        m_mapGroup.removeOne(oldGroup);
+        m_mapGroup.append(newGroup);
+    }
+    else if (m_mapGroupNew.contains(oldGroup))
+    {
+        m_mapGroupNew.removeOne(oldGroup);
+        m_mapGroupNew.append(newGroup);
+    }
+    else
+        return;
+    foreach (QString key, m_mapGroupKey.keys())
+    {
+        if (key.startsWith(oldGroup + SUBGROUP_SEPARATOR))
+        {
+            QString childKey = key.mid(oldGroup.length() + 1);
+            QString value = m_mapGroupKey.value(key);
+            m_mapGroupKey.remove(key);
+            m_mapGroupKey.insert(newGroup + SUBGROUP_SEPARATOR + childKey, value);
+        }
+    }
+}
 
 /**
  * @brief 获取子组
@@ -262,35 +319,26 @@ void IniSettings::setValue(const QString &key, const QString &value)
  */
 QString IniSettings::fileName() const { return m_fileName; }
 
-/**
- * @brief 保存文件
- */
-bool IniSettings::saveFile() { return saveFile(m_fileName); }
-
-/**
- * @brief 保存文件
- */
-bool IniSettings::saveFile(const QString &fileName)
+bool IniSettings::backupFile(const QString &filePathBackup)
 {
-    if (fileName.isEmpty())
+    if (m_fileName.isEmpty())
     {
         return false;
     }
-    QFile file(fileName);
+    QFile file(m_fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         return false;
     }
-
-    // 创建新文件，来备份原文件，时间
-    QString backupPath = fileName.mid(0, fileName.lastIndexOf("/")) + "/Backup/";
+    QString backupPath = filePathBackup.mid(0, filePathBackup.lastIndexOf("/"));
     QDir dir;
     if (!dir.exists(backupPath))
     {
         dir.mkpath(backupPath);
     }
-    backupPath = backupPath + fileName.right(fileName.length() - fileName.lastIndexOf("/") - 1);
-    QFile fileBackup(backupPath + QDateTime::currentDateTime().toString(".yyyyMMddhhmmss") + ".ini");
+
+    // QFile fileBackup
+    QFile fileBackup(filePathBackup);
     if (!fileBackup.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         qDebug() << "打开文件失败";
@@ -311,16 +359,30 @@ bool IniSettings::saveFile(const QString &fileName)
     fileBackup.flush();
     fileBackup.close();
     file.close(); // 关闭文件
+    return true;
+}
 
-    // 在原文件修改，不是重新写入，同时保留原文件中的注释
-    QString line;                 // 读取的每一行数据
-    static int lineNullCount = 0; // 空行计数
-    static QString group;         // 当前组
-    QString key;                  // 等号前面的键
-    QString value;                // 等号后面的值
-    int index;                    // 等号索引
+/**
+ * @brief 保存文件
+ */
+bool IniSettings::saveFile()
+{
+    if (m_fileName.isEmpty())
+    {
+        return false;
+    }
+    // 创建新文件，来备份原文件，时间
+    QString backupPath = m_fileName.mid(0, m_fileName.lastIndexOf("/")) + "/Backup/";
+    backupPath = backupPath + m_fileName.right(m_fileName.length() - m_fileName.lastIndexOf("/") - 1);
+    backupPath = backupPath + QDateTime::currentDateTime().toString(".yyyyMMddhhmmss") + ".ini";
+    if (!backupFile(backupPath))
+    {
+        return false;
+    }
 
     // 写入新文件
+    QFile file(m_fileName);
+    QFile fileBackup(backupPath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         return false;
@@ -329,9 +391,18 @@ bool IniSettings::saveFile(const QString &fileName)
     {
         return false;
     }
+    QTextStream in(&fileBackup);
+    in.setCodec(m_codec); // 设置编码方式
+    QTextStream out(&file);
+    out.setCodec(m_codec);
 
-    in.setDevice(&fileBackup); // 设置设备
-    out.setDevice(&file);      // 设置设备
+    // 在原文件修改，不是重新写入，同时保留原文件中的注释
+    QString line;                 // 读取的每一行数据
+    static int lineNullCount = 0; // 空行计数
+    static QString group;         // 当前组
+    QString key;                  // 等号前面的键
+    QString value;                // 等号后面的值
+    int index;                    // 等号索引
 
     while (!in.atEnd()) // 按行读取文件内容
     {
@@ -409,7 +480,81 @@ FILE_END:
             {
                 QString childKey = key.mid(group.length() + 1);
                 childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
-                out << childKey << "=" << m_mapGroupKey.value(key) << "\n";
+                out << childKey << " = " << m_mapGroupKey.value(key) << "\n";
+            }
+        }
+    }
+
+    file.flush();       // 刷新文件
+    file.close();       // 关闭文件
+    fileBackup.close(); // 关闭文件
+    return true;
+}
+
+bool IniSettings::saveFileOrderKey(const QStringList &keyOrder, const QString &groupOrder)
+{
+    if (m_fileName.isEmpty())
+    {
+        return false;
+    }
+    // 创建新文件，来备份原文件，时间
+    QString backupPath = m_fileName.mid(0, m_fileName.lastIndexOf("/")) + "/Backup/";
+    backupPath = backupPath + m_fileName.right(m_fileName.length() - m_fileName.lastIndexOf("/") - 1);
+    backupPath = backupPath + QDateTime::currentDateTime().toString(".yyyyMMddhhmmss") + ".ini";
+    if (!backupFile(backupPath))
+    {
+        return false;
+    }
+
+    // 写入新文件
+    QFile file(m_fileName);
+    QFile fileBackup(backupPath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return false;
+    }
+    if (!fileBackup.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return false;
+    }
+    QTextStream in(&fileBackup);
+    in.setCodec(m_codec); // 设置编码方式
+    QTextStream out(&file);
+    out.setCodec(m_codec);
+
+    // 在原文件修改，不是重新写入，同时保留原文件中的注释
+    QString line;  // 读取的每一行数据
+    QString key;   // 等号前面的键
+    QString value; // 等号后面的值
+
+    // 新增组
+    foreach (QString group, m_mapGroup)
+    {
+        out << "\n";
+        out << "[" << group << "]\n";
+        QStringList keyList = m_mapGroupKey.keys();
+        // 按照顺序写入
+        if (groupOrder == group || groupOrder == "")
+        {
+            foreach (QString key, keyOrder)
+            {
+                QString keyTemp = group + SUBGROUP_SEPARATOR + key;
+                if (keyList.contains(keyTemp))
+                {
+                    keyList.removeOne(keyTemp);
+                    out << key << " = " << m_mapGroupKey.value(keyTemp) << "\n";
+                }
+            }
+        }
+
+        // 剩余的写入
+        foreach (QString key, keyList)
+        {
+            if (key.startsWith(group + SUBGROUP_SEPARATOR))
+            {
+                QString childKey = key.mid(group.length() + 1);
+                childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
+                out << childKey << " = " << m_mapGroupKey.value(key) << "\n";
             }
         }
     }

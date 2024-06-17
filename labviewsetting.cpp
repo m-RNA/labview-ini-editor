@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 03:30:25
+ * @LastEditTime: 2024-06-17 10:22:12
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -13,6 +13,11 @@
 #if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
 #endif
+
+const QStringList keyOrderProtocol = {
+    "端口选择", "发送", "接收", "参数配置", "解析", "功能配置",
+};
+
 /**
  * @brief 打印日志消息。
  * @param str 要打印的日志消息。
@@ -100,7 +105,7 @@ void LabViewSetting::clear()
 bool LabViewSetting::saveFile(void)
 {
     qDebug() << "保存文件";
-    iniSettingsProtocol->saveFile();
+    iniSettingsProtocol->saveFileOrderKey(keyOrderProtocol);
     // iniSettingsConfig->saveFile();
     return true;
 }
@@ -190,7 +195,10 @@ void LabViewSetting::setTestItemList(const QList<TestItem> &testItemList)
         iniSettingsProtocol->setValue("接收", receive);
         iniSettingsProtocol->setValue("参数配置", param);
         iniSettingsProtocol->setValue("解析", analysis);
-        iniSettingsProtocol->setValue("功能配置", function);
+        if (testItem.repeat > 0)
+            iniSettingsProtocol->setValue("功能配置", function);
+        else
+            iniSettingsProtocol->remove("功能配置");
         iniSettingsProtocol->endGroup();
     }
 }
