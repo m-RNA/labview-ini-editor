@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 11:36:02
+ * @LastEditTime: 2024-06-17 14:20:50
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -504,6 +504,74 @@ void MainWindow::on_btnRemoveTestIResult_clicked()
     if (testResultIndex >= ui->lwTestResult->count())
         testResultIndex--;
     ui->lwTestResult->setCurrentRow(testResultIndex);
+}
+
+void MainWindow::on_actTestItemAdd_triggered()
+{
+    // 获取当前点击的测试项的索引
+    int testItemIndex = ui->lwlTestItemPool->currentRow();
+    if (testItemIndex == -1)
+        testItemIndex = 0;
+    else
+        testItemIndex++;
+
+    // 添加测试项
+    static int num = 1;
+    TestCmd cmd;
+    TestResult result;
+    TestItem testItem;
+    testItem.name = "New Test Item " + QString::number(num++);
+    testItem.cmdList.append(cmd);
+    testItem.resultList.append(result);
+    testItemList.insert(testItemIndex, testItem);
+
+    // 更新测试项界面
+    ui->lwTestCmd->clear();
+    ui->lwTestResult->clear();
+    uiUpdateTestItemList();
+    ui->lwlTestItemPool->setCurrentRow(testItemIndex);
+}
+
+void MainWindow::on_actTestItemCopy_triggered()
+{
+    // 获取当前点击的测试项的名称
+    QString str = ui->leTestItemName->text().trimmed();
+    // 获取当前点击的测试项的索引
+    int testItemIndex = getTestItemIndex(str);
+    if (testItemIndex == -1)
+    {
+        qDebug() << "未找到测试项";
+        return;
+    }
+
+    // 获取当前点击的测试项的索引
+    TestItem testItemCopy = testItemList.at(testItemIndex);
+    testItemCopy.name += " Copy";
+    testItemList.insert(testItemIndex + 1, testItemCopy);
+
+    // 更新测试项界面
+    uiUpdateTestItemList();
+    ui->lwlTestItemPool->setCurrentRow(testItemIndex + 1);
+}
+
+void MainWindow::on_actTestItemDelete_triggered() {
+    // 获取当前点击的测试项的名称
+    QString str = ui->leTestItemName->text().trimmed();
+    // 获取当前点击的测试项的索引
+    int testItemIndex = getTestItemIndex(str);
+    if (testItemIndex == -1)
+    {
+        qDebug() << "未找到测试项";
+        return;
+    }
+
+    // 删除当前点击的测试项
+    testItemList.removeAt(testItemIndex);
+    this->labviewSetting->removeTestItemProtocol(str);
+
+    // 更新测试项界面
+    uiUpdateTestItemList();
+    ui->lwlTestItemPool->setCurrentRow(testItemIndex);
 }
 
 void MainWindow::onTestCmdReordered(void)

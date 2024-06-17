@@ -596,3 +596,9 @@ void LabViewSetting::renameTestItemProtocol(const QString &oldName, const QStrin
     iniSettingsProtocol->renameGroup(oldName, newName);
     analysisTestItem();
 }
+
+void LabViewSetting::removeTestItemProtocol(const QString &name)
+{
+    iniSettingsProtocol->removeGroup(name);
+    analysisTestItem();
+}

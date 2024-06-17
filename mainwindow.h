@@ -62,6 +62,10 @@ private slots:
     void on_btnCopyTestIResult_clicked();
     void on_btnRemoveTestIResult_clicked();
 
+    void on_actTestItemAdd_triggered();
+    void on_actTestItemDelete_triggered();
+    void on_actTestItemCopy_triggered();
+
     void onTestCmdReordered(void);    // 测试项命令重排序
     void onTestResultReordered(void); // 测试项结果重排序
 

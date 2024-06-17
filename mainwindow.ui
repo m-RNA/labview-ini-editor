@@ -1187,7 +1187,7 @@
   </widget>
   <widget class="QToolBar" name="toolBar_2">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="font">
     <font>
@@ -1204,6 +1204,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actTestItemAdd"/>
+   <addaction name="actTestItemCopy"/>
    <addaction name="actTestItemDelete"/>
   </widget>
   <action name="actOpenIni">
@@ -1299,7 +1300,7 @@
     <string>添加测试项</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+N</string>
+    <string>Alt+A</string>
    </property>
   </action>
   <action name="actTestItemDelete">
@@ -1361,6 +1362,17 @@
    </property>
    <property name="text">
     <string>同时导入配置文件</string>
+   </property>
+  </action>
+  <action name="actTestItemCopy">
+   <property name="text">
+    <string>复制测试项</string>
+   </property>
+   <property name="toolTip">
+    <string>复制测试项</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+C</string>
    </property>
   </action>
  </widget>
