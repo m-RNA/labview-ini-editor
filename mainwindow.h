@@ -46,7 +46,7 @@ private slots:
 
     void on_lwlTestItemConfig_itemSelectionChanged();
     void on_lwlTestItemExtra_itemSelectionChanged();
-    void on_lwlTestItemConfigNode_itemSelectionChanged();
+    void on_lwlTestItemConfigKey_itemSelectionChanged();
 
     void on_leTestItemName_editingFinished();
     void on_spbxRepeatTimes_valueChanged(int arg1);
@@ -72,7 +72,7 @@ private slots:
 
     // void on_lwlTestItemConfig_itemClicked(QListWidgetItem *item);
     // void on_lwlTestItemExtra_itemClicked(QListWidgetItem *item);
-    // void on_lwlTestItemConfigNode_itemClicked(QListWidgetItem *item);
+    // void on_lwlTestItemConfigKey_itemClicked(QListWidgetItem *item);
 
     void on_btnAddTestItemExtra_clicked();
     void on_btnCopyTestItemExtra_clicked();

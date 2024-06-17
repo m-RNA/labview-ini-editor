@@ -1145,7 +1145,7 @@
       <number>0</number>
      </property>
      <item row="1" column="0">
-      <widget class="MyListWidget" name="lwlTestItemConfigNode">
+      <widget class="MyListWidget" name="lwlTestItemConfigKey">
        <property name="toolTip">
         <string>配置文件：使用的协议项</string>
        </property>

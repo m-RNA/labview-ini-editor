@@ -202,6 +202,7 @@ void MainWindow::on_actOpenIni_triggered()
         ui->lwlTestItemConfig->clear();
 
     // 清空界面
+    ui->lwlTestItemConfigKey->clear();
     ui->leTestItemName->clear();
     ui->lwTestCmd->clear();
     ui->lwTestResult->clear();
@@ -299,13 +300,13 @@ void MainWindow::on_lwlTestItemConfig_itemSelectionChanged()
         return;
     }
     // 添加测试项
-    ui->lwlTestItemConfigNode->clear();
+    ui->lwlTestItemConfigKey->clear();
 
     if (keyList.size() > 0)
     {
         foreach (QString key, keyList) // 往 ListWidget 添加测试项
         {
-            QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemConfigNode);
+            QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemConfigKey);
             item->setText(key);
         }
         if (testItemIndex == -1)
@@ -319,9 +320,9 @@ void MainWindow::on_lwlTestItemExtra_itemSelectionChanged()
     uiUpdateTestItem(item->text().trimmed());
 }
 
-void MainWindow::on_lwlTestItemConfigNode_itemSelectionChanged()
+void MainWindow::on_lwlTestItemConfigKey_itemSelectionChanged()
 {
-    QListWidgetItem *item = ui->lwlTestItemConfigNode->currentItem();
+    QListWidgetItem *item = ui->lwlTestItemConfigKey->currentItem();
     uiUpdateTestItem(item->text().trimmed());
 }
 
@@ -329,7 +330,7 @@ void MainWindow::on_lwlTestItemConfigNode_itemSelectionChanged()
 
 // void MainWindow::on_lwlTestItemExtra_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(true); }
 
-// void MainWindow::on_lwlTestItemConfigNode_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
+// void MainWindow::on_lwlTestItemConfigKey_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
 
 void MainWindow::on_leTestItemName_editingFinished()
 {
