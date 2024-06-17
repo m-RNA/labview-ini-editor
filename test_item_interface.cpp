@@ -100,14 +100,11 @@ void TestItemInterface::setUi(int index, const TestCmd &item)
 
 void TestItemInterface::uiSetTx(QString strTx)
 {
-    if (strTx.isEmpty())
-    {
-        ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_NC));
-        return;
-    }
+    ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_NC));
+
     if (strTx.toUpper().endsWith(STR_TX_END.at(CB_TX_END_HEX)))
     {
-        strTx = strTx.toUpper().mid(0, strTx.length() - STR_TX_END.at(CB_TX_END_HEX).length());
+        strTx = strTx.mid(0, strTx.length() - STR_TX_END.at(CB_TX_END_HEX).length());
         ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_HEX)); // <HEX>
     }
     else if (strTx.toLower().endsWith(STR_TX_END.at(CB_TX_END_R_N)))
@@ -115,10 +112,6 @@ void TestItemInterface::uiSetTx(QString strTx)
         strTx = strTx.mid(0, strTx.length() - STR_TX_END.at(CB_TX_END_R_N).length());
         ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_R_N)); // <\r\n>
     }
-    // else
-    // {
-    //     ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_NC)); // NC
-    // }
 
     ui->leTx->setText(strTx);
 }
