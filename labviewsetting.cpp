@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 18:12:13
+ * @LastEditTime: 2024-06-17 21:55:42
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -13,6 +13,8 @@
 #if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
 #endif
+const QString TEST_ITEM_GROUP = "Test Item";
+const QString UNIT_GROUP = "UNIT";
 
 const QStringList keyOrderProtocol = {
     "端口选择", "发送", "接收", "参数配置", "解析", "功能配置",
@@ -130,6 +132,20 @@ QList<TestItem> LabViewSetting::getTestItemList() const { return testItemList; }
  */
 QList<ConfigItem> LabViewSetting::getConfigItemList() const { return configItemList; }
 
+QStringList LabViewSetting::getConfigTestItemKey(const QString &name) const
+{
+    iniSettingsConfig->beginGroup(TEST_ITEM_GROUP);
+    if (iniSettingsConfig->childGroups().contains(name) == false)
+    {
+        iniSettingsConfig->endGroup();
+        return QStringList();
+    }
+    iniSettingsConfig->beginGroup(name);
+    QStringList keyList = iniSettingsConfig->childKeysOrder();
+    iniSettingsConfig->endGroup();
+    return keyList;
+}
+
 void LabViewSetting::setTestItemList(const QList<TestItem> &testItemList)
 {
     this->testItemList = testItemList;
@@ -245,14 +261,11 @@ void LabViewSetting::analysisTestItem()
  */
 void LabViewSetting::analysisConfigItem()
 {
-    const QString TEST_ITEM_GROUP = "Test Item";
-    const QString UNIT_GROUP = "UNIT";
-
     configItemList.clear();
     if (iniSettingsConfig->isLoad()) // 获取配置项名称列表
     {
         iniSettingsConfig->beginGroup(TEST_ITEM_GROUP);
-        QStringList testItemNameList = iniSettingsConfig->allKeys(); // 获取测试项名称列表
+        QStringList testItemNameList = iniSettingsConfig->allKeysOrder(); // 获取测试项名称顺序列表
 
         iniSettingsConfig->beginGroup(UNIT_GROUP);
         QStringList unitList = iniSettingsConfig->allKeys(); // 获取单位列表

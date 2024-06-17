@@ -2,7 +2,7 @@
  * @Author: m-RNA m-RNA@qq.com
  * @Date: 2023-11-18 21:46:10
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-15 20:01:08
+ * @LastEditTime: 2024-06-17 23:28:39
  * @FilePath: \LabViewIniEditor2024\labviewsetting.h
  * @Description:
  *
@@ -99,6 +99,8 @@ public:
 
     QList<TestItem> getTestItemList() const;
     QList<ConfigItem> getConfigItemList() const;
+
+    QStringList getConfigTestItemKey(const QString &name) const;
 
     void setTestItemList(const QList<TestItem> &testItemList);
     void setConfigItemList(const QList<ConfigItem> &configItemList);
