@@ -10,6 +10,8 @@
 #pragma execution_character_set("utf-8")
 #endif
 
+#define INI_COMMENT_KEY "__SYSTEM__COMMENT__"
+
 IniSettings::IniSettings(const QString &fileName, QTextCodec *codec, QObject *parent)
     : QObject(parent)
 {
@@ -63,8 +65,21 @@ bool IniSettings::loadFile(const QString &fileName)
     {
         line = in.readLine().trimmed(); // 读取一行并去除两端的空白
 
-        if (line.isEmpty() || line.startsWith(";")) // 跳过注释、空行
+        if (line.isEmpty()) // 跳过空行
         {
+            continue;
+        }
+
+        if (line.startsWith(";")) // 保存注释
+        {
+            if (group.isEmpty())
+            {
+                m_mapKey.insert(INI_COMMENT_KEY, line);
+            }
+            else
+            {
+                m_mapGroupKey.insert(group + SUBGROUP_SEPARATOR + INI_COMMENT_KEY, line);
+            }
             continue;
         }
 
@@ -527,9 +542,18 @@ bool IniSettings::saveFileOrderKey(const QStringList &keyOrder, const QString &g
     QString key;   // 等号前面的键
     QString value; // 等号后面的值
 
+    // 没有group 的key
+    foreach (QString key, m_mapKey.keys())
+    {
+        if (key == INI_COMMENT_KEY)
+            out << m_mapKey.value(key) << "\n";
+        else
+            out << key << " = " << m_mapKey.value(key) << "\n";
+    }
+
     foreach (QString group, m_mapGroup)
     {
-        out << "\n";
+        out << "\n\n";
         out << "[" << group << "]\n";
         QStringList keyList = m_mapGroupKey.keys();
         // 按照顺序写入
@@ -553,7 +577,10 @@ bool IniSettings::saveFileOrderKey(const QStringList &keyOrder, const QString &g
             {
                 QString childKey = key.mid(group.length() + 1);
                 childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
-                out << childKey << " = " << m_mapGroupKey.value(key) << "\n";
+                if (childKey == INI_COMMENT_KEY)
+                    out << m_mapGroupKey.value(key) << "\n";
+                else
+                    out << childKey << " = " << m_mapGroupKey.value(key) << "\n";
             }
         }
     }
@@ -561,7 +588,7 @@ bool IniSettings::saveFileOrderKey(const QStringList &keyOrder, const QString &g
     // 新增组
     foreach (QString group, m_mapGroupNew)
     {
-        out << "\n";
+        out << "\n\n";
         out << "[" << group << "]\n";
         foreach (QString key, m_mapGroupKey.keys())
         {
@@ -569,7 +596,10 @@ bool IniSettings::saveFileOrderKey(const QStringList &keyOrder, const QString &g
             {
                 QString childKey = key.mid(group.length() + 1);
                 childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
-                out << childKey << " = " << m_mapGroupKey.value(key) << "\n";
+                if (childKey == INI_COMMENT_KEY)
+                    out << m_mapGroupKey.value(key) << "\n";
+                else
+                    out << childKey << " = " << m_mapGroupKey.value(key) << "\n";
             }
         }
     }
