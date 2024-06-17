@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 22:03:22
+ * @LastEditTime: 2024-06-18 00:08:53
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -325,11 +325,11 @@ void MainWindow::on_lwlTestItemConfigNode_itemSelectionChanged()
     uiUpdateTestItem(item->text().trimmed());
 }
 
-void MainWindow::on_lwlTestItemConfig_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
+// void MainWindow::on_lwlTestItemConfig_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
 
-void MainWindow::on_lwlTestItemExtra_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(true); }
+// void MainWindow::on_lwlTestItemExtra_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(true); }
 
-void MainWindow::on_lwlTestItemConfigNode_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
+// void MainWindow::on_lwlTestItemConfigNode_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
 
 void MainWindow::on_leTestItemName_editingFinished()
 {
@@ -545,8 +545,11 @@ void MainWindow::on_btnRemoveTestIResult_clicked()
 
 void MainWindow::on_actTestItemAdd_triggered()
 {
+    // 获取当前点击的测试项的名称
+    QString str = ui->leTestItemName->text().trimmed();
     // 获取当前点击的测试项的索引
-    int testItemIndex = ui->lwlTestItemExtra->currentRow();
+    int testItemIndex = getTestItemIndex(str);
+
     if (testItemIndex == -1)
         testItemIndex = 0;
     else
@@ -561,12 +564,11 @@ void MainWindow::on_actTestItemAdd_triggered()
     testItem.cmdList.append(cmd);
     testItem.resultList.append(result);
     testItemList.insert(testItemIndex, testItem);
-
+    // 获取当前点击的测试项的索引
+    int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
     // 更新测试项界面
-    ui->lwTestCmd->clear();
-    ui->lwTestResult->clear();
     uiUpdateTestItemList();
-    ui->lwlTestItemExtra->setCurrentRow(testItemIndex);
+    ui->lwlTestItemExtra->setCurrentRow(lwIndex);
 }
 
 void MainWindow::on_actTestItemCopy_triggered()
@@ -580,7 +582,7 @@ void MainWindow::on_actTestItemCopy_triggered()
         qDebug() << "未找到测试项";
         return;
     }
-
+    int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
     // 获取当前点击的测试项的索引
     TestItem testItemCopy = testItemList.at(testItemIndex);
     testItemCopy.name += " Copy";
@@ -588,7 +590,7 @@ void MainWindow::on_actTestItemCopy_triggered()
 
     // 更新测试项界面
     uiUpdateTestItemList();
-    ui->lwlTestItemExtra->setCurrentRow(testItemIndex + 1);
+    ui->lwlTestItemExtra->setCurrentRow(lwIndex);
 }
 
 void MainWindow::on_actTestItemDelete_triggered()
@@ -606,10 +608,13 @@ void MainWindow::on_actTestItemDelete_triggered()
     // 删除当前点击的测试项
     testItemList.removeAt(testItemIndex);
     this->labviewSetting->removeTestItemProtocol(str);
+    int lwIndex = ui->lwlTestItemExtra->currentRow();
+    if (lwIndex > 0)
+        lwIndex--;
 
     // 更新测试项界面
     uiUpdateTestItemList();
-    ui->lwlTestItemExtra->setCurrentRow(testItemIndex);
+    ui->lwlTestItemExtra->setCurrentRow(lwIndex);
 }
 
 void MainWindow::onTestCmdReordered(void)
@@ -891,3 +896,9 @@ void MainWindow::updateTestItemListFromUi()
 
     // }
 }
+
+void MainWindow::on_btnAddTestItemExtra_clicked() { on_actTestItemAdd_triggered(); }
+
+void MainWindow::on_btnCopyTestItemExtra_clicked() { on_actTestItemCopy_triggered(); }
+
+void MainWindow::on_btnRemoveTestItemExtra_clicked() { on_actTestItemDelete_triggered(); }
