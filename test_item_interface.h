@@ -21,7 +21,7 @@ public:
 
     void setIndex(int index);
     void setUi(int index, const TestCmd &item);
-    void setTxAndEndIndex(QString strTx);
+    void uiSetTx(QString strTx);
 
     // 从界面获取数据
     TestCmd getTestCmd() const;

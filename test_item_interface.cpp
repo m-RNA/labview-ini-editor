@@ -23,6 +23,7 @@ TestItemInterface::TestItemInterface(QWidget *parent)
     , ui(new Ui::TestItemInterface)
 {
     ui->setupUi(this);
+    ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_NC)); // NC
 
     ui->cbEncode->setVisible(false);
 }
@@ -31,7 +32,7 @@ TestItemInterface::~TestItemInterface() { delete ui; }
 
 void TestItemInterface::on_leTx_textChanged(const QString &arg1)
 {
-    // setTxAndEndIndex(arg1);
+    // uiSetTx(arg1);
 }
 
 void TestItemInterface::on_leTx_editingFinished()
@@ -40,8 +41,7 @@ void TestItemInterface::on_leTx_editingFinished()
     QString tx = ui->leTx->text();
     tx = tx.trimmed();
     //
-    setTxAndEndIndex(tx);
-    ui->leTx->setText(tx);
+    uiSetTx(tx);
 }
 
 void TestItemInterface::on_leRx_editingFinished()
@@ -66,7 +66,7 @@ void TestItemInterface::setUi(int index, const TestCmd &item)
     ui->cbComName->setCurrentText(item.comName);
     ui->leBrief->setText(item.brief);
 
-    setTxAndEndIndex(item.tx);
+    uiSetTx(item.tx);
     ui->leRx->setText(item.rx);
 
     ui->cbTestType->setCurrentText(item.cmdType);
@@ -98,7 +98,7 @@ void TestItemInterface::setUi(int index, const TestCmd &item)
     // ui->cbUnit->setCurrentText(item.dataUnit);
 }
 
-void TestItemInterface::setTxAndEndIndex(QString strTx)
+void TestItemInterface::uiSetTx(QString strTx)
 {
     if (strTx.isEmpty())
     {
@@ -115,10 +115,10 @@ void TestItemInterface::setTxAndEndIndex(QString strTx)
         strTx = strTx.mid(0, strTx.length() - STR_TX_END.at(CB_TX_END_R_N).length());
         ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_R_N)); // <\r\n>
     }
-    else
-    {
-        ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_NC));
-    }
+    // else
+    // {
+    //     ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_NC)); // NC
+    // }
 
     ui->leTx->setText(strTx);
 }
