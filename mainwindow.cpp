@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-18 00:08:53
+ * @LastEditTime: 2024-06-19 02:43:21
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -10,6 +10,7 @@
  */
 #include "mainwindow.h"
 #include "labviewsetting.h"
+#include "message.h"
 #include "test_item_interface.h"
 #include "test_result_interface.h"
 #include "ui_mainwindow.h"
@@ -32,6 +33,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    Message::setParent(this);
+
     ui->dwlTestItemExtra->setVisible(ui->actSownExtTestItem->isChecked()); //
 
     ui->lwTestCmd->setGridSize(QSize(0, TEST_CMD_HEIGHT));
@@ -117,16 +120,19 @@ void MainWindow::on_actOpenIni_triggered()
     if (pathName == "")
     {
         qDebug() << "未选择文件";
+        Message::warning("未选择文件");
         return;
     }
     if (!pathName.endsWith(".ini"))
     {
         qDebug() << "文件格式错误";
+        Message::warning("文件格式错误");
         return;
     }
     if (!QFile::exists(pathName))
     {
         qDebug() << "文件不存在";
+        Message::warning("文件不存在");
         return;
     }
     if (pathName == fileNameProtocol || pathName == fileNameConfig)
@@ -184,7 +190,8 @@ void MainWindow::on_actOpenIni_triggered()
     if (labviewSetting->isLoadProtocol() == false)
     {
         // 弹窗提示：协议文件加载失败
-        QMessageBox::warning(this, "警告", "协议文件加载失败", QMessageBox::Ok);
+        // QMessageBox::warning(this, "警告", "协议文件加载失败", QMessageBox::Ok);
+        Message::warning("协议文件加载失败");
         ui->lwlTestItemExtra->clear();
         return;
     }
@@ -193,7 +200,8 @@ void MainWindow::on_actOpenIni_triggered()
         if (labviewSetting->isLoadConfig() == false)
         {
             // 弹窗提示：配置文件加载失败
-            QMessageBox::warning(this, "警告", "配置文件加载失败", QMessageBox::Ok);
+            // QMessageBox::warning(this, "警告", "配置文件加载失败", QMessageBox::Ok);
+            Message::warning("配置文件加载失败");
             ui->lwlTestItemConfig->clear();
             return;
         }
@@ -226,6 +234,7 @@ void MainWindow::on_actSave_triggered()
     if (labviewSetting == nullptr)
     {
         qDebug() << "未打开文件";
+        Message::error("未打开文件");
         return;
     }
 
@@ -297,6 +306,7 @@ void MainWindow::on_lwlTestItemConfig_itemSelectionChanged()
     if (keyList.size() == 0)
     {
         qDebug() << "未找到配置组";
+        Message::error("未找到配置组");
         return;
     }
     // 添加测试项
@@ -347,6 +357,7 @@ void MainWindow::on_leTestItemName_editingFinished()
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项";
+        Message::error("未找到测试项");
         return;
     }
     // 修改测试项名称
@@ -431,6 +442,7 @@ void MainWindow::on_btnCopyTestICmd_clicked()
     if (testCmdIndex == -1)
     {
         qDebug() << "未选择命令项";
+        Message::warning("未选择命令项");
         return;
     }
 
@@ -458,6 +470,7 @@ void MainWindow::on_btnRemoveTestICmd_clicked()
     if (testCmdIndex == -1)
     {
         qDebug() << "未选择命令项";
+        Message::warning("未选择命令项");
         return;
     }
 
@@ -503,6 +516,7 @@ void MainWindow::on_btnCopyTestIResult_clicked()
     if (testResultIndex == -1)
     {
         qDebug() << "未选择结果项";
+        Message::warning("未选择结果项");
         return;
     }
 
@@ -531,6 +545,7 @@ void MainWindow::on_btnRemoveTestIResult_clicked()
     if (testResultIndex == -1)
     {
         qDebug() << "未选择结果项";
+        Message::warning("未选择结果项");
         return;
     }
 
@@ -581,6 +596,7 @@ void MainWindow::on_actTestItemCopy_triggered()
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项";
+        Message::warning("未找到测试项");
         return;
     }
     int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
@@ -603,6 +619,7 @@ void MainWindow::on_actTestItemDelete_triggered()
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项";
+        Message::warning("未找到测试项");
         return;
     }
 
@@ -655,6 +672,7 @@ TestItem *MainWindow::getTestItemCurrent(void)
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项";
+        Message::warning("未找到测试项");
         return nullptr;
     }
     return &this->testItemList[testItemIndex];
@@ -718,6 +736,7 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项";
+        Message::error("未找到测试项");
         return;
     }
     // 更新界面前，检查是否有未保存的测试项
@@ -745,6 +764,7 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
 
 void MainWindow::uiUpdateTestItemList()
 {
+    ui->lwlTestItemConfigKey->clear();
     ui->lwlTestItemConfig->clear();
     QStringList strConfigList;
     if (isNeedConfigFile == true)
@@ -782,7 +802,8 @@ void MainWindow::uiInsertTestCmd(int index, TestItemInterface *item)
 {
     if (index < 0 || index > ui->lwTestCmd->count())
     {
-        qDebug() << "index 越界";
+        qDebug() << "cmdIndex 越界";
+        Message::error("cmdIndex 越界");
         return;
     }
 
@@ -797,8 +818,8 @@ void MainWindow::uiInsertResult(int index, TestResultInterface *item)
 {
     if (index < 0 || index > ui->lwTestResult->count())
     {
-        qDebug() << "index 越界";
-        return;
+        qDebug() << "cmdIndex 越界";
+        Message::error("cmdIndex 越界");
     }
 
     QListWidgetItem *listItem = new QListWidgetItem(ui->lwTestResult);
@@ -812,7 +833,8 @@ void MainWindow::uiRemoveTestCmd(int index)
 {
     if (index < 0 || index >= ui->lwTestCmd->count())
     {
-        qDebug() << "index 越界";
+        qDebug() << "cmdIndex 越界";
+        Message::error("cmdIndex 越界");
         return;
     }
     ui->lwTestCmd->takeItem(index);
@@ -822,7 +844,8 @@ void MainWindow::uiRemoveResult(int index)
 {
     if (index < 0 || index >= ui->lwTestResult->count())
     {
-        qDebug() << "index 越界";
+        qDebug() << "resultIndex 越界";
+        Message::error("resultIndex 越界");
         return;
     }
     ui->lwTestResult->takeItem(index);
@@ -833,6 +856,7 @@ void MainWindow::insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, in
     if (cmdIndex < 0 || cmdIndex > cmdList.size())
     {
         qDebug() << "cmdIndex 越界";
+        Message::error("cmdIndex 越界");
         return;
     }
     cmdList.insert(cmdIndex, cmd);

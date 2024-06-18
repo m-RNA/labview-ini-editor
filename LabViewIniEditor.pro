@@ -15,11 +15,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH +=  \
+    Message
+
 SOURCES += \
     inisettings.cpp \
     labviewsetting.cpp \
     main.cpp \
     mainwindow.cpp \
+    Message/message.cpp \
     test_item_interface.cpp \
     test_result_interface.cpp
 
@@ -28,6 +32,7 @@ HEADERS += \
     labviewsetting.h \
     mylistwidget.h \
     mainwindow.h \
+    Message/message.h \
     test_item_interface.h \
     test_result_interface.h
 
@@ -42,6 +47,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    Resource/main.qrc
+    Resource/main.qrc\
+    Message/Message.qrc 
 
 RC_ICONS = Resource/file_type_qml.ico
