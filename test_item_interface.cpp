@@ -61,6 +61,9 @@ void TestItemInterface::setIndex(int index) { ui->lbIndex->setText(QString::numb
  */
 void TestItemInterface::setUi(int index, const TestCmd &item)
 {
+    // 初始化
+    ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_NC));
+
     ui->lbIndex->setText(QString::number(index));
     //    ui->leBrief->setText(item.brief);
     ui->cbComName->setCurrentText(item.comName);
@@ -100,8 +103,6 @@ void TestItemInterface::setUi(int index, const TestCmd &item)
 
 void TestItemInterface::uiSetTx(QString strTx)
 {
-    ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_NC));
-
     if (strTx.toUpper().endsWith(STR_TX_END.at(CB_TX_END_HEX)))
     {
         strTx = strTx.mid(0, strTx.length() - STR_TX_END.at(CB_TX_END_HEX).length());
@@ -112,7 +113,6 @@ void TestItemInterface::uiSetTx(QString strTx)
         strTx = strTx.mid(0, strTx.length() - STR_TX_END.at(CB_TX_END_R_N).length());
         ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_R_N)); // <\r\n>
     }
-
     ui->leTx->setText(strTx);
 }
 
