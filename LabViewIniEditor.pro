@@ -44,4 +44,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     Resource/main.qrc
 
-RC_ICONS = Resource/labVIEW.ico
+RC_ICONS = Resource/file_type_qml.ico
