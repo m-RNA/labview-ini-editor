@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 21:55:42
+ * @LastEditTime: 2024-06-21 01:14:31
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -82,12 +82,12 @@ LabViewSetting::LabViewSetting(QString fileNameProtocol, QString fileNameConfig)
     if (isLoadProtocol() == false)
         logPrint("协议文件加载失败");
     else
-        analysisTestItem();
+        iniToTestItemList();
 
     if (isLoadConfig() == false)
         logPrint("配置文件加载失败");
     else
-        analysisConfigItem();
+        iniToConfigItemList();
 }
 
 /**
@@ -115,6 +115,7 @@ void LabViewSetting::clear()
 bool LabViewSetting::saveFile(void)
 {
     qDebug() << "保存文件";
+    testItemListToIni();
     iniSettingsProtocol->saveFileOrderKey(keyOrderProtocol);
     // iniSettingsConfig->saveFile();
     return true;
@@ -125,6 +126,7 @@ bool LabViewSetting::saveFile(void)
  * @return 测试项列表。
  */
 QList<TestItem> LabViewSetting::getTestItemList() const { return testItemList; }
+QList<TestItem> *LabViewSetting::getTestItemListAddr() { return &testItemList; }
 
 /**
  * @brief 获取配置项列表。
@@ -146,10 +148,8 @@ QStringList LabViewSetting::getConfigTestItemKey(const QString &name) const
     return keyList;
 }
 
-void LabViewSetting::setTestItemList(const QList<TestItem> &testItemList)
+void LabViewSetting::testItemListToIni()
 {
-    this->testItemList = testItemList;
-
     // iniSettingsProtocol->clear();
     for (const auto &testItem : testItemList)
     {
@@ -238,7 +238,7 @@ void LabViewSetting::setConfigItemList(const QList<ConfigItem> &configItemList) 
 /**
  * @brief 分析测试项。
  */
-void LabViewSetting::analysisTestItem()
+void LabViewSetting::iniToTestItemList()
 {
     testItemList.clear();
     if (iniSettingsProtocol->isLoad()) // 获取测试项名称列表
@@ -259,7 +259,7 @@ void LabViewSetting::analysisTestItem()
 /**
  * @brief 分析配置项。
  */
-void LabViewSetting::analysisConfigItem()
+void LabViewSetting::iniToConfigItemList()
 {
     configItemList.clear();
     if (iniSettingsConfig->isLoad()) // 获取配置项名称列表
@@ -608,11 +608,11 @@ QStringList splitStringSquareBrackets(const QString &input, char separator)
 void LabViewSetting::renameTestItemProtocol(const QString &oldName, const QString &newName)
 {
     iniSettingsProtocol->renameGroup(oldName, newName);
-    analysisTestItem();
+    iniToTestItemList();
 }
 
 void LabViewSetting::removeTestItemProtocol(const QString &name)
 {
     iniSettingsProtocol->removeGroup(name);
-    analysisTestItem();
+    iniToTestItemList();
 }

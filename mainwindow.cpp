@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-19 02:43:21
+ * @LastEditTime: 2024-06-21 01:10:58
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -216,8 +216,8 @@ void MainWindow::on_actOpenIni_triggered()
     ui->lwTestResult->clear();
     ui->spbxDecPlace->setValue(0);
 
-    this->testItemList.clear();
-    this->testItemList = labviewSetting->getTestItemList(); // 解析 协议文件
+    // this->testItemList.clear();
+    this->testItemListAddr = labviewSetting->getTestItemListAddr(); // 解析 协议文件
 
     this->configItemList.clear(); // 清空
     if (isNeedConfigFile == true)
@@ -243,7 +243,8 @@ void MainWindow::on_actSave_triggered()
 
     // 将界面testItem保存到 testItemList
     // updateTestItemListFromUi();
-    labviewSetting->setTestItemList(testItemList);
+    // labviewSetting->testItemListToIni();
+
     // 将界面configItem保存到 configItemList
     // labviewSetting->setConfigItemList(configItemList);
 
@@ -361,7 +362,7 @@ void MainWindow::on_leTestItemName_editingFinished()
         return;
     }
     // 修改测试项名称
-    this->testItemList[testItemIndex].name = str;
+    (*(this->testItemListAddr))[testItemIndex].name = str;
     // this->configItemList[testItemIndex].name = str;
     labviewSetting->renameTestItemProtocol(leTestItemName_Old, str);
     // 更新测试项界面
@@ -579,7 +580,7 @@ void MainWindow::on_actTestItemAdd_triggered()
     testItem.name = "New Test Item " + QString::number(num++);
     testItem.cmdList.append(cmd);
     testItem.resultList.append(result);
-    testItemList.insert(testItemIndex, testItem);
+    testItemListAddr->insert(testItemIndex, testItem);
     // 获取当前点击的测试项的索引
     int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
     // 更新测试项界面
@@ -601,9 +602,9 @@ void MainWindow::on_actTestItemCopy_triggered()
     }
     int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
     // 获取当前点击的测试项的索引
-    TestItem testItemCopy = testItemList.at(testItemIndex);
+    TestItem testItemCopy = (*(this->testItemListAddr))[testItemIndex];
     testItemCopy.name += " Copy";
-    testItemList.insert(testItemIndex + 1, testItemCopy);
+    testItemListAddr->insert(testItemIndex + 1, testItemCopy);
 
     // 更新测试项界面
     uiUpdateTestItemList();
@@ -624,7 +625,7 @@ void MainWindow::on_actTestItemDelete_triggered()
     }
 
     // 删除当前点击的测试项
-    testItemList.removeAt(testItemIndex);
+    testItemListAddr->removeAt(testItemIndex);
     this->labviewSetting->removeTestItemProtocol(str);
     int lwIndex = ui->lwlTestItemExtra->currentRow();
     if (lwIndex > 0)
@@ -653,9 +654,9 @@ void MainWindow::onTestResultReordered(void)
 
 int MainWindow::getTestItemIndex(const QString &name)
 {
-    for (int i = 0; i < this->testItemList.size(); i++)
+    for (int i = 0; i < this->testItemListAddr->size(); i++)
     {
-        if (name == this->testItemList.at(i).name)
+        if (name == this->testItemListAddr->at(i).name)
         {
             return i;
         }
@@ -675,7 +676,7 @@ TestItem *MainWindow::getTestItemCurrent(void)
         Message::warning("未找到测试项");
         return nullptr;
     }
-    return &this->testItemList[testItemIndex];
+    return &(*(this->testItemListAddr))[testItemIndex];
 }
 
 void MainWindow::uiUpdateTestCmd(const QVector<TestCmd> &cmdList)
@@ -748,7 +749,7 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
     leTestItemName_Old = testItemName;
     qDebug() << "点击: " << testItemName;
 
-    const TestItem *testItem = &testItemList.at(testItemIndex);
+    const TestItem *testItem = &testItemListAddr->at(testItemIndex);
     // testItem->print();
 
     ui->leTestItemName->setText(testItem->name);
@@ -784,9 +785,9 @@ void MainWindow::uiUpdateTestItemList()
     }
 
     ui->lwlTestItemExtra->clear();
-    for (int i = 0; i < this->testItemList.size(); i++) // 往 ListWidget 添加测试项
+    for (int i = 0; i < this->testItemListAddr->size(); i++) // 往 ListWidget 添加测试项
     {
-        QString testItemName = this->testItemList.at(i).name;
+        QString testItemName = this->testItemListAddr->at(i).name;
         if (strConfigList.contains(testItemName))
             continue;
         QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemExtra);

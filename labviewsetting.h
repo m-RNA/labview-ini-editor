@@ -2,7 +2,7 @@
  * @Author: m-RNA m-RNA@qq.com
  * @Date: 2023-11-18 21:46:10
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 23:28:39
+ * @LastEditTime: 2024-06-21 01:17:47
  * @FilePath: \LabViewIniEditor2024\labviewsetting.h
  * @Description:
  *
@@ -98,19 +98,21 @@ public:
     bool isLoadConfig(void);
 
     QList<TestItem> getTestItemList() const;
+    QList<TestItem>* getTestItemListAddr();
     QList<ConfigItem> getConfigItemList() const;
 
     QStringList getConfigTestItemKey(const QString &name) const;
 
-    void setTestItemList(const QList<TestItem> &testItemList);
     void setConfigItemList(const QList<ConfigItem> &configItemList);
 
     void renameTestItemProtocol(const QString &oldName, const QString &newName);
     void removeTestItemProtocol(const QString &name);
 
 private:
-    void analysisTestItem();
-    void analysisConfigItem();
+    void iniToTestItemList();
+    void iniToConfigItemList();
+
+    void testItemListToIni();
 
     TestItem getTestItem(const QString &testItemName);
 

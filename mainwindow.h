@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-17 23:53:23
+ * @LastEditTime: 2024-06-21 01:31:11
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -86,7 +86,7 @@ private:
 
     QString leTestItemName_Old = ""; // 旧的测试项名称
 
-    QList<TestItem> testItemList = {};     // 测试项列表
+    QList<TestItem> *testItemListAddr = nullptr;     // 测试项列表
     QList<ConfigItem> configItemList = {}; // 配置项列表
 
     LabViewSetting *labviewSetting = nullptr; // LabView设置
