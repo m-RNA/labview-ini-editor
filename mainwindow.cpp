@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-21 01:10:58
+ * @LastEditTime: 2024-06-21 02:18:26
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -778,12 +778,16 @@ void MainWindow::uiUpdateTestItemList()
     ui->lwlTestItemConfigKey->clear();
     ui->lwlTestItemConfig->clear();
     QStringList strConfigList;
+    QStringList strConfigKeyList;
+
     if (isNeedConfigFile == true)
     {
         for (int i = 0; i < this->configItemList.size(); i++) // 往 ListWidget 添加测试项
         {
             QString str = this->configItemList.at(i).name;
             strConfigList << str;
+            QStringList keyList = labviewSetting->getConfigTestItemKey(str);
+            strConfigKeyList << keyList;
 
             QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemConfig);
             item->setText("   " + str);
@@ -798,9 +802,24 @@ void MainWindow::uiUpdateTestItemList()
     for (int i = 0; i < this->testItemListAddr->size(); i++) // 往 ListWidget 添加测试项
     {
         QString testItemName = this->testItemListAddr->at(i).name;
-        if (strConfigList.contains(testItemName))
-            continue;
         QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemExtra);
+        if (strConfigList.contains(testItemName))
+        {
+            // 设置为粗体 斜体
+            QFont font = item->font();
+            font.setBold(true);
+            font.setItalic(true);
+            font.setUnderline(true);
+            item->setFont(font);
+        }
+        else if (strConfigKeyList.contains(testItemName))
+        {
+            // 设置为斜体
+            QFont font = item->font();
+            font.setBold(true);
+            font.setUnderline(true);
+            item->setFont(font);
+        }
         item->setText(testItemName);
     }
 }
