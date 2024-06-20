@@ -98,6 +98,7 @@ QString FindFile(QString path, QString obj, QString target)
     {
         qDebug() << "找到一个" << target;
     }
+    Message::success("找到" + target + "：" + targetFileList.at(newIndex));
     return targetFileList.at(newIndex);
 }
 
@@ -306,8 +307,8 @@ void MainWindow::on_lwlTestItemConfig_itemSelectionChanged()
     QStringList keyList = labviewSetting->getConfigTestItemKey(name);
     if (keyList.size() == 0)
     {
-        qDebug() << "未找到配置组";
-        Message::error("未找到配置组");
+        qDebug() << "未找到配置组：" << name;
+        Message::error("未找到配置组：" + name);
         return;
     }
     // 添加测试项
@@ -325,17 +326,18 @@ void MainWindow::on_lwlTestItemConfig_itemSelectionChanged()
     }
 }
 
+void MainWindow::on_lwlTestItemConfigKey_itemSelectionChanged()
+{
+    QListWidgetItem *item = ui->lwlTestItemConfigKey->currentItem();
+    uiUpdateTestItem(item->text().trimmed());
+}
+
 void MainWindow::on_lwlTestItemExtra_itemSelectionChanged()
 {
     QListWidgetItem *item = ui->lwlTestItemExtra->currentItem();
     uiUpdateTestItem(item->text().trimmed());
 }
 
-void MainWindow::on_lwlTestItemConfigKey_itemSelectionChanged()
-{
-    QListWidgetItem *item = ui->lwlTestItemConfigKey->currentItem();
-    uiUpdateTestItem(item->text().trimmed());
-}
 
 // void MainWindow::on_lwlTestItemConfig_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
 
@@ -357,8 +359,8 @@ void MainWindow::on_leTestItemName_editingFinished()
     int testItemIndex = getTestItemIndex(leTestItemName_Old);
     if (testItemIndex == -1)
     {
-        qDebug() << "未找到测试项";
-        Message::error("未找到测试项");
+        qDebug() << "未找到测试项：" << leTestItemName_Old;
+        Message::error("未找到测试项：" + leTestItemName_Old);
         return;
     }
     // 修改测试项名称
@@ -460,7 +462,7 @@ void MainWindow::on_btnRemoveTestICmd_clicked()
 {
     if (ui->lwTestCmd->count() == 1)
     {
-        QMessageBox::warning(this, "警告", "至少保留一个命令项", QMessageBox::Ok);
+        Message::warning("至少保留一个命令项");
         return;
     }
     TestItem *testItem = getTestItemCurrent();
@@ -535,7 +537,7 @@ void MainWindow::on_btnRemoveTestIResult_clicked()
 {
     if (ui->lwTestResult->count() == 1)
     {
-        QMessageBox::warning(this, "警告", "至少保留一个结果项", QMessageBox::Ok);
+        Message::warning("至少保留一个结果项");
         return;
     }
     TestItem *testItem = getTestItemCurrent();
@@ -596,14 +598,14 @@ void MainWindow::on_actTestItemCopy_triggered()
     int testItemIndex = getTestItemIndex(str);
     if (testItemIndex == -1)
     {
-        qDebug() << "未找到测试项";
-        Message::warning("未找到测试项");
+        qDebug() << "未找到测试项：" << str;
+        Message::warning("未找到测试项：" + str);
         return;
     }
     int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
     // 获取当前点击的测试项的索引
     TestItem testItemCopy = (*(this->testItemListAddr))[testItemIndex];
-    testItemCopy.name += " Copy";
+    testItemCopy.name += "_Copy";
     testItemListAddr->insert(testItemIndex + 1, testItemCopy);
 
     // 更新测试项界面
@@ -619,8 +621,8 @@ void MainWindow::on_actTestItemDelete_triggered()
     int testItemIndex = getTestItemIndex(str);
     if (testItemIndex == -1)
     {
-        qDebug() << "未找到测试项";
-        Message::warning("未找到测试项");
+        qDebug() << "未找到测试项：" << str;
+        Message::warning("未找到测试项：" + str);
         return;
     }
 
@@ -672,8 +674,8 @@ TestItem *MainWindow::getTestItemCurrent(void)
     int testItemIndex = getTestItemIndex(str);
     if (testItemIndex == -1)
     {
-        qDebug() << "未找到测试项";
-        Message::warning("未找到测试项");
+        qDebug() << "未找到测试项：" << str;
+        Message::warning("未找到测试项：" + str);
         return nullptr;
     }
     return &(*(this->testItemListAddr))[testItemIndex];
@@ -736,8 +738,8 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
     int testItemIndex = getTestItemIndex(testItemName);
     if (testItemIndex == -1)
     {
-        qDebug() << "未找到测试项";
-        Message::error("未找到测试项");
+        qDebug() << "未找到测试项：" << testItemName;
+        Message::error("未找到测试项：" + testItemName);
         return;
     }
     // 更新界面前，检查是否有未保存的测试项
@@ -803,8 +805,8 @@ void MainWindow::uiInsertTestCmd(int index, TestItemInterface *item)
 {
     if (index < 0 || index > ui->lwTestCmd->count())
     {
-        qDebug() << "cmdIndex 越界";
-        Message::error("cmdIndex 越界");
+        qDebug() << "cmdIndex = " << index << " 越界";
+        Message::error("cmdIndex = " + QString::number(index) + " 越界");
         return;
     }
 
@@ -819,8 +821,8 @@ void MainWindow::uiInsertResult(int index, TestResultInterface *item)
 {
     if (index < 0 || index > ui->lwTestResult->count())
     {
-        qDebug() << "cmdIndex 越界";
-        Message::error("cmdIndex 越界");
+        qDebug() << "cmdIndex = " << index << " 越界";
+        Message::error("cmdIndex = " + QString::number(index) + " 越界");
     }
 
     QListWidgetItem *listItem = new QListWidgetItem(ui->lwTestResult);
@@ -834,8 +836,8 @@ void MainWindow::uiRemoveTestCmd(int index)
 {
     if (index < 0 || index >= ui->lwTestCmd->count())
     {
-        qDebug() << "cmdIndex 越界";
-        Message::error("cmdIndex 越界");
+        qDebug() << "cmdIndex = " << index << " 越界";
+        Message::error("cmdIndex = " + QString::number(index) + " 越界");
         return;
     }
     ui->lwTestCmd->takeItem(index);
@@ -845,8 +847,8 @@ void MainWindow::uiRemoveResult(int index)
 {
     if (index < 0 || index >= ui->lwTestResult->count())
     {
-        qDebug() << "resultIndex 越界";
-        Message::error("resultIndex 越界");
+        qDebug() << "resultIndex = " << index << " 越界";
+        Message::error("resultIndex = " + QString::number(index) + " 越界");
         return;
     }
     ui->lwTestResult->takeItem(index);
@@ -856,8 +858,8 @@ void MainWindow::insertTestCmd(QVector<TestCmd> &cmdList, const TestCmd &cmd, in
 {
     if (cmdIndex < 0 || cmdIndex > cmdList.size())
     {
-        qDebug() << "cmdIndex 越界";
-        Message::error("cmdIndex 越界");
+        qDebug() << "cmdIndex = " << cmdIndex << " 越界";
+        Message::error("cmdIndex = " + QString::number(cmdIndex) + " 越界");
         return;
     }
     cmdList.insert(cmdIndex, cmd);

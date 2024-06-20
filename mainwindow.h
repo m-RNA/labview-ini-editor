@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-21 01:31:11
+ * @LastEditTime: 2024-06-21 01:38:27
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -45,8 +45,8 @@ private slots:
     void on_dwlTestItemExtra_visibilityChanged(bool visible);
 
     void on_lwlTestItemConfig_itemSelectionChanged();
-    void on_lwlTestItemExtra_itemSelectionChanged();
     void on_lwlTestItemConfigKey_itemSelectionChanged();
+    void on_lwlTestItemExtra_itemSelectionChanged();
 
     void on_leTestItemName_editingFinished();
     void on_spbxRepeatTimes_valueChanged(int arg1);
