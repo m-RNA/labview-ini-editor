@@ -1,3 +1,13 @@
+/*
+ * @Author: 陈俊健
+ * @Date: 2024-06-19 02:06:37
+ * @LastEditors: 陈俊健
+ * @LastEditTime: 2024-06-20 23:44:22
+ * @FilePath: \LabViewIniEditor2024\message\message.h
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by Chenjunjian, All Rights Reserved. 
+ */
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
@@ -40,8 +50,8 @@ public:
     static void setParent(QObject *parent);
     static void PushMessage(MessageType type, const QString &content, int nDuration = 3000);
     static void success(const QString &content, int nDuration = 3000);
-    static void error(const QString &content, int nDuration = 3000);
-    static void warning(const QString &content, int nDuration = 3000);
+    static void error(const QString &content, int nDuration = 5000);
+    static void warning(const QString &content, int nDuration = 5000);
     static void information(const QString &content, int nDuration = 3000);
 
 private slots:

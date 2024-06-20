@@ -1,15 +1,16 @@
 #include "message.h"
-#include <QPainter>
-#include <QStyleOption>
 #include <QGraphicsOpacityEffect>
+#include <QPainter>
 #include <QSequentialAnimationGroup>
+#include <QStyleOption>
 #include <algorithm>
 
 static int nMessageItemMargin = 10; // 消息项之间的间距
 
 Message *Message::pMessage = nullptr; // 静态变量初始化
 
-Message::Message(QObject *parent) : QObject(parent)
+Message::Message(QObject *parent)
+    : QObject(parent)
 {
     if (parent == nullptr)
         throw std::runtime_error("message structure error!");
@@ -21,24 +22,21 @@ Message::Message(QObject *parent) : QObject(parent)
     m_vecMessage.reserve(50);
 }
 
-Message::~Message()
-{
-}
+Message::~Message() {}
 
 void Message::Push(MessageType type, const QString &content, int nDuration)
 {
     std::unique_lock<std::mutex> lck(m_qMtx);
     int height = 0;
-    for_each(m_vecMessage.begin(), m_vecMessage.end(), [&height](MessageItem *pTp) mutable
-             { height += (nMessageItemMargin + pTp->height()); });
+    for_each(m_vecMessage.begin(), m_vecMessage.end(),
+             [&height](MessageItem *pTp) mutable { height += (nMessageItemMargin + pTp->height()); });
     MessageItem *pItem = new MessageItem(qobject_cast<QWidget *>(parent()), type, content);
     connect(pItem, &MessageItem::itemReadyRemoved, this, &Message::adjustItemPos);
     connect(pItem, &MessageItem::itemRemoved, this, &Message::removeItem);
     pItem->SetDuration(nDuration);
     height += nMessageItemMargin;
     int mainWidth = qobject_cast<QWidget *>(parent())->width();
-    pItem->move(QPoint((mainWidth - pItem->width()) / 2,
-                       height));
+    pItem->move(QPoint((mainWidth - pItem->width()) / 2, height));
     m_vecMessage.emplace_back(pItem);
     pItem->Show();
 }
@@ -70,10 +68,7 @@ void Message::information(const QString &content, int nDuration)
     pMessage->Push(MESSAGE_TYPE_INFORMATION, content, nDuration);
 }
 
-void Message::adjustItemPos(MessageItem *pItem)
-{
-    pItem->Close();
-}
+void Message::adjustItemPos(MessageItem *pItem) { pItem->Close(); }
 
 void Message::removeItem(MessageItem *pItem)
 {
@@ -150,6 +145,10 @@ MessageItem::MessageItem(QWidget *parent,
 
     m_pLabelContent = new QLabel(this);
     m_pLabelContent->setText(content);
+    // 字体设置为粗体
+    QFont font = m_pLabelContent->font();
+    font.setBold(true);
+    m_pLabelContent->setFont(font);
     m_pLabelContent->adjustSize();
     m_nWidth = m_pLabelContent->width() + nLeftMargin * 2;
     m_nHeight = m_pLabelContent->height() + nTopMargin * 2;
@@ -170,17 +169,16 @@ MessageItem::MessageItem(QWidget *parent,
     pShadow->setBlurRadius(10);
     setGraphicsEffect(pShadow);
 
-
-    connect(&m_lifeTimer, &QTimer::timeout, [&]()
+    connect(&m_lifeTimer, &QTimer::timeout,
+            [&]()
             {
                 m_lifeTimer.stop();
-                emit itemReadyRemoved(this); });
+                emit itemReadyRemoved(this);
+            });
     hide();
 }
 
-MessageItem::~MessageItem()
-{
-}
+MessageItem::~MessageItem() {}
 
 void MessageItem::Show()
 {
@@ -190,15 +188,9 @@ void MessageItem::Show()
     AppearAnimation();
 }
 
-void MessageItem::Close()
-{
-    DisappearAnimation();
-}
+void MessageItem::Close() { DisappearAnimation(); }
 
-void MessageItem::SetDuration(int nDuration)
-{
-    m_nDuration = nDuration;
-}
+void MessageItem::SetDuration(int nDuration) { m_nDuration = nDuration; }
 
 void MessageItem::paintEvent(QPaintEvent *event)
 {
@@ -231,8 +223,10 @@ void MessageItem::DisappearAnimation()
 
     pOpacityAnimation2->start(QAbstractAnimation::DeletionPolicy::DeleteWhenStopped);
 
-    connect(pOpacityAnimation2, &QPropertyAnimation::finished, [&]()
+    connect(pOpacityAnimation2, &QPropertyAnimation::finished,
+            [&]()
             {
                 emit itemRemoved(this);
-                deleteLater(); });
+                deleteLater();
+            });
 }
