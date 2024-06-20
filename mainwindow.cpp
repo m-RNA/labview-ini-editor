@@ -299,6 +299,8 @@ void MainWindow::on_lwlTestItemConfig_itemSelectionChanged()
     if (labviewSetting == nullptr)
         return;
     QListWidgetItem *item = ui->lwlTestItemConfig->currentItem();
+    if (item == nullptr)
+        return;
     QString name = item->text().trimmed();
     int testItemIndex = getTestItemIndex(name);
     if (testItemIndex != -1)
@@ -329,15 +331,19 @@ void MainWindow::on_lwlTestItemConfig_itemSelectionChanged()
 void MainWindow::on_lwlTestItemConfigKey_itemSelectionChanged()
 {
     QListWidgetItem *item = ui->lwlTestItemConfigKey->currentItem();
+    if (item == nullptr)
+        return;
+    qDebug() << "点击" << item->text().trimmed();
     uiUpdateTestItem(item->text().trimmed());
 }
 
 void MainWindow::on_lwlTestItemExtra_itemSelectionChanged()
 {
     QListWidgetItem *item = ui->lwlTestItemExtra->currentItem();
+    if (item == nullptr)
+        return;
     uiUpdateTestItem(item->text().trimmed());
 }
-
 
 // void MainWindow::on_lwlTestItemConfig_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
 
@@ -656,6 +662,8 @@ void MainWindow::onTestResultReordered(void)
 
 int MainWindow::getTestItemIndex(const QString &name)
 {
+    if (name.isEmpty())
+        return -1;
     for (int i = 0; i < this->testItemListAddr->size(); i++)
     {
         if (name == this->testItemListAddr->at(i).name)
