@@ -1185,6 +1185,12 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dwlTestItemExtra">
+   <property name="minimumSize">
+    <size>
+     <width>239</width>
+     <height>250</height>
+    </size>
+   </property>
    <property name="floating">
     <bool>true</bool>
    </property>
