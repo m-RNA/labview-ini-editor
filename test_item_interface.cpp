@@ -5,6 +5,7 @@
 #include "test_item_interface.h"
 #include "ui_test_item_interface.h"
 #include <QDebug>
+#include "message.h"
 
 #define CB_TX_END_NC  0
 #define CB_TX_END_R_N 1
@@ -112,6 +113,10 @@ void TestItemInterface::uiSetTx(QString strTx)
     {
         strTx = strTx.mid(0, strTx.length() - STR_TX_END.at(CB_TX_END_R_N).length());
         ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_R_N)); // <\r\n>
+    }
+    if (strTx.toUpper() != "NA" && strTx.toUpper().contains("NA"))
+    {
+        Message::warning("第" + ui->lbIndex->text() + "条命令，发送 = 包含 \"NA\" \n部分上位机会识别为 不发送", 6000);
     }
     ui->leTx->setText(strTx);
 }
