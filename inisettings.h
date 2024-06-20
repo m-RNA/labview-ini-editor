@@ -33,6 +33,7 @@ public:
     void endGroup();                        // 结束组
     QString group() const;                  // 获取当前组
 
+    void insertGroup(int index, const QString &group);                  // 插入组
     void removeGroup(const QString &group);                             // 删除组
     void renameGroup(const QString &oldGroup, const QString &newGroup); // 重命名组
 

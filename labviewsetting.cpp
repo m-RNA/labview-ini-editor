@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-21 01:14:31
+ * @LastEditTime: 2024-06-21 03:27:42
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -146,6 +146,40 @@ QStringList LabViewSetting::getConfigTestItemKey(const QString &name) const
     QStringList keyList = iniSettingsConfig->childKeysOrder();
     iniSettingsConfig->endGroup();
     return keyList;
+}
+
+void LabViewSetting::insertTestItemProtocol(int index, const TestItem &testItem)
+{
+    if (index < 0 || index > testItemList.size())
+    {
+        return;
+    }
+    QString lastName = testItemList.at(index).name;
+    testItemList.insert(index, testItem);
+
+    iniSettingsProtocol->endGroup();
+    QStringList testItemNameList = iniSettingsProtocol->childGroups();
+    for (int i = 0; i < testItemNameList.size(); i++)
+    {
+        if (testItemNameList.at(i) == lastName)
+        {
+            index = i;
+            break;
+        }
+    }
+    iniSettingsProtocol->insertGroup(index, testItem.name);
+}
+
+void LabViewSetting::renameTestItemProtocol(const QString &oldName, const QString &newName)
+{
+    iniSettingsProtocol->renameGroup(oldName, newName);
+    iniToTestItemList();
+}
+
+void LabViewSetting::removeTestItemProtocol(const QString &name)
+{
+    iniSettingsProtocol->removeGroup(name);
+    iniToTestItemList();
 }
 
 void LabViewSetting::testItemListToIni()
@@ -603,16 +637,4 @@ QStringList splitStringSquareBrackets(const QString &input, char separator)
     }
 
     return commandList;
-}
-
-void LabViewSetting::renameTestItemProtocol(const QString &oldName, const QString &newName)
-{
-    iniSettingsProtocol->renameGroup(oldName, newName);
-    iniToTestItemList();
-}
-
-void LabViewSetting::removeTestItemProtocol(const QString &name)
-{
-    iniSettingsProtocol->removeGroup(name);
-    iniToTestItemList();
 }

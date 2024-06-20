@@ -90,7 +90,8 @@ bool IniSettings::loadFile(const QString &fileName)
         if (line.startsWith("[") && line.endsWith("]")) // 组
         {
             group = line.mid(1, line.length() - 2);
-            m_mapGroup.append(group);
+            if (!m_mapGroup.contains(group))
+                m_mapGroup.append(group);
             continue;
         }
 
@@ -112,6 +113,7 @@ bool IniSettings::loadFile(const QString &fileName)
             m_mapGroupKey.insert(group + SUBGROUP_SEPARATOR + key, value); // 组键值对
         }
     }
+
     file.close(); // 关闭文件
     return true;
 }
@@ -149,6 +151,24 @@ void IniSettings::endGroup() { m_group = ""; }
  * @brief 获取组
  */
 QString IniSettings::group() const { return m_group; }
+
+/**
+ * @brief 插入组
+ * @param index 索引
+ * @param group 组名
+ */
+void IniSettings::insertGroup(int index, const QString &group)
+{
+    if (m_mapGroup.contains(group))
+    {
+        m_mapGroup.removeOne(group);
+    }
+    if (m_mapGroupNew.contains(group))
+    {
+        m_mapGroupNew.removeOne(group);
+    }
+    m_mapGroup.insert(index, group);
+}
 
 /**
  * @brief 删除组

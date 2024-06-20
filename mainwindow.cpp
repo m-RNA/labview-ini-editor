@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-21 02:18:26
+ * @LastEditTime: 2024-06-21 03:23:33
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -588,10 +588,11 @@ void MainWindow::on_actTestItemAdd_triggered()
     testItem.name = "New Test Item " + QString::number(num++);
     testItem.cmdList.append(cmd);
     testItem.resultList.append(result);
-    testItemListAddr->insert(testItemIndex, testItem);
-    // 获取当前点击的测试项的索引
-    int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
+    // testItemListAddr->insert(testItemIndex, testItem);
+    labviewSetting->insertTestItemProtocol(testItemIndex, testItem);
+
     // 更新测试项界面
+    int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
     uiUpdateTestItemList();
     ui->lwlTestItemExtra->setCurrentRow(lwIndex);
 }
@@ -608,13 +609,14 @@ void MainWindow::on_actTestItemCopy_triggered()
         Message::warning("未找到测试项：" + str);
         return;
     }
-    int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
     // 获取当前点击的测试项的索引
     TestItem testItemCopy = (*(this->testItemListAddr))[testItemIndex];
     testItemCopy.name += "_Copy";
-    testItemListAddr->insert(testItemIndex + 1, testItemCopy);
+    // testItemListAddr->insert(testItemIndex + 1, testItemCopy);
+    labviewSetting->insertTestItemProtocol(testItemIndex + 1, testItemCopy);
 
     // 更新测试项界面
+    int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
     uiUpdateTestItemList();
     ui->lwlTestItemExtra->setCurrentRow(lwIndex);
 }
@@ -635,11 +637,11 @@ void MainWindow::on_actTestItemDelete_triggered()
     // 删除当前点击的测试项
     testItemListAddr->removeAt(testItemIndex);
     this->labviewSetting->removeTestItemProtocol(str);
+
+    // 更新测试项界面
     int lwIndex = ui->lwlTestItemExtra->currentRow();
     if (lwIndex > 0)
         lwIndex--;
-
-    // 更新测试项界面
     uiUpdateTestItemList();
     ui->lwlTestItemExtra->setCurrentRow(lwIndex);
 }
