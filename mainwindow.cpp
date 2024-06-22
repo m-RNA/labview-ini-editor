@@ -2,8 +2,8 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-21 03:23:33
- * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
+ * @LastEditTime: 2024-06-22 15:27:48
+ * @FilePath: \labview-ini-editor\mainwindow.cpp
  * @Description:
  *
  * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
@@ -27,6 +27,8 @@
 
 #define TEST_CMD_HEIGHT    105
 #define TEST_RESULT_HEIGHT 52
+
+const QString MainWindowTitle = "LabViewIniEditor-Demo";
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -145,11 +147,6 @@ void MainWindow::on_actOpenIni_triggered()
         if (result == QMessageBox::No)
             return;
     }
-    // 协议文件 和 配置文件 分别放在同目录下的 协议文件 和 配置文件 文件夹下，如下：
-    // C:NR90HCNA00NNA_IO测试程序_Rev01\协议文件\L-CM5TR01-90HCW_IO测试程序协议文件_Rev01.ini
-    // C:NR90HCNA00NNA_IO测试程序_Rev01\配置文件\L-CM5TR01-90HCW_IO测试程序配置文件_Rev01.ini
-    // 其中 L-CM5TR01-90HCW 表示测试对象， IO测试程序 表示测试程序， Rev01 表示版本号（版本号不同时，使用最新版本）
-    // 因此要匹配“协议”或“配置”前的字符串，以判断是否为同一测试对象
     QStringList strQirList = pathName.split("/");
     QString fileName = strQirList.last();
     if (fileName.contains("协议文件") == false)
@@ -164,10 +161,11 @@ void MainWindow::on_actOpenIni_triggered()
     qDebug() << "打开协议文件";
     fileNameProtocol = pathName;
     // 获取协议文件名，移除尾部
-    QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("协议文件"));
+    QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("协议"));
     qDebug() << "strTestObj: " << strTestObj;
-    // 设置标题
-    this->setWindowTitle(strTestObj);
+
+    uiClearAll();                     // 清空界面
+    this->setWindowTitle(strTestObj); // 设置标题
 
     if (isNeedConfigFile == true)
     {
@@ -181,6 +179,7 @@ void MainWindow::on_actOpenIni_triggered()
     qDebug() << "pathName: " << pathName;
     qDebug() << "fileNameProtocol: " << fileNameProtocol;
     qDebug() << "fileNameConfig: " << fileNameConfig;
+
     // 删除原来的设置
     if (labviewSetting != nullptr)
     {
@@ -191,9 +190,7 @@ void MainWindow::on_actOpenIni_triggered()
     if (labviewSetting->isLoadProtocol() == false)
     {
         // 弹窗提示：协议文件加载失败
-        // QMessageBox::warning(this, "警告", "协议文件加载失败", QMessageBox::Ok);
         Message::warning("协议文件加载失败");
-        ui->lwlTestItemExtra->clear();
         return;
     }
     if (isNeedConfigFile == true)
@@ -201,23 +198,11 @@ void MainWindow::on_actOpenIni_triggered()
         if (labviewSetting->isLoadConfig() == false)
         {
             // 弹窗提示：配置文件加载失败
-            // QMessageBox::warning(this, "警告", "配置文件加载失败", QMessageBox::Ok);
             Message::warning("配置文件加载失败");
-            ui->lwlTestItemConfig->clear();
             return;
         }
     }
-    else
-        ui->lwlTestItemConfig->clear();
 
-    // 清空界面
-    ui->lwlTestItemConfigKey->clear();
-    ui->leTestItemName->clear();
-    ui->lwTestCmd->clear();
-    ui->lwTestResult->clear();
-    ui->spbxDecPlace->setValue(0);
-
-    // this->testItemList.clear();
     this->testItemListAddr = labviewSetting->getTestItemListAddr(); // 解析 协议文件
 
     this->configItemList.clear(); // 清空
@@ -229,6 +214,8 @@ void MainWindow::on_actOpenIni_triggered()
     ui->actSave->setEnabled(true); // 保存按钮可用
     uiUpdateTestItemList();        // 更新测试项列表
 }
+
+void MainWindow::on_actReopenIni_triggered() {}
 
 void MainWindow::on_actSave_triggered()
 {
@@ -276,7 +263,7 @@ void MainWindow::on_actAbout_triggered()
     QString strData = year + "/" + month + "/" + day;
 
     QMessageBox::about(this, "About",
-                        "LabViewIniEditor-Demo\n"
+                        MainWindowTitle + "\n"
                         "For EMBB\n"
                         "\n"
                         "Author: "+ author+"\n"
@@ -314,13 +301,13 @@ void MainWindow::on_lwlTestItemConfig_itemSelectionChanged()
         return;
     }
     // 添加测试项
-    ui->lwlTestItemConfigKey->clear();
+    ui->lwTestItemConfigKey->clear();
 
     if (keyList.size() > 0)
     {
         foreach (QString key, keyList) // 往 ListWidget 添加测试项
         {
-            QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemConfigKey);
+            QListWidgetItem *item = new QListWidgetItem(ui->lwTestItemConfigKey);
             item->setText(key);
         }
         if (testItemIndex == -1)
@@ -328,9 +315,9 @@ void MainWindow::on_lwlTestItemConfig_itemSelectionChanged()
     }
 }
 
-void MainWindow::on_lwlTestItemConfigKey_itemSelectionChanged()
+void MainWindow::on_lwTestItemConfigKey_itemSelectionChanged()
 {
-    QListWidgetItem *item = ui->lwlTestItemConfigKey->currentItem();
+    QListWidgetItem *item = ui->lwTestItemConfigKey->currentItem();
     if (item == nullptr)
         return;
     qDebug() << "点击" << item->text().trimmed();
@@ -349,7 +336,7 @@ void MainWindow::on_lwlTestItemExtra_itemSelectionChanged()
 
 // void MainWindow::on_lwlTestItemExtra_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(true); }
 
-// void MainWindow::on_lwlTestItemConfigKey_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
+// void MainWindow::on_lwTestItemConfigKey_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
 
 void MainWindow::on_leTestItemName_editingFinished()
 {
@@ -777,7 +764,7 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
 
 void MainWindow::uiUpdateTestItemList()
 {
-    ui->lwlTestItemConfigKey->clear();
+    ui->lwTestItemConfigKey->clear();
     ui->lwlTestItemConfig->clear();
     QStringList strConfigList;
     QStringList strConfigKeyList;
@@ -824,6 +811,22 @@ void MainWindow::uiUpdateTestItemList()
         }
         item->setText(testItemName);
     }
+}
+
+void MainWindow::uiClearAll()
+{
+    this->setWindowTitle(MainWindowTitle);
+
+    ui->lwTestItemConfig->clear();
+    ui->lwTestItemConfigKey->clear();
+    ui->lwTestItemExtra->clear();
+
+    ui->leTestItemName->clear();
+    ui->spbxRepeatTimes->setValue(1);
+    ui->spbxDataSize->setValue(2);
+    ui->spbxDecPlace->setValue(0);
+    ui->lwTestCmd->clear();
+    ui->lwTestResult->clear();
 }
 
 void MainWindow::uiAddTestCmd(TestItemInterface *item) { uiInsertTestCmd(ui->lwTestCmd->count(), item); }

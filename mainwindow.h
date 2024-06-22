@@ -36,6 +36,7 @@ public:
 private slots:
 
     void on_actOpenIni_triggered();
+    void on_actReopenIni_triggered();
     void on_actSave_triggered();
 
     void on_actAbout_triggered();
@@ -86,8 +87,8 @@ private:
 
     QString leTestItemName_Old = ""; // 旧的测试项名称
 
-    QList<TestItem> *testItemListAddr = nullptr;     // 测试项列表
-    QList<ConfigItem> configItemList = {}; // 配置项列表
+    QList<TestItem> *testItemListAddr = nullptr; // 测试项列表
+    QList<ConfigItem> configItemList = {};       // 配置项列表
 
     LabViewSetting *labviewSetting = nullptr; // LabView设置
 
@@ -98,6 +99,8 @@ private:
     void uiUpdateTestResult(const QVector<TestResult> &resultList); // 更新测试结果界面
     void uiUpdateTestItem(QString testItemName);                    // 更新测试项界面
     void uiUpdateTestItemList();                                    // 更新测试项列表界面
+
+    void uiClearAll( ); // 清空界面
 
     void uiAddTestCmd(TestItemInterface *item);  // 界面添加测试命令
     void uiAddResult(TestResultInterface *item); // 界面添加测试结果
