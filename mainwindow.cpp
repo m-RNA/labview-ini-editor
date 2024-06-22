@@ -2,8 +2,8 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-22 15:27:48
- * @FilePath: \labview-ini-editor\mainwindow.cpp
+ * @LastEditTime: 2024-06-23 04:28:58
+ * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
  * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
@@ -281,11 +281,11 @@ void MainWindow::on_actNeedConfigFile_toggled(bool arg1) { isNeedConfigFile = ar
 
 void MainWindow::on_dwlTestItemExtra_visibilityChanged(bool visible) { ui->actSownExtTestItem->setChecked(visible); }
 
-void MainWindow::on_lwlTestItemConfig_itemSelectionChanged()
+void MainWindow::on_lwTestItemConfig_itemSelectionChanged()
 {
     if (labviewSetting == nullptr)
         return;
-    QListWidgetItem *item = ui->lwlTestItemConfig->currentItem();
+    QListWidgetItem *item = ui->lwTestItemConfig->currentItem();
     if (item == nullptr)
         return;
     QString name = item->text().trimmed();
@@ -324,17 +324,17 @@ void MainWindow::on_lwTestItemConfigKey_itemSelectionChanged()
     uiUpdateTestItem(item->text().trimmed());
 }
 
-void MainWindow::on_lwlTestItemExtra_itemSelectionChanged()
+void MainWindow::on_lwTestItemExtra_itemSelectionChanged()
 {
-    QListWidgetItem *item = ui->lwlTestItemExtra->currentItem();
+    QListWidgetItem *item = ui->lwTestItemExtra->currentItem();
     if (item == nullptr)
         return;
     uiUpdateTestItem(item->text().trimmed());
 }
 
-// void MainWindow::on_lwlTestItemConfig_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
+// void MainWindow::on_lwTestItemConfig_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
 
-// void MainWindow::on_lwlTestItemExtra_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(true); }
+// void MainWindow::on_lwTestItemExtra_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(true); }
 
 // void MainWindow::on_lwTestItemConfigKey_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
 
@@ -579,9 +579,9 @@ void MainWindow::on_actTestItemAdd_triggered()
     labviewSetting->insertTestItemProtocol(testItemIndex, testItem);
 
     // 更新测试项界面
-    int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
+    int lwIndex = ui->lwTestItemExtra->currentRow() + 1;
     uiUpdateTestItemList();
-    ui->lwlTestItemExtra->setCurrentRow(lwIndex);
+    ui->lwTestItemExtra->setCurrentRow(lwIndex);
 }
 
 void MainWindow::on_actTestItemCopy_triggered()
@@ -603,9 +603,9 @@ void MainWindow::on_actTestItemCopy_triggered()
     labviewSetting->insertTestItemProtocol(testItemIndex + 1, testItemCopy);
 
     // 更新测试项界面
-    int lwIndex = ui->lwlTestItemExtra->currentRow() + 1;
+    int lwIndex = ui->lwTestItemExtra->currentRow() + 1;
     uiUpdateTestItemList();
-    ui->lwlTestItemExtra->setCurrentRow(lwIndex);
+    ui->lwTestItemExtra->setCurrentRow(lwIndex);
 }
 
 void MainWindow::on_actTestItemDelete_triggered()
@@ -626,11 +626,11 @@ void MainWindow::on_actTestItemDelete_triggered()
     this->labviewSetting->removeTestItemProtocol(str);
 
     // 更新测试项界面
-    int lwIndex = ui->lwlTestItemExtra->currentRow();
+    int lwIndex = ui->lwTestItemExtra->currentRow();
     if (lwIndex > 0)
         lwIndex--;
     uiUpdateTestItemList();
-    ui->lwlTestItemExtra->setCurrentRow(lwIndex);
+    ui->lwTestItemExtra->setCurrentRow(lwIndex);
 }
 
 void MainWindow::onTestCmdReordered(void)
@@ -765,7 +765,7 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
 void MainWindow::uiUpdateTestItemList()
 {
     ui->lwTestItemConfigKey->clear();
-    ui->lwlTestItemConfig->clear();
+    ui->lwTestItemConfig->clear();
     QStringList strConfigList;
     QStringList strConfigKeyList;
 
@@ -778,20 +778,20 @@ void MainWindow::uiUpdateTestItemList()
             QStringList keyList = labviewSetting->getConfigTestItemKey(str);
             strConfigKeyList << keyList;
 
-            QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemConfig);
+            QListWidgetItem *item = new QListWidgetItem(ui->lwTestItemConfig);
             item->setText("   " + str);
 
-            QCheckBox *checkBox = new QCheckBox(ui->lwlTestItemConfig);
+            QCheckBox *checkBox = new QCheckBox(ui->lwTestItemConfig);
             checkBox->setChecked(this->configItemList.at(i).enable);
-            ui->lwlTestItemConfig->setItemWidget(item, checkBox);
+            ui->lwTestItemConfig->setItemWidget(item, checkBox);
         }
     }
 
-    ui->lwlTestItemExtra->clear();
+    ui->lwTestItemExtra->clear();
     for (int i = 0; i < this->testItemListAddr->size(); i++) // 往 ListWidget 添加测试项
     {
         QString testItemName = this->testItemListAddr->at(i).name;
-        QListWidgetItem *item = new QListWidgetItem(ui->lwlTestItemExtra);
+        QListWidgetItem *item = new QListWidgetItem(ui->lwTestItemExtra);
         if (strConfigList.contains(testItemName))
         {
             // 设置为粗体 斜体
@@ -936,9 +936,9 @@ void MainWindow::updateTestItemFromUi(TestItem *testItem)
 void MainWindow::updateTestItemListFromUi()
 {
     // testItemList.clear();
-    // for (int i = 0; i < ui->lwlTestItemExtra->count(); i++)
+    // for (int i = 0; i < ui->lwTestItemExtra->count(); i++)
     // {
-    //     QListWidgetItem *itemUi = ui->lwlTestItemExtra->item(i);
+    //     QListWidgetItem *itemUi = ui->lwTestItemExtra->item(i);
     //     TestItem testItem;
     //     testItem.name = itemUi->text().trimmed();
     //     testItem.byteOrder = ui->spbxByteOrder->currentText();

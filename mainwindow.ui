@@ -1063,7 +1063,7 @@
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="MyListWidget" name="lwlTestItemConfig">
+      <widget class="MyListWidget" name="lwTestItemConfig">
        <property name="toolTip">
         <string>配置文件 [Test Item]</string>
        </property>
@@ -1145,7 +1145,7 @@
       <number>0</number>
      </property>
      <item row="1" column="0">
-      <widget class="MyListWidget" name="lwlTestItemConfigKey">
+      <widget class="MyListWidget" name="lwTestItemConfigKey">
        <property name="toolTip">
         <string>配置文件：使用的协议项</string>
        </property>
@@ -1215,7 +1215,7 @@
       <number>0</number>
      </property>
      <item row="1" column="0">
-      <widget class="MyListWidget" name="lwlTestItemExtra">
+      <widget class="MyListWidget" name="lwTestItemExtra">
        <property name="toolTip">
         <string>协议文件：未使用的测试项</string>
        </property>
