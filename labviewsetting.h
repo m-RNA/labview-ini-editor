@@ -89,7 +89,7 @@ public:
 class LabViewSetting
 {
 public:
-    LabViewSetting(QString fileNameProtocol, QString fileNameConfig);
+    LabViewSetting(QString filePathProtocol, QString filePathConfig);
     ~LabViewSetting();
     void clear();
 
@@ -108,6 +108,7 @@ public:
     void insertTestItemProtocol(int index, const TestItem &testItem);
     void renameTestItemProtocol(const QString &oldName, const QString &newName);
     void removeTestItemProtocol(const QString &name);
+    void moveTestItemProtocol(const QString &nextName, const QString &name);
 
 private:
     void iniToTestItemList();
@@ -117,8 +118,8 @@ private:
 
     TestItem getTestItem(const QString &testItemName);
 
-    QString fileNameProtocol = "";
-    QString fileNameConfig = "";
+    QString filePathProtocol = "";
+    QString filePathConfig = "";
 
     IniSettings *iniSettingsProtocol;
     IniSettings *iniSettingsConfig;

@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-21 03:27:42
+ * @LastEditTime: 2024-06-23 05:56:34
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -68,16 +68,16 @@ bool LabViewSetting::isLoadConfig(void) { return iniSettingsConfig->isLoad(); }
 
 /**
  * @brief 使用指定的文件名构造一个 LabViewSetting 对象。
- * @param fileNameProtocol 协议文件的文件名。
- * @param fileNameConfig 配置文件的文件名。
+ * @param filePathProtocol 协议文件的文件名。
+ * @param filePathConfig 配置文件的文件名。
  */
-LabViewSetting::LabViewSetting(QString fileNameProtocol, QString fileNameConfig)
+LabViewSetting::LabViewSetting(QString filePathProtocol, QString filePathConfig)
 {
-    this->fileNameProtocol = fileNameProtocol;
-    this->fileNameConfig = fileNameConfig;
+    this->filePathProtocol = filePathProtocol;
+    this->filePathConfig = filePathConfig;
 
-    iniSettingsProtocol = new IniSettings(fileNameProtocol, QTextCodec::codecForName("GB2312"));
-    iniSettingsConfig = new IniSettings(fileNameConfig, QTextCodec::codecForName("GB2312"));
+    iniSettingsProtocol = new IniSettings(filePathProtocol, QTextCodec::codecForName("GB2312"));
+    iniSettingsConfig = new IniSettings(filePathConfig, QTextCodec::codecForName("GB2312"));
 
     if (isLoadProtocol() == false)
         logPrint("协议文件加载失败");
@@ -180,6 +180,24 @@ void LabViewSetting::removeTestItemProtocol(const QString &name)
 {
     iniSettingsProtocol->removeGroup(name);
     iniToTestItemList();
+}
+
+void LabViewSetting::moveTestItemProtocol(const QString &nextName, const QString &moveName)
+{
+    iniSettingsProtocol->removeGroup(moveName);
+
+    iniSettingsProtocol->endGroup();
+    QStringList testItemNameList = iniSettingsProtocol->childGroups();
+    int testItemIndex = 0;
+    for (int i = 0; i < testItemNameList.size(); i++)
+    {
+        if (testItemNameList.at(i) == nextName)
+        {
+            testItemIndex = i;
+            break;
+        }
+    }
+    iniSettingsProtocol->insertGroup(testItemIndex, moveName);
 }
 
 void LabViewSetting::testItemListToIni()
@@ -468,7 +486,7 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
         }
     }
     int resultIndexMax = testItem.resultIndexMax;
-    qDebug() << "resultIndexMax:" << resultIndexMax << "resultNum:" << resultNum;
+    // qDebug() << "resultIndexMax:" << resultIndexMax << "resultNum:" << resultNum;
     fillLength(analysisContentList, resultIndexMax + 1);
 
     for (int i = 0; i < resultNum; i++)
