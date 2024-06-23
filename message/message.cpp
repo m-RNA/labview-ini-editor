@@ -149,6 +149,10 @@ MessageItem::MessageItem(QWidget *parent,
     QFont font = m_pLabelContent->font();
     font.setBold(true);
     m_pLabelContent->setFont(font);
+    // 设置内容的最大宽度
+    m_pLabelContent->setWordWrap(true); // 自动换行
+    m_pLabelContent->setAlignment(Qt::AlignCenter);
+    
     m_pLabelContent->adjustSize();
     m_nWidth = m_pLabelContent->width() + nLeftMargin * 2;
     m_nHeight = m_pLabelContent->height() + nTopMargin * 2;
