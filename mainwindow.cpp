@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-23 04:28:58
+ * @LastEditTime: 2024-06-23 16:37:03
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->lwTestCmd, &MyListWidget::itemsReordered, this, &MainWindow::onTestCmdReordered);
     connect(ui->lwTestResult, &MyListWidget::itemsReordered, this, &MainWindow::onTestResultReordered);
+    connect(ui->lwTestItemExtra, &MyListWidget::itemsReordered, this, &MainWindow::onTestItemExtraReordered);
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -100,7 +101,7 @@ QString FindFile(QString path, QString obj, QString target)
     {
         qDebug() << "找到一个" << target;
     }
-    Message::success("找到" + target + "：" + targetFileList.at(newIndex));
+    // Message::success("找到" + target + "：" + targetFileList.at(newIndex));
     return targetFileList.at(newIndex);
 }
 
@@ -109,10 +110,10 @@ void MainWindow::on_actOpenIni_triggered()
 {
     QString pathName;
     QString pathName_Old = "";
-    if (fileNameProtocol != "")
-        pathName_Old = fileNameProtocol.mid(0, fileNameProtocol.lastIndexOf("/"));
-    else if (fileNameConfig != "")
-        pathName_Old = fileNameConfig.mid(0, fileNameConfig.lastIndexOf("/"));
+    if (filePathProtocol != "")
+        pathName_Old = filePathProtocol.mid(0, filePathProtocol.lastIndexOf("/"));
+    else if (filePathConfig != "")
+        pathName_Old = filePathConfig.mid(0, filePathConfig.lastIndexOf("/"));
     if (pathName_Old == "")
     {
         //"."表示在当前工作路径下寻找
@@ -138,7 +139,7 @@ void MainWindow::on_actOpenIni_triggered()
         Message::warning("文件不存在");
         return;
     }
-    if (pathName == fileNameProtocol || pathName == fileNameConfig)
+    if (pathName == filePathProtocol || pathName == filePathConfig)
     {
         qDebug() << "该文件已打开";
         // 弹窗提示：已经打开该文件，是否重新打开，
@@ -148,8 +149,8 @@ void MainWindow::on_actOpenIni_triggered()
             return;
     }
     QStringList strQirList = pathName.split("/");
-    QString fileName = strQirList.last();
-    if (fileName.contains("协议文件") == false)
+    fileNameProtocol = strQirList.last();
+    if (fileNameProtocol.contains("协议文件") == false)
     {
         qDebug() << "文件名不包含“协议文件”关键字";
         QMessageBox::StandardButton result = QMessageBox::question(
@@ -159,7 +160,7 @@ void MainWindow::on_actOpenIni_triggered()
     }
 
     qDebug() << "打开协议文件";
-    fileNameProtocol = pathName;
+    filePathProtocol = pathName;
     // 获取协议文件名，移除尾部
     QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("协议"));
     qDebug() << "strTestObj: " << strTestObj;
@@ -173,26 +174,25 @@ void MainWindow::on_actOpenIni_triggered()
         strPath = strPath.mid(0, strPath.lastIndexOf("/"));
         strPath += "/配置文件/";
         qDebug() << ": " << strPath;
-        fileNameConfig = strPath + FindFile(strPath, strTestObj, "配置文件");
+        fileNameConfig = FindFile(strPath, strTestObj, "配置文件");
+        filePathConfig = strPath + fileNameConfig;
     }
 
-    qDebug() << "pathName: " << pathName;
-    qDebug() << "fileNameProtocol: " << fileNameProtocol;
-    qDebug() << "fileNameConfig: " << fileNameConfig;
+    qDebug() << "filePathProtocol: " << filePathProtocol;
+    qDebug() << "filePathConfig: " << filePathConfig;
 
+    on_actLoadIni_triggered();
+}
+
+void MainWindow::on_actLoadIni_triggered()
+{
     // 删除原来的设置
     if (labviewSetting != nullptr)
     {
         delete labviewSetting;
         labviewSetting = nullptr;
     }
-    labviewSetting = new LabViewSetting(fileNameProtocol, fileNameConfig);
-    if (labviewSetting->isLoadProtocol() == false)
-    {
-        // 弹窗提示：协议文件加载失败
-        Message::warning("协议文件加载失败");
-        return;
-    }
+    labviewSetting = new LabViewSetting(filePathProtocol, filePathConfig);
     if (isNeedConfigFile == true)
     {
         if (labviewSetting->isLoadConfig() == false)
@@ -201,11 +201,20 @@ void MainWindow::on_actOpenIni_triggered()
             Message::warning("配置文件加载失败");
             return;
         }
+        else
+            Message::success(fileNameConfig + " 加载成功", 5000);
     }
+    if (labviewSetting->isLoadProtocol() == false)
+    {
+        // 弹窗提示：协议文件加载失败
+        Message::warning("协议文件加载失败");
+        return;
+    }
+    else
+        Message::success(fileNameProtocol + " 加载成功");
 
     this->testItemListAddr = labviewSetting->getTestItemListAddr(); // 解析 协议文件
-
-    this->configItemList.clear(); // 清空
+    this->configItemList.clear();                                   // 清空
     if (isNeedConfigFile == true)
     {
         this->configItemList = labviewSetting->getConfigItemList(); // 解析 配置文件
@@ -214,8 +223,6 @@ void MainWindow::on_actOpenIni_triggered()
     ui->actSave->setEnabled(true); // 保存按钮可用
     uiUpdateTestItemList();        // 更新测试项列表
 }
-
-void MainWindow::on_actReopenIni_triggered() {}
 
 void MainWindow::on_actSave_triggered()
 {
@@ -237,7 +244,13 @@ void MainWindow::on_actSave_triggered()
     // labviewSetting->setConfigItemList(configItemList);
 
     // 保存配置文件 & 协议文件
-    labviewSetting->saveFile();
+    if (labviewSetting->saveFile() == false)
+    {
+        qDebug() << "保存失败";
+        Message::error("保存失败");
+        return;
+    }
+    Message::success("保存成功", 2000);
 }
 
 void MainWindow::on_actAbout_triggered()
@@ -348,6 +361,10 @@ void MainWindow::on_leTestItemName_editingFinished()
         return;
     }
     ui->leTestItemName->setText(str);
+    if (leTestItemName_Old == "")
+        return;
+    if (str == leTestItemName_Old)
+        return;
     // 获取当前点击的测试项的索引
     int testItemIndex = getTestItemIndex(leTestItemName_Old);
     if (testItemIndex == -1)
@@ -649,6 +666,23 @@ void MainWindow::onTestResultReordered(void)
     updateTestResultListFromUi(testItem->resultList);
 }
 
+void MainWindow::onTestItemExtraReordered(void)
+{
+    int uiIndex = ui->lwTestItemExtra->currentRow();
+    if (uiIndex == -1)
+        return;
+    auto item = ui->lwTestItemExtra->currentItem();
+    if (item == nullptr)
+        return;
+    if (uiIndex < ui->lwTestItemExtra->count() - 1)
+        uiIndex++;
+    QString lastName = ui->lwTestItemExtra->item(uiIndex)->text().trimmed();
+
+    QString name = item->text().trimmed();
+
+    labviewSetting->moveTestItemProtocol(lastName, name);
+}
+
 int MainWindow::getTestItemIndex(const QString &name)
 {
     if (name.isEmpty())
@@ -667,6 +701,8 @@ TestItem *MainWindow::getTestItemCurrent(void)
 {
     // 获取当前点击的测试项的名称
     QString str = ui->leTestItemName->text().trimmed();
+    if (str == "")
+        return nullptr;
     // 获取当前点击的测试项的索引
     int testItemIndex = getTestItemIndex(str);
     if (testItemIndex == -1)
@@ -766,6 +802,8 @@ void MainWindow::uiUpdateTestItemList()
 {
     ui->lwTestItemConfigKey->clear();
     ui->lwTestItemConfig->clear();
+    ui->lwTestItemExtra->clear();
+
     QStringList strConfigList;
     QStringList strConfigKeyList;
 
@@ -787,7 +825,6 @@ void MainWindow::uiUpdateTestItemList()
         }
     }
 
-    ui->lwTestItemExtra->clear();
     for (int i = 0; i < this->testItemListAddr->size(); i++) // 往 ListWidget 添加测试项
     {
         QString testItemName = this->testItemListAddr->at(i).name;
@@ -815,7 +852,7 @@ void MainWindow::uiUpdateTestItemList()
 
 void MainWindow::uiClearAll()
 {
-    this->setWindowTitle(MainWindowTitle);
+    // this->setWindowTitle(MainWindowTitle);
 
     ui->lwTestItemConfig->clear();
     ui->lwTestItemConfigKey->clear();

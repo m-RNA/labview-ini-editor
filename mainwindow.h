@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-23 04:28:39
+ * @LastEditTime: 2024-06-23 05:09:12
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -36,7 +36,7 @@ public:
 private slots:
 
     void on_actOpenIni_triggered();
-    void on_actReopenIni_triggered();
+    void on_actLoadIni_triggered();
     void on_actSave_triggered();
 
     void on_actAbout_triggered();
@@ -68,8 +68,9 @@ private slots:
     void on_actTestItemCopy_triggered();
     void on_actTestItemDelete_triggered();
 
-    void onTestCmdReordered(void);    // 测试项命令重排序
-    void onTestResultReordered(void); // 测试项结果重排序
+    void onTestCmdReordered(void);       // 测试项命令重排序
+    void onTestResultReordered(void);    // 测试项结果重排序
+    void onTestItemExtraReordered(void); // 测试项额外项重排序
 
     // void on_lwlTestItemConfig_itemClicked(QListWidgetItem *item);
     // void on_lwlTestItemExtra_itemClicked(QListWidgetItem *item);
@@ -81,8 +82,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QString fileNameProtocol = ""; // 协议文件名
-    QString fileNameConfig = "";   // 配置文件名
+    QString filePathProtocol = ""; // 协议文件名
+    QString filePathConfig = "";   // 配置文件名
+    QString fileNameProtocol = ""; // 协议文件路径
+    QString fileNameConfig = "";   // 配置文件路径
     bool isNeedConfigFile = false; // 是否需要导入配置文件
 
     QString leTestItemName_Old = ""; // 旧的测试项名称
@@ -100,7 +103,7 @@ private:
     void uiUpdateTestItem(QString testItemName);                    // 更新测试项界面
     void uiUpdateTestItemList();                                    // 更新测试项列表界面
 
-    void uiClearAll( ); // 清空界面
+    void uiClearAll(); // 清空界面
 
     void uiAddTestCmd(TestItemInterface *item);  // 界面添加测试命令
     void uiAddResult(TestResultInterface *item); // 界面添加测试结果

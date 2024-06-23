@@ -933,8 +933,9 @@
      <string>文件</string>
     </property>
     <addaction name="actOpenIni"/>
-    <addaction name="separator"/>
+    <addaction name="actLoadIni"/>
     <addaction name="actSave"/>
+    <addaction name="separator"/>
     <addaction name="action_9"/>
     <addaction name="separator"/>
     <addaction name="action_SSCOM"/>
@@ -987,9 +988,12 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actOpenIni"/>
+   <addaction name="actLoadIni"/>
    <addaction name="actSave"/>
    <addaction name="separator"/>
    <addaction name="separator"/>
+   <addaction name="actNeedConfigFile"/>
+   <addaction name="actSownExtTestItem"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget">
    <property name="toolTip">
@@ -1510,6 +1514,17 @@
    </property>
    <property name="shortcut">
     <string>Alt+C</string>
+   </property>
+  </action>
+  <action name="actLoadIni">
+   <property name="text">
+    <string>重新加载INI</string>
+   </property>
+   <property name="toolTip">
+    <string>重新加载INI</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>
