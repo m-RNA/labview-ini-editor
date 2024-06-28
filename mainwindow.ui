@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
+    <width>869</width>
     <height>657</height>
    </rect>
   </property>
@@ -924,7 +924,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>850</width>
+     <width>869</width>
      <height>23</height>
     </rect>
    </property>
@@ -956,7 +956,7 @@
     <property name="title">
      <string>设置</string>
     </property>
-    <addaction name="actSownExtTestItem"/>
+    <addaction name="actSownAllTestItem"/>
     <addaction name="separator"/>
     <addaction name="actNeedConfigFile"/>
    </widget>
@@ -1183,7 +1183,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dwlTestItemExtra">
+  <widget class="QDockWidget" name="dwlTestItemAll">
    <property name="minimumSize">
     <size>
      <width>261</width>
@@ -1197,7 +1197,7 @@
     <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
-    <string>额外项</string>
+    <string>全部项</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -1222,7 +1222,7 @@
         <bool>true</bool>
        </property>
        <property name="toolTip">
-        <string>协议文件：未使用的测试项</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; font-style:italic; text-decoration: underline;&quot;&gt;测试项&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;：直接使用&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600; text-decoration: underline;&quot;&gt;测试项&lt;/span&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;：间接使用&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;测试项：没有使用&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
@@ -1345,7 +1345,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actNeedConfigFile"/>
-   <addaction name="actSownExtTestItem"/>
+   <addaction name="actSownAllTestItem"/>
   </widget>
   <action name="actOpenIni">
    <property name="text">
@@ -1461,7 +1461,7 @@
     <string>移除指令</string>
    </property>
   </action>
-  <action name="actSownExtTestItem">
+  <action name="actSownAllTestItem">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1469,7 +1469,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>额外测试项</string>
+    <string>显示全部测试项</string>
    </property>
   </action>
   <action name="actAbout">
@@ -1501,7 +1501,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>导入配置文件</string>
+    <string>同时导入配置文件</string>
    </property>
   </action>
   <action name="actTestItemCopy">

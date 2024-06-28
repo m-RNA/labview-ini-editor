@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-29 05:54:05
+ * @LastEditTime: 2024-06-29 06:46:42
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     Message::setParent(this);
 
-    ui->dwlTestItemExtra->setVisible(ui->actSownExtTestItem->isChecked()); //
+    ui->dwlTestItemAll->setVisible(ui->actSownAllTestItem->isChecked()); //
 
     ui->lwTestCmd->setGridSize(QSize(0, TEST_CMD_HEIGHT));
     ui->lwTestResult->setGridSize(QSize(0, TEST_RESULT_HEIGHT));
@@ -319,18 +319,18 @@ void MainWindow::on_actAbout_triggered()
                         "CopyRight © "+ year + " by " + author + ", All Rights Reserved.");
 }
 
-void MainWindow::on_actSownExtTestItem_triggered(bool checked)
+void MainWindow::on_actSownAllTestItem_triggered(bool checked)
 {
     if (checked == false)
     {
         if (isNeedConfigFile == false)
         {
-            Message::information("强制显示额外测试项");
-            ui->actSownExtTestItem->setChecked(true);
+            Message::information("强制显示全部测试项");
+            ui->actSownAllTestItem->setChecked(true);
             checked = true;
         }
     }
-    ui->dwlTestItemExtra->setVisible(checked);
+    ui->dwlTestItemAll->setVisible(checked);
 }
 
 void MainWindow::on_actNeedConfigFile_toggled(bool arg1)
@@ -338,22 +338,22 @@ void MainWindow::on_actNeedConfigFile_toggled(bool arg1)
     isNeedConfigFile = arg1;
     if (isNeedConfigFile == false)
     {
-        if (ui->actSownExtTestItem->isChecked() == false)
+        if (ui->actSownAllTestItem->isChecked() == false)
         {
-            Message::information("强制显示额外测试项");
-            ui->dwlTestItemExtra->setVisible(true);
+            Message::information("强制显示全部测试项");
+            ui->dwlTestItemAll->setVisible(true);
         }
         // 设置不能关闭
-        ui->dwlTestItemExtra->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+        ui->dwlTestItemAll->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     }
     else
     {
         // 设置可以关闭
-        ui->dwlTestItemExtra->setFeatures(QDockWidget::AllDockWidgetFeatures);
+        ui->dwlTestItemAll->setFeatures(QDockWidget::AllDockWidgetFeatures);
     }
 }
 
-void MainWindow::on_dwlTestItemExtra_visibilityChanged(bool visible) { ui->actSownExtTestItem->setChecked(visible); }
+void MainWindow::on_dwlTestItemAll_visibilityChanged(bool visible) { ui->actSownAllTestItem->setChecked(visible); }
 
 void MainWindow::on_lwTestItemConfig_itemSelectionChanged()
 {

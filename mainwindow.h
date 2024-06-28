@@ -44,10 +44,10 @@ private slots:
 
     void on_actAbout_triggered();
 
-    void on_actSownExtTestItem_triggered(bool checked);
+    void on_actSownAllTestItem_triggered(bool checked);
     void on_actNeedConfigFile_toggled(bool arg1);
 
-    void on_dwlTestItemExtra_visibilityChanged(bool visible);
+    void on_dwlTestItemAll_visibilityChanged(bool visible);
 
     void on_lwTestItemConfig_itemSelectionChanged();
     void on_lwTestItemConfigKey_itemSelectionChanged();
