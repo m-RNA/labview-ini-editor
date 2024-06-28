@@ -97,6 +97,9 @@ public:
     bool isLoadProtocol(void);
     bool isLoadConfig(void);
 
+    bool exportFileSscom(const QString &filePathName); // 导出文件SSCOM
+    bool exportFileBsp(const QString &filePathName);   // 导出文件BSP
+
     QList<TestItem> getTestItemList() const;
     QList<TestItem> *getTestItemListAddr();
     QList<ConfigItem> getConfigItemList() const;

@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-23 05:56:34
+ * @LastEditTime: 2024-06-29 05:17:26
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -10,6 +10,8 @@
  */
 #include "labviewsetting.h"
 #include <QDebug>
+#include <QFile>
+
 #if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
 #endif
@@ -65,6 +67,83 @@ bool LabViewSetting::isLoadProtocol(void) { return iniSettingsProtocol->isLoad()
  * @return 加载成功返回 true，否则返回 false。
  */
 bool LabViewSetting::isLoadConfig(void) { return iniSettingsConfig->isLoad(); }
+
+/**
+ * @brief 导出SSCOM格式文件。
+ * 
+ * @param filePathName 保存的路径文件名。
+ * @return true  保存成功
+ * @return false 保存失败
+ */
+bool LabViewSetting::exportFileSscom(const QString &filePathName)
+{
+    QFile file(filePathName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return false;
+    }
+
+    QTextStream out(&file);
+    out.setCodec(QTextCodec::codecForName("GB2312"));
+
+    int index = 1;
+    QString keyComment = "";
+    QString valueComment = "";
+    QString key = "";
+    QString value = "";
+    for (const auto &testItem : testItemList)
+    {
+        if (index > 100)
+            break;
+
+        keyComment = "N" + QString::number(100 + index);
+        valueComment = "0,----" + testItem.name + "----,1000";
+        key = "N" + QString::number(index);
+        value = "A,";
+        index++;
+
+        out << keyComment << "=" << valueComment << endl;
+        out << key << "=" << value << endl;
+        out << endl;
+
+        for (const auto &testCmd : testItem.cmdList)
+        {
+            if (index > 100)
+                break;
+
+            keyComment = "N" + QString::number(100 + index);
+            valueComment = QString::number(index) + "," + testCmd.brief + ",";
+            if (testCmd.cmdDelay == 0)
+                valueComment += "1000";
+            else
+                valueComment += QString::number((int) (testCmd.cmdDelay * 1000));
+            key = "N" + QString::number(index);
+            value = "A,";
+            if (testCmd.tx.startsWith("68"))
+                value = "H,";
+            if (testCmd.tx != "NA")
+            {
+                if (testCmd.tx.contains("<") && testCmd.tx.contains(">"))
+                {
+                    // 截取<之前的字符串,不包含<
+                    value += testCmd.tx.mid(0, testCmd.tx.indexOf("<")).trimmed();
+                }
+                else
+                {
+                    value += testCmd.tx;
+                }
+            }
+            index++;
+
+            out << keyComment << "=" << valueComment << endl;
+            out << key << "=" << value << endl;
+            out << endl;
+        }
+    }
+    bool ret = file.flush();
+    file.close();
+    return ret;
+}
 
 /**
  * @brief 使用指定的文件名构造一个 LabViewSetting 对象。
