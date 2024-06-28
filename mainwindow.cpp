@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-29 02:05:34
+ * @LastEditTime: 2024-06-29 02:38:42
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -168,6 +168,7 @@ void MainWindow::on_actOpenIni_triggered()
     uiClearAll();                     // 清空界面
     this->setWindowTitle(strTestObj); // 设置标题
 
+    filePathConfig = "";
     if (isNeedConfigFile == true)
     {
         QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
@@ -175,7 +176,8 @@ void MainWindow::on_actOpenIni_triggered()
         strPath += "/配置文件/";
         qDebug() << ": " << strPath;
         fileNameConfig = FindFile(strPath, strTestObj, "配置文件");
-        filePathConfig = strPath + fileNameConfig;
+        if (fileNameConfig.isEmpty() == false)
+            filePathConfig = strPath + fileNameConfig;
     }
 
     qDebug() << "filePathProtocol: " << filePathProtocol;
@@ -200,10 +202,9 @@ void MainWindow::on_actLoadIni_triggered()
         {
             // 弹窗提示：配置文件加载失败
             Message::warning("配置文件加载失败");
-            return;
         }
         else
-            Message::success(fileNameConfig + " 加载成功", 5000);
+            Message::success(fileNameConfig + " 加载成功");
     }
     if (labviewSetting->isLoadProtocol() == false)
     {
@@ -254,7 +255,7 @@ void MainWindow::on_actSave_triggered()
         Message::error("保存失败");
         return;
     }
-    Message::success("保存成功", 2000);
+    Message::success("保存成功");
 }
 
 void MainWindow::on_actAbout_triggered()
@@ -685,6 +686,7 @@ void MainWindow::onTestItemExtraReordered(void)
     QString name = item->text().trimmed();
 
     labviewSetting->moveTestItemProtocol(lastName, name);
+    qDebug() << "移动测试项：" << lastName << " -> " << name;
 }
 
 int MainWindow::getTestItemIndex(const QString &name)
