@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2024-06-19 02:06:37
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-20 23:44:22
+ * @LastEditTime: 2024-06-29 02:41:00
  * @FilePath: \LabViewIniEditor2024\message\message.h
  * @Description: 
  * 
@@ -49,10 +49,10 @@ public:
     */
     static void setParent(QObject *parent);
     static void PushMessage(MessageType type, const QString &content, int nDuration = 3000);
-    static void success(const QString &content, int nDuration = 3000);
-    static void error(const QString &content, int nDuration = 5000);
-    static void warning(const QString &content, int nDuration = 5000);
-    static void information(const QString &content, int nDuration = 3000);
+    static void success(const QString &content, int nDuration = 1000);
+    static void error(const QString &content, int nDuration = 2000);
+    static void warning(const QString &content, int nDuration = 2000);
+    static void information(const QString &content, int nDuration = 2000);
 
 private slots:
     void adjustItemPos(MessageItem *pItem);
