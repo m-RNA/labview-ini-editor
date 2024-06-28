@@ -35,6 +35,10 @@ bool IniSettings::loadFile() { return loadFile(m_fileName); }
 
 bool IniSettings::loadFile(const QString &fileName)
 {
+    if (fileName.toLower().endsWith(".ini") == false)
+    {
+        return false;
+    }
     QFile file(fileName); // 新建文件对象
     if (file.exists() == false)
     {
