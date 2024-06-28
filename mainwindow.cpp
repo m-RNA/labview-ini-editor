@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-23 16:37:03
+ * @LastEditTime: 2024-06-29 02:05:34
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -186,6 +186,7 @@ void MainWindow::on_actOpenIni_triggered()
 
 void MainWindow::on_actLoadIni_triggered()
 {
+    ui->actLoadIni->setEnabled(true);
     // 删除原来的设置
     if (labviewSetting != nullptr)
     {
@@ -220,8 +221,11 @@ void MainWindow::on_actLoadIni_triggered()
         this->configItemList = labviewSetting->getConfigItemList(); // 解析 配置文件
     }
 
-    ui->actSave->setEnabled(true); // 保存按钮可用
-    uiUpdateTestItemList();        // 更新测试项列表
+    ui->actSave->setEnabled(true);  // 保存按钮可用
+    ui->actSSCOM->setEnabled(true); // 导出SSCOM按钮可用
+    ui->actBSP->setEnabled(true);   // 导出BSP按钮可用
+
+    uiUpdateTestItemList(); // 更新测试项列表
 }
 
 void MainWindow::on_actSave_triggered()
