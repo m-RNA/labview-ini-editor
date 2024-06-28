@@ -95,8 +95,16 @@ LabViewSetting::LabViewSetting(QString filePathProtocol, QString filePathConfig)
  */
 LabViewSetting::~LabViewSetting()
 {
-    delete iniSettingsProtocol;
-    delete iniSettingsConfig;
+    if (iniSettingsProtocol != nullptr)
+    {
+        delete iniSettingsProtocol;
+        iniSettingsProtocol = nullptr;
+    }
+    if (iniSettingsConfig != nullptr)
+    {
+        delete iniSettingsConfig;
+        iniSettingsConfig = nullptr;
+    }
 }
 
 /**
