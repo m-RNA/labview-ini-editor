@@ -48,11 +48,11 @@ public:
      * @note 该函数只能调用一次
     */
     static void setParent(QObject *parent);
-    static void PushMessage(MessageType type, const QString &content, int nDuration = 3000);
+    static void PushMessage(MessageType type, const QString &content, int nDuration = 1000);
     static void success(const QString &content, int nDuration = 1000);
-    static void error(const QString &content, int nDuration = 2000);
-    static void warning(const QString &content, int nDuration = 2000);
-    static void information(const QString &content, int nDuration = 2000);
+    static void error(const QString &content, int nDuration = 1000);
+    static void warning(const QString &content, int nDuration = 1000);
+    static void information(const QString &content, int nDuration = 1000);
 
 private slots:
     void adjustItemPos(MessageItem *pItem);

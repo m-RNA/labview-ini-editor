@@ -221,7 +221,7 @@ void MessageItem::DisappearAnimation()
     setGraphicsEffect(pOpacity);
 
     QPropertyAnimation *pOpacityAnimation2 = new QPropertyAnimation(pOpacity, "opacity");
-    pOpacityAnimation2->setDuration(500);
+    pOpacityAnimation2->setDuration(200);
     pOpacityAnimation2->setStartValue(1);
     pOpacityAnimation2->setEndValue(0);
 
