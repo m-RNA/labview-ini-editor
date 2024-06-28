@@ -1005,7 +1005,7 @@
     <set>QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
-    <string>配置项</string>
+    <string>测试项</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -1131,7 +1131,7 @@
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
-    <string>协议项</string>
+    <string>测试子项</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
