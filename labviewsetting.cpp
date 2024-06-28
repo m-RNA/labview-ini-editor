@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-29 05:17:26
+ * @LastEditTime: 2024-06-29 07:41:23
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -22,10 +22,14 @@ const QStringList keyOrderProtocol = {
     "端口选择", "发送", "接收", "参数配置", "解析", "功能配置",
 };
 
-// [测试项名称] [MES链接] [测试开始] [测试结束]
+// [测试项名称] [MES链接]
 const QStringList passTestItemList = {
     "测试项名称",
     "MES链接",
+};
+
+// 特殊测试项  [测试开始] [测试结束]
+const QStringList specialTestItemList = {
     "测试开始",
     "测试结束",
 };
@@ -70,7 +74,6 @@ bool LabViewSetting::isLoadConfig(void) { return iniSettingsConfig->isLoad(); }
 
 /**
  * @brief 导出SSCOM格式文件。
- * 
  * @param filePathName 保存的路径文件名。
  * @return true  保存成功
  * @return false 保存失败
@@ -368,6 +371,16 @@ void LabViewSetting::testItemListToIni()
             iniSettingsProtocol->setValue("功能配置", function);
         else
             iniSettingsProtocol->remove("功能配置");
+        if (specialTestItemList.contains(testItem.name))
+        {
+            iniSettingsProtocol->remove("参数配置");
+            iniSettingsProtocol->remove("解析");
+            iniSettingsProtocol->remove("功能配置");
+            if (sent == "NA")
+                iniSettingsProtocol->setValue("发送", "");
+            if (receive == "NA")
+                iniSettingsProtocol->setValue("接收", "");
+        }
         iniSettingsProtocol->endGroup();
     }
 }
@@ -483,6 +496,17 @@ TestItem LabViewSetting::getTestItem(const QString &testItemName)
     QString analysis = iniSettingsProtocol->value("解析");     // 解析
     QString function = iniSettingsProtocol->value("功能配置"); // 功能配置
     iniSettingsProtocol->endGroup();
+    if (specialTestItemList.contains(testItemName))
+    {
+        TestCmd testCmd;
+        testCmd.index = 0;
+        testCmd.comName = port;
+        testCmd.tx = sent;
+        testCmd.rx = receive;
+
+        testItem.cmdList.append(testCmd);
+        return testItem;
+    }
 
     // 分割字符串，去掉方括号中的内容，返回字符串列表
     QStringList portList = splitStringSquareBrackets(port, ':');                // 端口列表
