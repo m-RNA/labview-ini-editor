@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-29 02:38:42
+ * @LastEditTime: 2024-06-29 05:54:05
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -165,8 +165,9 @@ void MainWindow::on_actOpenIni_triggered()
     QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("协议"));
     qDebug() << "strTestObj: " << strTestObj;
 
-    uiClearAll();                     // 清空界面
-    this->setWindowTitle(strTestObj); // 设置标题
+    uiClearAll(); // 清空界面
+    title = strTestObj;
+    this->setWindowTitle(title); // 设置标题
 
     filePathConfig = "";
     if (isNeedConfigFile == true)
@@ -222,9 +223,11 @@ void MainWindow::on_actLoadIni_triggered()
         this->configItemList = labviewSetting->getConfigItemList(); // 解析 配置文件
     }
 
-    ui->actSave->setEnabled(true);  // 保存按钮可用
-    ui->actSSCOM->setEnabled(true); // 导出SSCOM按钮可用
-    ui->actBSP->setEnabled(true);   // 导出BSP按钮可用
+    ui->actSave->setEnabled(true);             // 保存按钮可用
+    ui->actSSCOM->setEnabled(true);            // 导出SSCOM按钮可用
+    ui->actBSP->setEnabled(true);              // 导出BSP按钮可用
+    ui->lwTestItemConfigKey->setEnabled(true); // 测试项配置可用
+    ui->lwTestItemExtra->setEnabled(true);     // 测试项额外可用
 
     uiUpdateTestItemList(); // 更新测试项列表
 }
@@ -293,9 +296,39 @@ void MainWindow::on_actAbout_triggered()
                         "CopyRight © "+ year + " by " + author + ", All Rights Reserved.");
 }
 
-void MainWindow::on_actSownExtTestItem_triggered(bool checked) { ui->dwlTestItemExtra->setVisible(checked); }
+void MainWindow::on_actSownExtTestItem_triggered(bool checked)
+{
+    if (checked == false)
+    {
+        if (isNeedConfigFile == false)
+        {
+            Message::information("强制显示额外测试项");
+            ui->actSownExtTestItem->setChecked(true);
+            checked = true;
+        }
+    }
+    ui->dwlTestItemExtra->setVisible(checked);
+}
 
-void MainWindow::on_actNeedConfigFile_toggled(bool arg1) { isNeedConfigFile = arg1; }
+void MainWindow::on_actNeedConfigFile_toggled(bool arg1)
+{
+    isNeedConfigFile = arg1;
+    if (isNeedConfigFile == false)
+    {
+        if (ui->actSownExtTestItem->isChecked() == false)
+        {
+            Message::information("强制显示额外测试项");
+            ui->dwlTestItemExtra->setVisible(true);
+        }
+        // 设置不能关闭
+        ui->dwlTestItemExtra->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+    }
+    else
+    {
+        // 设置可以关闭
+        ui->dwlTestItemExtra->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    }
+}
 
 void MainWindow::on_dwlTestItemExtra_visibilityChanged(bool visible) { ui->actSownExtTestItem->setChecked(visible); }
 

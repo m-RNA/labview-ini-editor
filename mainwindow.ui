@@ -1128,7 +1128,7 @@
     <string>协议文件</string>
    </property>
    <property name="features">
-    <set>QDockWidget::AllDockWidgetFeatures</set>
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
     <string>协议项</string>
@@ -1152,6 +1152,9 @@
      </property>
      <item row="1" column="0">
       <widget class="MyListWidget" name="lwTestItemConfigKey">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="toolTip">
         <string>配置文件：使用的协议项</string>
        </property>
@@ -1172,17 +1175,7 @@
        </property>
        <item>
         <property name="text">
-         <string>请打开 ini 文件</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>配置文件、协议文件</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>测试项支持拖拽</string>
+         <string>可拖拽</string>
         </property>
        </item>
       </widget>
@@ -1193,12 +1186,15 @@
   <widget class="QDockWidget" name="dwlTestItemExtra">
    <property name="minimumSize">
     <size>
-     <width>239</width>
+     <width>261</width>
      <height>250</height>
     </size>
    </property>
    <property name="floating">
     <bool>true</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
     <string>额外项</string>
@@ -1222,6 +1218,9 @@
      </property>
      <item row="1" column="0">
       <widget class="MyListWidget" name="lwTestItemExtra">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="toolTip">
         <string>协议文件：未使用的测试项</string>
        </property>
@@ -1240,21 +1239,6 @@
        <property name="alternatingRowColors">
         <bool>true</bool>
        </property>
-       <item>
-        <property name="text">
-         <string>请打开 ini 文件</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>配置文件、协议文件</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>测试项支持拖拽</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="0" column="0">
@@ -1379,7 +1363,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>保存INI</string>
+    <string>保存</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -1517,7 +1501,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>同时导入配置文件</string>
+    <string>导入配置文件</string>
    </property>
   </action>
   <action name="actTestItemCopy">
@@ -1536,7 +1520,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>重新加载INI</string>
+    <string>重新加载</string>
    </property>
    <property name="toolTip">
     <string>重新加载INI</string>
