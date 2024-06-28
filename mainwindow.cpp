@@ -261,6 +261,29 @@ void MainWindow::on_actSave_triggered()
     Message::success("保存成功");
 }
 
+void MainWindow::on_actSSCOM_triggered()
+{
+    QString filePathName
+        = QFileDialog::getSaveFileName(this, "导出SSCOM格式", title + "SSCOM格式", "SSCOM files(*.txt)");
+    if (filePathName.isEmpty())
+    {
+        qDebug() << "未选择文件";
+        Message::warning("未选择文件");
+        return;
+    }
+
+    bool isOk = labviewSetting->exportFileSscom(filePathName);
+    if (isOk == false)
+    {
+        qDebug() << "导出SSCOM格式失败";
+        Message::error("导出SSCOM格式失败");
+        return;
+    }
+    Message::success("导出SSCOM格式成功");
+}
+
+void MainWindow::on_actBSP_triggered() { Message::information("暂未实现", 500); }
+
 void MainWindow::on_actAbout_triggered()
 {
     QString data = __DATE__;

@@ -39,7 +39,11 @@ private slots:
     void on_actLoadIni_triggered();
     void on_actSave_triggered();
 
+    void on_actSSCOM_triggered();
+    void on_actBSP_triggered();
+
     void on_actAbout_triggered();
+
     void on_actSownExtTestItem_triggered(bool checked);
     void on_actNeedConfigFile_toggled(bool arg1);
 
@@ -82,6 +86,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QString title = ""; // 窗口标题
+
     QString filePathProtocol = ""; // 协议文件名
     QString filePathConfig = "";   // 配置文件名
     QString fileNameProtocol = ""; // 协议文件路径
