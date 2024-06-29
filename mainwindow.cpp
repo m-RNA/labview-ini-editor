@@ -657,6 +657,12 @@ void MainWindow::on_btnRemoveTestIResult_clicked()
 
 void MainWindow::on_actTestItemAdd_triggered()
 {
+    if (labviewSetting == nullptr)
+    {
+        qDebug() << "未打开文件";
+        Message::error("未打开文件");
+        return;
+    }
     // 获取当前点击的测试项的名称
     QString str = ui->leTestItemName->text().trimmed();
     // 获取当前点击的测试项的索引
@@ -686,6 +692,13 @@ void MainWindow::on_actTestItemAdd_triggered()
 
 void MainWindow::on_actTestItemCopy_triggered()
 {
+    if (labviewSetting == nullptr)
+    {
+        qDebug() << "未打开文件";
+        Message::error("未打开文件");
+        return;
+    }
+
     // 获取当前点击的测试项的名称
     QString str = ui->leTestItemName->text().trimmed();
     // 获取当前点击的测试项的索引
