@@ -100,7 +100,6 @@ private:
 
     LabViewSetting *labviewSetting = nullptr; // LabView设置
 
-    int getTestItemIndex(const QString &name); // 获取测试项序号
     TestItem *getTestItemCurrent(void);        // 获取当前测试项
 
     void uiUpdateTestCmd(const QVector<TestCmd> &cmdList);          // 更新测试命令界面

@@ -2,7 +2,7 @@
  * @Author: m-RNA m-RNA@qq.com
  * @Date: 2023-11-18 21:46:10
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-21 03:21:29
+ * @LastEditTime: 2024-06-30 03:48:16
  * @FilePath: \LabViewIniEditor2024\labviewsetting.h
  * @Description:
  *
@@ -100,7 +100,8 @@ public:
     bool exportFileSscom(const QString &filePathName); // 导出文件SSCOM
     bool exportFileBsp(const QString &filePathName);   // 导出文件BSP
 
-    QList<TestItem> getTestItemList() const;
+    int getTestItemIndex(const QString &name) const; // 获取测试项位置
+
     QList<TestItem> *getTestItemListAddr();
     QList<ConfigItem> getConfigItemList() const;
 
@@ -114,12 +115,12 @@ public:
     void moveTestItemProtocol(const QString &nextName, const QString &name);
 
 private:
+    TestItem iniToTestItem(const QString &testItemName);
+
     void iniToTestItemList();
     void iniToConfigItemList();
 
     void testItemListToIni();
-
-    TestItem getTestItem(const QString &testItemName);
 
     QString filePathProtocol = "";
     QString filePathConfig = "";

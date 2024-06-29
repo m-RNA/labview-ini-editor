@@ -373,7 +373,7 @@ void MainWindow::on_lwTestItemConfig_itemSelectionChanged()
     if (item == nullptr)
         return;
     QString name = item->text().trimmed();
-    int testItemIndex = getTestItemIndex(name);
+    int testItemIndex = labviewSetting->getTestItemIndex(name);
     if (testItemIndex != -1)
         uiUpdateTestItem(name);
 
@@ -437,7 +437,7 @@ void MainWindow::on_leTestItemName_editingFinished()
     if (str == leTestItemName_Old)
         return;
     // 获取当前点击的测试项的索引
-    int testItemIndex = getTestItemIndex(leTestItemName_Old);
+    int testItemIndex = labviewSetting->getTestItemIndex(leTestItemName_Old);
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项：" << leTestItemName_Old;
@@ -648,7 +648,7 @@ void MainWindow::on_actTestItemAdd_triggered()
     // 获取当前点击的测试项的名称
     QString str = ui->leTestItemName->text().trimmed();
     // 获取当前点击的测试项的索引
-    int testItemIndex = getTestItemIndex(str);
+    int testItemIndex = labviewSetting->getTestItemIndex(str);
 
     if (testItemIndex == -1)
         testItemIndex = 0;
@@ -677,7 +677,7 @@ void MainWindow::on_actTestItemCopy_triggered()
     // 获取当前点击的测试项的名称
     QString str = ui->leTestItemName->text().trimmed();
     // 获取当前点击的测试项的索引
-    int testItemIndex = getTestItemIndex(str);
+    int testItemIndex = labviewSetting->getTestItemIndex(str);
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项：" << str;
@@ -701,7 +701,7 @@ void MainWindow::on_actTestItemDelete_triggered()
     // 获取当前点击的测试项的名称
     QString str = ui->leTestItemName->text().trimmed();
     // 获取当前点击的测试项的索引
-    int testItemIndex = getTestItemIndex(str);
+    int testItemIndex = labviewSetting->getTestItemIndex(str);
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项：" << str;
@@ -755,20 +755,6 @@ void MainWindow::onTestItemAllReordered(void)
     qDebug() << "移动测试项：" << lastName << " -> " << name;
 }
 
-int MainWindow::getTestItemIndex(const QString &name)
-{
-    if (name.isEmpty())
-        return -1;
-    for (int i = 0; i < this->testItemListAddr->size(); i++)
-    {
-        if (name == this->testItemListAddr->at(i).name)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
 TestItem *MainWindow::getTestItemCurrent(void)
 {
     // 获取当前点击的测试项的名称
@@ -776,7 +762,7 @@ TestItem *MainWindow::getTestItemCurrent(void)
     if (str == "")
         return nullptr;
     // 获取当前点击的测试项的索引
-    int testItemIndex = getTestItemIndex(str);
+    int testItemIndex = labviewSetting->getTestItemIndex(str);
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项：" << str;
@@ -840,7 +826,7 @@ void MainWindow::uiUpdateTestResult(const QVector<TestResult> &resultList)
 
 void MainWindow::uiUpdateTestItem(QString testItemName)
 {
-    int testItemIndex = getTestItemIndex(testItemName);
+    int testItemIndex = labviewSetting->getTestItemIndex(testItemName);
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项：" << testItemName;

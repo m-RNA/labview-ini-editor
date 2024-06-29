@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-30 03:34:54
+ * @LastEditTime: 2024-06-30 03:45:36
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -205,7 +205,7 @@ bool LabViewSetting::exportFileBsp(const QString &filePathName)
                 out << "    <Data />" << endl;
             out << "    <Latency>0</Latency>" << endl;
             out << "    <Active>false</Active>" << endl;
-            out << "    <Description>" << testCmd.comName << "</Description>"<< endl;
+            out << "    <Description>" << testCmd.comName << "</Description>" << endl;
             out << "  </BSSignal>" << endl;
         }
 
@@ -291,10 +291,27 @@ bool LabViewSetting::saveFile(void)
 }
 
 /**
- * @brief 获取测试项列表。
- * @return 测试项列表。
+ * @brief 获取测试项列表中的位置
+ * @return 测试项列表中的位置
  */
-QList<TestItem> LabViewSetting::getTestItemList() const { return testItemList; }
+int LabViewSetting::getTestItemIndex(const QString &name) const
+{
+    if (name.isEmpty())
+        return -1;
+    for (int i = 0; i < testItemList.size(); i++)
+    {
+        if (name == testItemList.at(i).name)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/**
+ * @brief 获取测试项列表地址
+ * @return 测试项列表地址
+ */
 QList<TestItem> *LabViewSetting::getTestItemListAddr() { return &testItemList; }
 
 /**
@@ -478,7 +495,7 @@ void LabViewSetting::iniToTestItemList()
         {
             if (passTestItemList.contains(testItemName)) // 跳过测试项名称
                 continue;
-            TestItem testItem = getTestItem(testItemName);
+            TestItem testItem = iniToTestItem(testItemName);
             if (testItem.name != "")
             {
                 testItemList.append(testItem);
@@ -557,7 +574,7 @@ key = value
  * @param testItemName 要分析的测试项的名称。
  * @return 分析后的测试项。
  */
-TestItem LabViewSetting::getTestItem(const QString &testItemName)
+TestItem LabViewSetting::iniToTestItem(const QString &testItemName)
 {
     TestItem testItem;
     testItem.name = testItemName;
