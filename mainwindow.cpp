@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-29 06:46:42
+ * @LastEditTime: 2024-06-29 16:34:37
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -158,37 +158,50 @@ void MainWindow::on_actOpenIni_triggered()
         if (result == QMessageBox::No)
             return;
     }
-
-    qDebug() << "打开协议文件";
     filePathProtocol = pathName;
+
     // 获取协议文件名，移除尾部
-    QString strTestObj = strQirList.last().mid(0, strQirList.last().lastIndexOf("协议"));
-    qDebug() << "strTestObj: " << strTestObj;
-
-    uiClearAll(); // 清空界面
-    title = strTestObj;
+    title = fileNameProtocol.mid(0, fileNameProtocol.lastIndexOf("协议"));
     this->setWindowTitle(title); // 设置标题
-
-    filePathConfig = "";
-    if (isNeedConfigFile == true)
-    {
-        QString strPath = pathName.mid(0, pathName.lastIndexOf("/"));
-        strPath = strPath.mid(0, strPath.lastIndexOf("/"));
-        strPath += "/配置文件/";
-        qDebug() << ": " << strPath;
-        fileNameConfig = FindFile(strPath, strTestObj, "配置文件");
-        if (fileNameConfig.isEmpty() == false)
-            filePathConfig = strPath + fileNameConfig;
-    }
-
-    qDebug() << "filePathProtocol: " << filePathProtocol;
-    qDebug() << "filePathConfig: " << filePathConfig;
+    qDebug() << "title: " << title;
 
     on_actLoadIni_triggered();
 }
 
 void MainWindow::on_actLoadIni_triggered()
 {
+    uiClearAll(); // 清空界面
+    filePathConfig = "";
+
+    // 获取 dwlTestItemAll 当前宽高
+    QSize size = ui->dwlTestItemAll->size();
+    isNeedConfigFile = ui->actNeedConfigFile->isChecked();
+    if (isNeedConfigFile == true)
+    {
+        // 查找配置文件
+        QString strPath = filePathProtocol.mid(0, filePathProtocol.lastIndexOf("/"));
+        strPath = strPath.mid(0, strPath.lastIndexOf("/"));
+        strPath += "/配置文件/";
+        qDebug() << ": " << strPath;
+        fileNameConfig = FindFile(strPath, title, "配置文件");
+        if (fileNameConfig.isEmpty() == false)
+            filePathConfig = strPath + fileNameConfig;
+
+        // 设置可以关闭 dwlTestItemAll
+        ui->dwlTestItemAll->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    }
+    else
+    {
+        Message::information("强制显示全部测试项");
+        ui->dwlTestItemAll->setVisible(true);
+        // 设置不能关闭 dwlTestItemAll
+        ui->dwlTestItemAll->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+    }
+    ui->dwlTestItemAll->resize(size);
+
+    qDebug() << "filePathProtocol: " << filePathProtocol;
+    qDebug() << "filePathConfig: " << filePathConfig;
+
     ui->actLoadIni->setEnabled(true);
     // 删除原来的设置
     if (labviewSetting != nullptr)
@@ -333,25 +346,7 @@ void MainWindow::on_actSownAllTestItem_triggered(bool checked)
     ui->dwlTestItemAll->setVisible(checked);
 }
 
-void MainWindow::on_actNeedConfigFile_toggled(bool arg1)
-{
-    isNeedConfigFile = arg1;
-    if (isNeedConfigFile == false)
-    {
-        if (ui->actSownAllTestItem->isChecked() == false)
-        {
-            Message::information("强制显示全部测试项");
-            ui->dwlTestItemAll->setVisible(true);
-        }
-        // 设置不能关闭
-        ui->dwlTestItemAll->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-    }
-    else
-    {
-        // 设置可以关闭
-        ui->dwlTestItemAll->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    }
-}
+void MainWindow::on_actNeedConfigFile_toggled(bool arg1) {}
 
 void MainWindow::on_dwlTestItemAll_visibilityChanged(bool visible) { ui->actSownAllTestItem->setChecked(visible); }
 
