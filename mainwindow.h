@@ -45,7 +45,6 @@ private slots:
     void on_actAbout_triggered();
 
     void on_actSownAllTestItem_triggered(bool checked);
-    void on_actNeedConfigFile_toggled(bool arg1);
 
     void on_dwlTestItemAll_visibilityChanged(bool visible);
 

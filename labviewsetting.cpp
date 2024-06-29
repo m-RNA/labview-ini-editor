@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-29 07:41:23
+ * @LastEditTime: 2024-06-30 03:34:54
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -143,6 +143,85 @@ bool LabViewSetting::exportFileSscom(const QString &filePathName)
             out << endl;
         }
     }
+    bool ret = file.flush();
+    file.close();
+    return ret;
+}
+
+bool LabViewSetting::exportFileBsp(const QString &filePathName)
+{
+    QFile file(filePathName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return false;
+    }
+
+    QTextStream out(&file);
+    out.setCodec(QTextCodec::codecForName("UTF-8"));
+    out << "<?xml version=\"1.0\"?>" << endl;
+    out << "<BSSignalRegistry xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" "
+           "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+        << endl;
+    out << "<Name>"
+        << filePathName.mid(filePathName.lastIndexOf("/") + 1,
+                            filePathName.lastIndexOf(".") - filePathName.lastIndexOf("/") - 1)
+        << "</Name>" << endl;
+    out << "<Latency>0</Latency>" << endl;
+    out << "<Signals>" << endl;
+    for (const auto &testItem : testItemList)
+    {
+        out << "  <BSSignal>" << endl;
+        out << "    <Name>" << testItem.name << "</Name>" << endl;
+        out << "    <DataFormat>String</DataFormat>" << endl;
+        out << "    <Data />" << endl;
+        out << "    <Latency>0</Latency>" << endl;
+        out << "    <Active>false</Active>" << endl;
+        out << "  </BSSignal>" << endl;
+
+        for (const auto &testCmd : testItem.cmdList)
+        {
+            out << "  <BSSignal>" << endl;
+            out << "    <Name>" << testCmd.brief << "</Name>" << endl;
+            if (testCmd.tx.startsWith("68"))
+                out << "    <DataFormat>Hex</DataFormat>" << endl;
+            else
+                out << "    <DataFormat>String</DataFormat>" << endl;
+
+            QString tx = testCmd.tx;
+            if (tx != "NA")
+            {
+                // 截取<之前的字符串,不包含<
+                if (tx.contains("<") && tx.contains(">"))
+                {
+                    tx = tx.mid(0, tx.indexOf("<")).trimmed();
+                }
+                if (testCmd.tx.toUpper().startsWith("AT"))
+                {
+                    tx += "\\r\\n";
+                }
+                out << "    <Data>" << tx << "</Data>" << endl;
+            }
+            else
+                out << "    <Data />" << endl;
+            out << "    <Latency>0</Latency>" << endl;
+            out << "    <Active>false</Active>" << endl;
+            out << "    <Description>" << testCmd.comName << "</Description>"<< endl;
+            out << "  </BSSignal>" << endl;
+        }
+
+        // 来个空项
+        out << "  <BSSignal>" << endl;
+        out << "    <Name />" << endl;
+        out << "    <DataFormat>String</DataFormat>" << endl;
+        out << "    <Data />" << endl;
+        out << "    <Latency>0</Latency>" << endl;
+        out << "    <Active>false</Active>" << endl;
+        out << "  </BSSignal>" << endl;
+    }
+
+    out << "</Signals>" << endl;
+    out << "</BSSignalRegistry>" << endl;
+
     bool ret = file.flush();
     file.close();
     return ret;

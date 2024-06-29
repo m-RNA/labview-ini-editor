@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-29 16:34:37
+ * @LastEditTime: 2024-06-30 02:35:12
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -295,7 +295,24 @@ void MainWindow::on_actSSCOM_triggered()
     Message::success("导出SSCOM格式成功");
 }
 
-void MainWindow::on_actBSP_triggered() { Message::information("暂未实现", 500); }
+void MainWindow::on_actBSP_triggered() { 
+    QString filePathName = QFileDialog::getSaveFileName(this, "导出BSP格式", title + "BSP格式", "BSP files(*.bsp)");
+    if (filePathName.isEmpty())
+    {
+        qDebug() << "未选择文件";
+        Message::warning("未选择文件");
+        return;
+    }
+
+    bool isOk = labviewSetting->exportFileBsp(filePathName);
+    if (isOk == false)
+    {
+        qDebug() << "导出BSP格式失败";
+        Message::error("导出BSP格式失败");
+        return;
+    }
+    Message::success("导出BSP格式成功");
+ }
 
 void MainWindow::on_actAbout_triggered()
 {
@@ -345,8 +362,6 @@ void MainWindow::on_actSownAllTestItem_triggered(bool checked)
     }
     ui->dwlTestItemAll->setVisible(checked);
 }
-
-void MainWindow::on_actNeedConfigFile_toggled(bool arg1) {}
 
 void MainWindow::on_dwlTestItemAll_visibilityChanged(bool visible) { ui->actSownAllTestItem->setChecked(visible); }
 
