@@ -420,7 +420,7 @@
               <item row="3" column="0" colspan="3">
                <widget class="MyListWidget" name="lwTestCmd">
                 <property name="toolTip">
-                 <string>测试指令 [Test Cmd]</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;测试指令 [Test Cmd]&lt;/p&gt;&lt;p&gt;序号从0开始&lt;/p&gt;&lt;p&gt;可通过拖拽编辑&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="editTriggers">
                  <set>QAbstractItemView::NoEditTriggers</set>
@@ -695,7 +695,7 @@
               <item row="2" column="0" colspan="3">
                <widget class="MyListWidget" name="lwTestResult">
                 <property name="toolTip">
-                 <string>测试结果 [Test Result]</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;测试结果 [Test Result]&lt;/p&gt;&lt;p&gt;序号从0开始&lt;/p&gt;&lt;p&gt;可通过拖拽编辑&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="editTriggers">
                  <set>QAbstractItemView::NoEditTriggers</set>
@@ -1349,7 +1349,7 @@
   </widget>
   <action name="actOpenIni">
    <property name="text">
-    <string>打开协议INI</string>
+    <string>打开协议文件</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -1364,6 +1364,9 @@
    </property>
    <property name="text">
     <string>保存</string>
+   </property>
+   <property name="toolTip">
+    <string> 仅保存协议文件：原先的文件会被冲掉！</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -1482,7 +1485,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>导出SSCOM格式(*.ini)</string>
+    <string>导出SSCOM格式(*.txt)</string>
    </property>
   </action>
   <action name="actBSP">
@@ -1501,7 +1504,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>同时导入配置文件</string>
+    <string>联动配置文件</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;联动配置文件：&lt;/p&gt;&lt;p&gt;配置文件需要位于相对协议文件上一目录下的“配置文件”文件夹下&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
   <action name="actTestItemCopy">
@@ -1523,7 +1529,7 @@
     <string>重新加载</string>
    </property>
    <property name="toolTip">
-    <string>重新加载INI</string>
+    <string>重新加载：协议文件&amp;配置文件</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
