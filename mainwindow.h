@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-29 15:53:25
+ * @LastEditTime: 2024-06-30 05:22:11
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -43,6 +43,8 @@ private slots:
     void on_actBSP_triggered();
 
     void on_actAbout_triggered();
+    void on_actDocOnline_triggered();
+    void on_actUpdateVersion_triggered();
 
     void on_actSownAllTestItem_triggered(bool checked);
 
@@ -100,7 +102,7 @@ private:
 
     LabViewSetting *labviewSetting = nullptr; // LabView设置
 
-    TestItem *getTestItemCurrent(void);        // 获取当前测试项
+    TestItem *getTestItemCurrent(void); // 获取当前测试项
 
     void uiUpdateTestCmd(const QVector<TestCmd> &cmdList);          // 更新测试命令界面
     void uiUpdateTestResult(const QVector<TestResult> &resultList); // 更新测试结果界面

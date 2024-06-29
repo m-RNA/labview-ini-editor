@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-30 02:35:12
+ * @LastEditTime: 2024-06-30 04:44:43
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -17,6 +17,7 @@
 #include <QCheckBox>
 #include <QDateTime>
 #include <QDebug>
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QScrollBar>
@@ -295,7 +296,8 @@ void MainWindow::on_actSSCOM_triggered()
     Message::success("导出SSCOM格式成功");
 }
 
-void MainWindow::on_actBSP_triggered() { 
+void MainWindow::on_actBSP_triggered()
+{
     QString filePathName = QFileDialog::getSaveFileName(this, "导出BSP格式", title + "BSP格式", "BSP files(*.bsp)");
     if (filePathName.isEmpty())
     {
@@ -312,7 +314,7 @@ void MainWindow::on_actBSP_triggered() {
         return;
     }
     Message::success("导出BSP格式成功");
- }
+}
 
 void MainWindow::on_actAbout_triggered()
 {
@@ -347,6 +349,16 @@ void MainWindow::on_actAbout_triggered()
                         "Build Data: " + strData +" " + time + "\n"
                         "\n"
                         "CopyRight © "+ year + " by " + author + ", All Rights Reserved.");
+}
+
+void MainWindow::on_actDocOnline_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://lierda.feishu.cn/docx/WRS0dtcT9oevBLxGsCOcFvY9nLh"));
+}
+
+void MainWindow::on_actUpdateVersion_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://lierda.feishu.cn/drive/folder/RTYcfYAkallhu2d6QdQcwrpJnHh"));
 }
 
 void MainWindow::on_actSownAllTestItem_triggered(bool checked)
