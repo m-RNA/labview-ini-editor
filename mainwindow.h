@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-23 05:09:12
+ * @LastEditTime: 2024-06-29 15:53:25
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -51,7 +51,7 @@ private slots:
 
     void on_lwTestItemConfig_itemSelectionChanged();
     void on_lwTestItemConfigKey_itemSelectionChanged();
-    void on_lwTestItemExtra_itemSelectionChanged();
+    void on_lwTestItemAll_itemSelectionChanged();
 
     void on_leTestItemName_editingFinished();
     void on_spbxRepeatTimes_valueChanged(int arg1);
@@ -72,17 +72,17 @@ private slots:
     void on_actTestItemCopy_triggered();
     void on_actTestItemDelete_triggered();
 
-    void onTestCmdReordered(void);       // 测试项命令重排序
-    void onTestResultReordered(void);    // 测试项结果重排序
-    void onTestItemExtraReordered(void); // 测试项额外项重排序
+    void onTestCmdReordered(void);     // 测试项命令重排序
+    void onTestResultReordered(void);  // 测试项结果重排序
+    void onTestItemAllReordered(void); // 测试项额外项重排序
 
     // void on_lwlTestItemConfig_itemClicked(QListWidgetItem *item);
-    // void on_lwlTestItemExtra_itemClicked(QListWidgetItem *item);
+    // void on_lwlTestItemAll_itemClicked(QListWidgetItem *item);
     // void on_lwlTestItemConfigKey_itemClicked(QListWidgetItem *item);
 
-    void on_btnAddTestItemExtra_clicked();
-    void on_btnCopyTestItemExtra_clicked();
-    void on_btnRemoveTestItemExtra_clicked();
+    void on_btnAddTestItemAll_clicked();
+    void on_btnCopyTestItemAll_clicked();
+    void on_btnRemoveTestItemAll_clicked();
 
 private:
     Ui::MainWindow *ui;

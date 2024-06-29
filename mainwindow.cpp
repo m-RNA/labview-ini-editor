@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->lwTestCmd, &MyListWidget::itemsReordered, this, &MainWindow::onTestCmdReordered);
     connect(ui->lwTestResult, &MyListWidget::itemsReordered, this, &MainWindow::onTestResultReordered);
-    connect(ui->lwTestItemExtra, &MyListWidget::itemsReordered, this, &MainWindow::onTestItemExtraReordered);
+    connect(ui->lwTestItemAll, &MyListWidget::itemsReordered, this, &MainWindow::onTestItemAllReordered);
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -227,7 +227,7 @@ void MainWindow::on_actLoadIni_triggered()
     ui->actSSCOM->setEnabled(true);            // 导出SSCOM按钮可用
     ui->actBSP->setEnabled(true);              // 导出BSP按钮可用
     ui->lwTestItemConfigKey->setEnabled(true); // 测试项配置可用
-    ui->lwTestItemExtra->setEnabled(true);     // 测试项额外可用
+    ui->lwTestItemAll->setEnabled(true);       // 测试项额外可用
 
     uiUpdateTestItemList(); // 更新测试项列表
 }
@@ -398,9 +398,9 @@ void MainWindow::on_lwTestItemConfigKey_itemSelectionChanged()
     uiUpdateTestItem(item->text().trimmed());
 }
 
-void MainWindow::on_lwTestItemExtra_itemSelectionChanged()
+void MainWindow::on_lwTestItemAll_itemSelectionChanged()
 {
-    QListWidgetItem *item = ui->lwTestItemExtra->currentItem();
+    QListWidgetItem *item = ui->lwTestItemAll->currentItem();
     if (item == nullptr)
         return;
     uiUpdateTestItem(item->text().trimmed());
@@ -408,7 +408,7 @@ void MainWindow::on_lwTestItemExtra_itemSelectionChanged()
 
 // void MainWindow::on_lwTestItemConfig_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
 
-// void MainWindow::on_lwTestItemExtra_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(true); }
+// void MainWindow::on_lwTestItemAll_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(true); }
 
 // void MainWindow::on_lwTestItemConfigKey_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
 
@@ -657,9 +657,9 @@ void MainWindow::on_actTestItemAdd_triggered()
     labviewSetting->insertTestItemProtocol(testItemIndex, testItem);
 
     // 更新测试项界面
-    int lwIndex = ui->lwTestItemExtra->currentRow() + 1;
+    int lwIndex = ui->lwTestItemAll->currentRow() + 1;
     uiUpdateTestItemList();
-    ui->lwTestItemExtra->setCurrentRow(lwIndex);
+    ui->lwTestItemAll->setCurrentRow(lwIndex);
 }
 
 void MainWindow::on_actTestItemCopy_triggered()
@@ -681,9 +681,9 @@ void MainWindow::on_actTestItemCopy_triggered()
     labviewSetting->insertTestItemProtocol(testItemIndex + 1, testItemCopy);
 
     // 更新测试项界面
-    int lwIndex = ui->lwTestItemExtra->currentRow() + 1;
+    int lwIndex = ui->lwTestItemAll->currentRow() + 1;
     uiUpdateTestItemList();
-    ui->lwTestItemExtra->setCurrentRow(lwIndex);
+    ui->lwTestItemAll->setCurrentRow(lwIndex);
 }
 
 void MainWindow::on_actTestItemDelete_triggered()
@@ -704,11 +704,11 @@ void MainWindow::on_actTestItemDelete_triggered()
     this->labviewSetting->removeTestItemProtocol(str);
 
     // 更新测试项界面
-    int lwIndex = ui->lwTestItemExtra->currentRow();
+    int lwIndex = ui->lwTestItemAll->currentRow();
     if (lwIndex > 0)
         lwIndex--;
     uiUpdateTestItemList();
-    ui->lwTestItemExtra->setCurrentRow(lwIndex);
+    ui->lwTestItemAll->setCurrentRow(lwIndex);
 }
 
 void MainWindow::onTestCmdReordered(void)
@@ -727,17 +727,17 @@ void MainWindow::onTestResultReordered(void)
     updateTestResultListFromUi(testItem->resultList);
 }
 
-void MainWindow::onTestItemExtraReordered(void)
+void MainWindow::onTestItemAllReordered(void)
 {
-    int uiIndex = ui->lwTestItemExtra->currentRow();
+    int uiIndex = ui->lwTestItemAll->currentRow();
     if (uiIndex == -1)
         return;
-    auto item = ui->lwTestItemExtra->currentItem();
+    auto item = ui->lwTestItemAll->currentItem();
     if (item == nullptr)
         return;
-    if (uiIndex < ui->lwTestItemExtra->count() - 1)
+    if (uiIndex < ui->lwTestItemAll->count() - 1)
         uiIndex++;
-    QString lastName = ui->lwTestItemExtra->item(uiIndex)->text().trimmed();
+    QString lastName = ui->lwTestItemAll->item(uiIndex)->text().trimmed();
 
     QString name = item->text().trimmed();
 
@@ -864,7 +864,7 @@ void MainWindow::uiUpdateTestItemList()
 {
     ui->lwTestItemConfigKey->clear();
     ui->lwTestItemConfig->clear();
-    ui->lwTestItemExtra->clear();
+    ui->lwTestItemAll->clear();
 
     QStringList strConfigList;
     QStringList strConfigKeyList;
@@ -890,7 +890,7 @@ void MainWindow::uiUpdateTestItemList()
     for (int i = 0; i < this->testItemListAddr->size(); i++) // 往 ListWidget 添加测试项
     {
         QString testItemName = this->testItemListAddr->at(i).name;
-        QListWidgetItem *item = new QListWidgetItem(ui->lwTestItemExtra);
+        QListWidgetItem *item = new QListWidgetItem(ui->lwTestItemAll);
         if (strConfigList.contains(testItemName))
         {
             // 设置为粗体 斜体
@@ -918,7 +918,7 @@ void MainWindow::uiClearAll()
 
     ui->lwTestItemConfig->clear();
     ui->lwTestItemConfigKey->clear();
-    ui->lwTestItemExtra->clear();
+    ui->lwTestItemAll->clear();
 
     ui->leTestItemName->clear();
     ui->spbxRepeatTimes->setValue(1);
@@ -1035,9 +1035,9 @@ void MainWindow::updateTestItemFromUi(TestItem *testItem)
 void MainWindow::updateTestItemListFromUi()
 {
     // testItemList.clear();
-    // for (int i = 0; i < ui->lwTestItemExtra->count(); i++)
+    // for (int i = 0; i < ui->lwTestItemAll->count(); i++)
     // {
-    //     QListWidgetItem *itemUi = ui->lwTestItemExtra->item(i);
+    //     QListWidgetItem *itemUi = ui->lwTestItemAll->item(i);
     //     TestItem testItem;
     //     testItem.name = itemUi->text().trimmed();
     //     testItem.byteOrder = ui->spbxByteOrder->currentText();
@@ -1056,8 +1056,8 @@ void MainWindow::updateTestItemListFromUi()
     // }
 }
 
-void MainWindow::on_btnAddTestItemExtra_clicked() { on_actTestItemAdd_triggered(); }
+void MainWindow::on_btnAddTestItemAll_clicked() { on_actTestItemAdd_triggered(); }
 
-void MainWindow::on_btnCopyTestItemExtra_clicked() { on_actTestItemCopy_triggered(); }
+void MainWindow::on_btnCopyTestItemAll_clicked() { on_actTestItemCopy_triggered(); }
 
-void MainWindow::on_btnRemoveTestItemExtra_clicked() { on_actTestItemDelete_triggered(); }
+void MainWindow::on_btnRemoveTestItemAll_clicked() { on_actTestItemDelete_triggered(); }

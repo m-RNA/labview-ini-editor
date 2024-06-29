@@ -1217,7 +1217,7 @@
       <number>0</number>
      </property>
      <item row="1" column="0">
-      <widget class="MyListWidget" name="lwTestItemExtra">
+      <widget class="MyListWidget" name="lwTestItemAll">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -1263,7 +1263,7 @@
          <number>0</number>
         </property>
         <item row="0" column="1">
-         <widget class="QPushButton" name="btnAddTestItemExtra">
+         <widget class="QPushButton" name="btnAddTestItemAll">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -1285,7 +1285,7 @@
          </widget>
         </item>
         <item row="0" column="3">
-         <widget class="QPushButton" name="btnRemoveTestItemExtra">
+         <widget class="QPushButton" name="btnRemoveTestItemAll">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -1307,7 +1307,7 @@
          </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QPushButton" name="btnCopyTestItemExtra">
+         <widget class="QPushButton" name="btnCopyTestItemAll">
           <property name="minimumSize">
            <size>
             <width>0</width>
