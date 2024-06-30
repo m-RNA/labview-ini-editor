@@ -104,6 +104,8 @@ private:
 
     LabViewSetting *labviewSetting = nullptr; // LabView设置
 
+    int lwTestItemAllRow = -1; // 全部测试项列表行号
+
     TestItem *getTestItemCurrent(void); // 获取当前测试项
 
     void uiUpdateTestCmd(const QVector<TestCmd> &cmdList);          // 更新测试命令界面

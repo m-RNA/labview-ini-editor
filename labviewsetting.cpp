@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-30 03:45:36
+ * @LastEditTime: 2024-06-30 22:50:28
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -342,18 +342,7 @@ void LabViewSetting::insertTestItemProtocol(int index, const TestItem &testItem)
     }
     QString lastName = testItemList.at(index).name;
     testItemList.insert(index, testItem);
-
-    iniSettingsProtocol->endGroup();
-    QStringList testItemNameList = iniSettingsProtocol->childGroups();
-    for (int i = 0; i < testItemNameList.size(); i++)
-    {
-        if (testItemNameList.at(i) == lastName)
-        {
-            index = i;
-            break;
-        }
-    }
-    iniSettingsProtocol->insertGroup(index, testItem.name);
+    moveTestItemProtocol(lastName, testItem.name);
 }
 
 void LabViewSetting::renameTestItemProtocol(const QString &oldName, const QString &newName)
@@ -370,8 +359,6 @@ void LabViewSetting::removeTestItemProtocol(const QString &name)
 
 void LabViewSetting::moveTestItemProtocol(const QString &nextName, const QString &moveName)
 {
-    iniSettingsProtocol->removeGroup(moveName);
-
     iniSettingsProtocol->endGroup();
     QStringList testItemNameList = iniSettingsProtocol->childGroups();
     int testItemIndex = 0;

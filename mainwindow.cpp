@@ -425,6 +425,8 @@ void MainWindow::on_lwTestItemAll_itemSelectionChanged()
     QListWidgetItem *item = ui->lwTestItemAll->currentItem();
     if (item == nullptr)
         return;
+    lwTestItemAllRow = ui->lwTestItemAll->currentRow();
+    qDebug() << "当前行：" << lwTestItemAllRow;
     ui->lwTestItemConfigKey->clear();
     uiUpdateTestItem(item->text().trimmed());
 }
@@ -768,17 +770,25 @@ void MainWindow::onTestItemAllReordered(void)
     int uiIndex = ui->lwTestItemAll->currentRow();
     if (uiIndex == -1)
         return;
+    qDebug() << "移动测试项：" << uiIndex;
     auto item = ui->lwTestItemAll->currentItem();
     if (item == nullptr)
         return;
-    if (uiIndex < ui->lwTestItemAll->count() - 1)
-        uiIndex++;
-    QString lastName = ui->lwTestItemAll->item(uiIndex)->text().trimmed();
-
+    if (lwTestItemAllRow < uiIndex)
+    {
+        if (uiIndex > 0)
+            uiIndex--;
+    }
+    else
+    {
+        if (uiIndex < ui->lwTestItemAll->count() - 1)
+            uiIndex++;
+    }
+    QString upName = ui->lwTestItemAll->item(uiIndex)->text().trimmed();
     QString name = item->text().trimmed();
 
-    labviewSetting->moveTestItemProtocol(lastName, name);
-    qDebug() << "移动测试项：" << lastName << " -> " << name;
+    labviewSetting->moveTestItemProtocol(upName, name);
+    qDebug() << "移动测试项：" << name << " -> " << upName;
 }
 
 TestItem *MainWindow::getTestItemCurrent(void)
