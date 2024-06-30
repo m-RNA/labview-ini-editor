@@ -1082,7 +1082,7 @@
         <bool>true</bool>
        </property>
        <property name="dragDropMode">
-        <enum>QAbstractItemView::DragDrop</enum>
+        <enum>QAbstractItemView::NoDragDrop</enum>
        </property>
        <property name="defaultDropAction">
         <enum>Qt::MoveAction</enum>
@@ -1167,7 +1167,7 @@
         <bool>true</bool>
        </property>
        <property name="dragDropMode">
-        <enum>QAbstractItemView::DragDrop</enum>
+        <enum>QAbstractItemView::NoDragDrop</enum>
        </property>
        <property name="defaultDropAction">
         <enum>Qt::MoveAction</enum>
@@ -1175,11 +1175,6 @@
        <property name="alternatingRowColors">
         <bool>true</bool>
        </property>
-       <item>
-        <property name="text">
-         <string>可拖拽</string>
-        </property>
-       </item>
       </widget>
      </item>
     </layout>
@@ -1241,6 +1236,11 @@
        <property name="alternatingRowColors">
         <bool>true</bool>
        </property>
+       <item>
+        <property name="text">
+         <string>可拖拽</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="0" column="0">
