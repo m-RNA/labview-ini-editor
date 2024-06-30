@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-30 20:24:25
+ * @LastEditTime: 2024-07-01 02:43:41
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -112,6 +112,7 @@ private:
     void uiUpdateTestResult(const QVector<TestResult> &resultList); // 更新测试结果界面
     void uiUpdateTestItem(QString testItemName);                    // 更新测试项界面
     void uiUpdateTestItemList();                                    // 更新测试项列表界面
+    void uiUpdateConfigKey(QString name, bool needConfigKeyTestItemUpdate);
 
     void uiClearAll(); // 清空界面
 

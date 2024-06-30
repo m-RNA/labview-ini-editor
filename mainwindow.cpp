@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-07-01 01:24:02
+ * @LastEditTime: 2024-07-01 03:11:04
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -385,30 +385,39 @@ void MainWindow::on_lwTestItemConfig_itemSelectionChanged()
     if (item == nullptr)
         return;
     QString name = item->text().trimmed();
+
+    uiUpdateConfigKey(name, true);
+}
+
+void MainWindow::uiUpdateConfigKey(QString name, bool needConfigKeyTestItemUpdate)
+{
+    if (labviewSetting == nullptr)
+        return;
     int testItemIndex = labviewSetting->getTestItemIndex(name);
     if (testItemIndex != -1)
         uiUpdateTestItem(name);
+    ui->lwTestItemConfigKey->clear();
+
+    if (isNeedConfigFile == false)
+        return;
 
     QStringList keyList = labviewSetting->getConfigTestItemKey(name);
-    if (keyList.size() == 0)
+    if (keyList.size() <= 0)
     {
+        if (needConfigKeyTestItemUpdate == false)
+            return;
         qDebug() << "配置文件没有：" << name;
         Message::error("配置文件没有：" + name);
         return;
     }
     // 添加测试项
-    ui->lwTestItemConfigKey->clear();
-
-    if (keyList.size() > 0)
+    foreach (QString key, keyList) // 往 ListWidget 添加测试项
     {
-        foreach (QString key, keyList) // 往 ListWidget 添加测试项
-        {
-            QListWidgetItem *item = new QListWidgetItem(ui->lwTestItemConfigKey);
-            item->setText(key);
-        }
-        if (testItemIndex == -1)
-            uiUpdateTestItem(keyList.at(0));
+        QListWidgetItem *item = new QListWidgetItem(ui->lwTestItemConfigKey);
+        item->setText(key);
     }
+    if ((testItemIndex == -1) && (needConfigKeyTestItemUpdate == true))
+        uiUpdateTestItem(keyList.at(0));
 }
 
 void MainWindow::on_lwTestItemConfigKey_itemSelectionChanged()
@@ -427,8 +436,8 @@ void MainWindow::on_lwTestItemAll_itemSelectionChanged()
         return;
     lwTestItemAllRow = ui->lwTestItemAll->currentRow();
     qDebug() << "当前行：" << lwTestItemAllRow;
-    ui->lwTestItemConfigKey->clear();
-    uiUpdateTestItem(item->text().trimmed());
+    // ui->lwTestItemConfigKey->clear();
+    uiUpdateConfigKey(item->text().trimmed(), false);
 }
 
 // void MainWindow::on_lwTestItemConfig_itemClicked(QListWidgetItem *item) { ui->toolBar_2->setEnabled(false); }
