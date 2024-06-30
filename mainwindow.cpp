@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-07-01 03:13:39
+ * @LastEditTime: 2024-07-01 03:15:14
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -723,7 +723,10 @@ void MainWindow::on_actTestItemCopy_triggered()
     }
     // 获取当前点击的测试项的索引
     TestItem testItemCopy = (*(this->testItemListAddr))[testItemIndex];
-    testItemCopy.name += "_Copy";
+    do
+    {
+        testItemCopy.name += "_Copy";
+    } while (labviewSetting->getTestItemIndex(testItemCopy.name) != -1);
     // testItemListAddr->insert(testItemIndex + 1, testItemCopy);
     labviewSetting->insertTestItemProtocol(testItemIndex + 1, testItemCopy);
 
