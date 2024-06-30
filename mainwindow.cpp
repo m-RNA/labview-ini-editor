@@ -767,6 +767,8 @@ void MainWindow::onTestResultReordered(void)
 
 void MainWindow::onTestItemAllReordered(void)
 {
+    if (labviewSetting == nullptr)
+        return;
     int uiIndex = ui->lwTestItemAll->currentRow();
     if (uiIndex == -1)
         return;
@@ -864,6 +866,8 @@ void MainWindow::uiUpdateTestResult(const QVector<TestResult> &resultList)
 
 void MainWindow::uiUpdateTestItem(QString testItemName)
 {
+    if (labviewSetting == nullptr)
+        return;
     int testItemIndex = labviewSetting->getTestItemIndex(testItemName);
     if (testItemIndex == -1)
     {
