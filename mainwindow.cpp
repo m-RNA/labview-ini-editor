@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-07-01 00:42:33
+ * @LastEditTime: 2024-07-01 01:24:02
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -769,20 +769,29 @@ void MainWindow::onTestItemAllReordered(void)
 {
     if (labviewSetting == nullptr)
         return;
+    auto item = ui->lwTestItemAll->currentItem();
+    if (item == nullptr)
+        return;
     int uiIndex = ui->lwTestItemAll->currentRow();
     if (uiIndex == -1)
         return;
     qDebug() << "移动测试项：" << uiIndex;
-    auto item = ui->lwTestItemAll->currentItem();
-    if (item == nullptr)
+    if (uiIndex == lwTestItemAllRow) // 没有移动
+    {
+        qDebug() << "未移动";
+        Message::information("未移动");
         return;
+    }
+
     if (lwTestItemAllRow < uiIndex)
     {
+        lwTestItemAllRow = uiIndex;
         if (uiIndex > 0)
             uiIndex--;
     }
     else
     {
+        lwTestItemAllRow = uiIndex;
         if (uiIndex < ui->lwTestItemAll->count() - 1)
             uiIndex++;
     }
