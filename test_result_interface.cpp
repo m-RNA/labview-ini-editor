@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-31 00:00:44
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-16 06:26:55
+ * @LastEditTime: 2024-06-30 19:38:19
  * @FilePath: \LabViewIniEditor2024\test_result_interface.cpp
  * @Description:
  *
@@ -38,6 +38,8 @@ TestResultInterface::TestResultInterface(QWidget *parent)
 }
 
 TestResultInterface::~TestResultInterface() { delete ui; }
+
+int TestResultInterface::getShowIndex() const { return ui->spinIndex->value(); }
 
 void TestResultInterface::setIndex(int index) { ui->lbIndex->setText(QString::number(index)); }
 
@@ -92,3 +94,5 @@ TestResult TestResultInterface::getTestResult() const
 //     else
 //         ui->cbUnit->setVisible(true);
 // }
+
+void TestResultInterface::on_spinIndex_valueChanged(int arg1) { emit indexChanged(arg1); }

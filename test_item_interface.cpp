@@ -1,11 +1,21 @@
-﻿#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
+﻿/*
+ * @Author: 陈俊健
+ * @Date: 2024-05-20 23:00:24
+ * @LastEditors: 陈俊健
+ * @LastEditTime: 2024-06-30 20:21:57
+ * @FilePath: \LabViewIniEditor2024\test_item_interface.cpp
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by Chenjunjian, All Rights Reserved. 
+ */
+#if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
 #endif
 
 #include "test_item_interface.h"
+#include "message.h"
 #include "ui_test_item_interface.h"
 #include <QDebug>
-#include "message.h"
 
 #define CB_TX_END_NC  0
 #define CB_TX_END_R_N 1
@@ -54,6 +64,14 @@ void TestItemInterface::on_leRx_editingFinished()
 }
 
 void TestItemInterface::setIndex(int index) { ui->lbIndex->setText(QString::number(index)); }
+
+void TestItemInterface::setHighlight(bool isSet)
+{
+    ui->lbIndex->setStyleSheet(isSet ? "background-color: yellow" : "");
+    QFont font = ui->lbIndex->font(); // 设置粗体
+    font.setBold(isSet);
+    ui->lbIndex->setFont(font);
+}
 
 /**
  * @brief 配置测试项

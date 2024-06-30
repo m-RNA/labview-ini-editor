@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-30 04:44:43
+ * @LastEditTime: 2024-06-30 20:12:22
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -845,9 +845,11 @@ void MainWindow::uiUpdateTestResult(const QVector<TestResult> &resultList)
     for (int i = 0; i < resultList.size(); ++i)
     {
         TestResultInterface *item = new TestResultInterface(this);
+        connect(item, &TestResultInterface::indexChanged, this, &MainWindow::on_lwTestResultItem_IndexChanged);
         item->setUi(i, resultList.at(i));
         uiAddResult(item);
     }
+    on_lwTestResultItem_IndexChanged(resultList.at(0).index);
 }
 
 void MainWindow::uiUpdateTestItem(QString testItemName)
@@ -1083,3 +1085,34 @@ void MainWindow::on_btnAddTestItemAll_clicked() { on_actTestItemAdd_triggered();
 void MainWindow::on_btnCopyTestItemAll_clicked() { on_actTestItemCopy_triggered(); }
 
 void MainWindow::on_btnRemoveTestItemAll_clicked() { on_actTestItemDelete_triggered(); }
+
+void MainWindow::on_lwTestResultItem_IndexChanged(int index)
+{
+    for (int i = 0; i < ui->lwTestCmd->count(); i++)
+    {
+        TestItemInterface *item = (TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(i));
+        item->setHighlight(false);
+    }
+
+    for (int i = 0; i < ui->lwTestResult->count(); i++)
+    {
+        TestResultInterface *itemResult
+            = (TestResultInterface *) ui->lwTestResult->itemWidget(ui->lwTestResult->item(i));
+        int showIndex = itemResult->getShowIndex();
+        if (showIndex < 0 || showIndex >= ui->lwTestCmd->count())
+            continue;
+        TestItemInterface *item = (TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(showIndex));
+        item->setHighlight(true);
+    }
+
+    if (index < 0 || index >= ui->lwTestCmd->count())
+    {
+        Message::information("显示项：" + QString::number(index) + " > 命令列表数目："
+                             + QString::number(ui->lwTestCmd->count()));
+    }
+    else
+    {
+        TestItemInterface *item = (TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(index));
+        item->setFocus();
+    }
+}

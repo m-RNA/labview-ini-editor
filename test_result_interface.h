@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-31 00:00:44
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-16 06:25:44
+ * @LastEditTime: 2024-06-30 19:35:18
  * @FilePath: \LabViewIniEditor2024\test_result_interface.h
  * @Description:
  *
@@ -30,11 +30,19 @@ public:
     explicit TestResultInterface(QWidget *parent = nullptr);
     ~TestResultInterface();
 
+    int getShowIndex() const;
+
     void setIndex(int index);
     void setUi(int index, const TestResult &item);
 
     // 从界面获取数据
     TestResult getTestResult() const;
+
+signals:
+    void indexChanged(int index);
+
+private slots:
+    void on_spinIndex_valueChanged(int arg1);
 
 private:
     Ui::TestResultInterface *ui;

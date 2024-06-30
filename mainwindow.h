@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-30 05:22:11
+ * @LastEditTime: 2024-06-30 20:24:25
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -84,6 +84,8 @@ private slots:
     void on_btnAddTestItemAll_clicked();
     void on_btnCopyTestItemAll_clicked();
     void on_btnRemoveTestItemAll_clicked();
+
+    void on_lwTestResultItem_IndexChanged(int index);
 
 private:
     Ui::MainWindow *ui;

@@ -1,4 +1,14 @@
-﻿#ifndef TEST_ITEM_INTERFACE_H
+﻿/*
+ * @Author: 陈俊健
+ * @Date: 2024-05-20 23:00:24
+ * @LastEditors: 陈俊健
+ * @LastEditTime: 2024-06-30 19:20:27
+ * @FilePath: \LabViewIniEditor2024\test_item_interface.h
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by Chenjunjian, All Rights Reserved. 
+ */
+#ifndef TEST_ITEM_INTERFACE_H
 #define TEST_ITEM_INTERFACE_H
 #if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
@@ -20,6 +30,7 @@ public:
     ~TestItemInterface();
 
     void setIndex(int index);
+    void setHighlight(bool isSet);
     void setUi(int index, const TestCmd &item);
     void uiSetTx(QString strTx);
 
