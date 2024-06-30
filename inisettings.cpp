@@ -131,7 +131,6 @@ void IniSettings::clear()
     m_mapKey.clear();
     m_mapGroup.clear();
     m_mapGroupKey.clear();
-    m_mapGroupNew.clear();
 }
 
 /**
@@ -142,8 +141,7 @@ void IniSettings::beginGroup(const QString &prefix)
     m_group = prefix;
     if (!m_mapGroup.contains(prefix))
     {
-        if (!m_mapGroupNew.contains(prefix))
-            m_mapGroupNew.append(prefix);
+        m_mapGroup.append(prefix);
     }
 }
 
@@ -168,12 +166,15 @@ void IniSettings::insertGroup(int index, const QString &group)
     {
         m_mapGroup.removeOne(group);
     }
-    if (m_mapGroupNew.contains(group))
-    {
-        m_mapGroupNew.removeOne(group);
-    }
     m_mapGroup.insert(index, group);
 }
+
+/**
+ * @brief 移动组
+ * @param index 索引
+ * @param group 组名
+ */
+void IniSettings::moveGroup(int index, const QString &group) { insertGroup(index, group); }
 
 /**
  * @brief 删除组
@@ -184,10 +185,6 @@ void IniSettings::removeGroup(const QString &group)
     if (m_mapGroup.contains(group))
     {
         m_mapGroup.removeOne(group);
-    }
-    else if (m_mapGroupNew.contains(group))
-    {
-        m_mapGroupNew.removeOne(group);
     }
     else
         return;
@@ -209,13 +206,10 @@ void IniSettings::renameGroup(const QString &oldGroup, const QString &newGroup)
 {
     if (m_mapGroup.contains(oldGroup))
     {
+        // 找到旧组位置，插入新组，删除旧组，
+        int index = m_mapGroup.indexOf(oldGroup);
+        m_mapGroup.insert(index, newGroup);
         m_mapGroup.removeOne(oldGroup);
-        m_mapGroup.append(newGroup);
-    }
-    else if (m_mapGroupNew.contains(oldGroup))
-    {
-        m_mapGroupNew.removeOne(oldGroup);
-        m_mapGroupNew.append(newGroup);
     }
     else
         return;
@@ -555,21 +549,6 @@ bool IniSettings::saveFile()
         out << key << " = " << value << "\n";
     }
 FILE_END:
-    // 新增组
-    foreach (QString group, m_mapGroupNew)
-    {
-        out << "\n";
-        out << "[" << group << "]\n";
-        foreach (QString key, m_mapGroupKey.keys())
-        {
-            if (key.startsWith(group + SUBGROUP_SEPARATOR))
-            {
-                QString childKey = key.mid(group.length() + 1);
-                childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
-                out << childKey << " = " << m_mapGroupKey.value(key) << "\n";
-            }
-        }
-    }
 
     file.flush();       // 刷新文件
     file.close();       // 关闭文件
@@ -625,40 +604,6 @@ bool IniSettings::saveFileOrderKey(const QStringList &keyOrder, const QString &g
 
     QStringList keyList = m_mapGroupKey.keys();
     foreach (QString group, m_mapGroup)
-    {
-        out << "\n\n";
-        out << "[" << group << "]\n";
-        // 按照顺序写入
-        if (groupOrder == group || groupOrder == "")
-        {
-            foreach (QString key, keyOrder)
-            {
-                QString keyTemp = group + SUBGROUP_SEPARATOR + key;
-                if (keyList.contains(keyTemp))
-                {
-                    keyList.removeOne(keyTemp);
-                    out << key << " = " << m_mapGroupKey.value(keyTemp) << "\n";
-                }
-            }
-        }
-
-        // 剩余的写入
-        foreach (QString key, keyList)
-        {
-            if (key.startsWith(group + SUBGROUP_SEPARATOR))
-            {
-                QString childKey = key.mid(group.length() + 1);
-                childKey = childKey.mid(childKey.indexOf(SUBGROUP_SEPARATOR) + 1);
-                if (childKey == INI_COMMENT_KEY)
-                    out << m_mapGroupKey.value(key) << "\n";
-                else
-                    out << childKey << " = " << m_mapGroupKey.value(key) << "\n";
-            }
-        }
-    }
-
-    // 新增组
-    foreach (QString group, m_mapGroupNew)
     {
         out << "\n\n";
         out << "[" << group << "]\n";

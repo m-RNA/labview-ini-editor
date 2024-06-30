@@ -34,6 +34,7 @@ public:
     QString group() const;                  // 获取当前组
 
     void insertGroup(int index, const QString &group);                  // 插入组
+    void moveGroup(int index, const QString &group);                    // 移动组
     void removeGroup(const QString &group);                             // 删除组
     void renameGroup(const QString &oldGroup, const QString &newGroup); // 重命名组
 
@@ -69,7 +70,6 @@ private:
 
     QMap<QString, QString> m_mapKey;      // 键值对（不包含组）
     QStringList m_mapGroup;               // 组
-    QStringList m_mapGroupNew;            // 新组
     QMap<QString, QString> m_mapGroupKey; // 组键
 };
 
