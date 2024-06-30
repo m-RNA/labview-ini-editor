@@ -425,6 +425,7 @@ void MainWindow::on_lwTestItemAll_itemSelectionChanged()
     QListWidgetItem *item = ui->lwTestItemAll->currentItem();
     if (item == nullptr)
         return;
+    ui->lwTestItemConfigKey->clear();
     uiUpdateTestItem(item->text().trimmed());
 }
 
