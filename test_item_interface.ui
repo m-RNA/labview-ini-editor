@@ -24,7 +24,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>序号</string>
+      <string>序号：高亮为结果项</string>
      </property>
      <property name="text">
       <string>1</string>
