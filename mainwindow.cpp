@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-07-01 03:11:04
+ * @LastEditTime: 2024-07-01 03:13:39
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -977,7 +977,7 @@ void MainWindow::uiClearAll()
     ui->lwTestItemAll->clear();
 
     ui->leTestItemName->clear();
-    ui->spbxRepeatTimes->setValue(1);
+    ui->spbxRepeatTimes->setValue(0);
     ui->spbxDataSize->setValue(2);
     ui->spbxDecPlace->setValue(0);
     ui->lwTestCmd->clear();
