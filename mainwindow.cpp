@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-30 23:13:32
+ * @LastEditTime: 2024-07-01 00:42:33
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -392,8 +392,8 @@ void MainWindow::on_lwTestItemConfig_itemSelectionChanged()
     QStringList keyList = labviewSetting->getConfigTestItemKey(name);
     if (keyList.size() == 0)
     {
-        qDebug() << "未找到配置组：" << name;
-        Message::error("未找到配置组：" + name);
+        qDebug() << "配置文件没有：" << name;
+        Message::error("配置文件没有：" + name);
         return;
     }
     // 添加测试项
@@ -456,7 +456,7 @@ void MainWindow::on_leTestItemName_editingFinished()
     if (testItemIndex == -1)
     {
         qDebug() << "未找到测试项：" << leTestItemName_Old;
-        Message::error("未找到测试项：" + leTestItemName_Old);
+        // Message::error("未找到测试项：" + leTestItemName_Old);
         return;
     }
     // 修改测试项名称
@@ -871,12 +871,12 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
     int testItemIndex = labviewSetting->getTestItemIndex(testItemName);
     if (testItemIndex == -1)
     {
-        qDebug() << "未找到测试项：" << testItemName;
-        Message::error("未找到测试项：" + testItemName);
+        qDebug() << "协议文件没有：" << testItemName;
+        Message::error("协议文件没有：" + testItemName);
         return;
     }
     // 更新界面前，检查是否有未保存的测试项
-    if (leTestItemName_Old != "")
+    if (leTestItemName_Old != "" && ui->leTestItemName->text().trimmed() != "")
     {
         updateTestItemFromUi(getTestItemCurrent());
     }
