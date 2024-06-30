@@ -4,9 +4,9 @@
  * @LastEditors: 陈俊健
  * @LastEditTime: 2024-06-30 20:21:57
  * @FilePath: \LabViewIniEditor2024\test_item_interface.cpp
- * @Description: 
- * 
- * Copyright (c) 2024 by Chenjunjian, All Rights Reserved. 
+ * @Description:
+ *
+ * Copyright (c) 2024 by Chenjunjian, All Rights Reserved.
  */
 #if _MSC_VER >= 1600 // MSVC2015>1899,对于MSVC2010以上版本都可以使用
 #pragma execution_character_set("utf-8")
@@ -68,8 +68,10 @@ void TestItemInterface::setIndex(int index) { ui->lbIndex->setText(QString::numb
 void TestItemInterface::setHighlight(bool isSet)
 {
     ui->lbIndex->setStyleSheet(isSet ? "background-color: yellow" : "");
-    QFont font = ui->lbIndex->font(); // 设置粗体
-    font.setBold(isSet);
+    QFont font = ui->lbIndex->font();
+    font.setBold(isSet);      // 设置粗体
+    font.setItalic(isSet);    // 设置斜体
+    font.setUnderline(isSet); // 设置下划线
     ui->lbIndex->setFont(font);
 }
 

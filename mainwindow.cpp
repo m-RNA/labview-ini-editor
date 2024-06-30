@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-30 20:12:22
+ * @LastEditTime: 2024-06-30 23:13:32
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -1113,6 +1113,6 @@ void MainWindow::on_lwTestResultItem_IndexChanged(int index)
     else
     {
         TestItemInterface *item = (TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(index));
-        item->setFocus();
+        ui->lwTestCmd->setCurrentRow(index);
     }
 }
