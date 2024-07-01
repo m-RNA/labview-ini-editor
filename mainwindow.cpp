@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-07-01 03:15:14
+ * @LastEditTime: 2024-07-02 03:55:15
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -61,7 +61,7 @@ QString FindFile(QString path, QString obj, QString target)
     dir.setNameFilters(filter);
     QStringList fileList = dir.entryList();
     QStringList targetFileList;
-    qDebug() << "fileList: " << fileList;
+    // qDebug() << "fileList: " << fileList;
     // 遍历 target 列表，移除版本号，与 obj
     for (int i = 0; i < fileList.size(); i++)
     {
@@ -171,7 +171,8 @@ void MainWindow::on_actOpenIni_triggered()
 
 void MainWindow::on_actLoadIni_triggered()
 {
-    uiClearParam(); // 清空界面
+    uiClearAll(); // 清空界面
+    qDebug() << "退出" << __FUNCTION__ << __LINE__;
     filePathConfig = "";
 
     // 获取 dwlTestItemAll 当前宽高
@@ -183,7 +184,7 @@ void MainWindow::on_actLoadIni_triggered()
         QString strPath = filePathProtocol.mid(0, filePathProtocol.lastIndexOf("/"));
         strPath = strPath.mid(0, strPath.lastIndexOf("/"));
         strPath += "/配置文件/";
-        qDebug() << ": " << strPath;
+        // qDebug() << strPath;
         fileNameConfig = FindFile(strPath, title, "配置文件");
         if (fileNameConfig.isEmpty() == false)
             filePathConfig = strPath + fileNameConfig;
@@ -200,8 +201,8 @@ void MainWindow::on_actLoadIni_triggered()
     }
     ui->dwlTestItemAll->resize(size);
 
-    qDebug() << "filePathProtocol: " << filePathProtocol;
-    qDebug() << "filePathConfig: " << filePathConfig;
+    // qDebug() << "filePathProtocol: " << filePathProtocol;
+    // qDebug() << "filePathConfig: " << filePathConfig;
 
     ui->actLoadIni->setEnabled(true);
     // 删除原来的设置
@@ -277,6 +278,12 @@ void MainWindow::on_actSave_triggered()
 
 void MainWindow::on_actSSCOM_triggered()
 {
+    if (labviewSetting == nullptr)
+    {
+        qDebug() << "未打开文件";
+        Message::error("未打开文件");
+        return;
+    }
     QString filePathName
         = QFileDialog::getSaveFileName(this, "导出SSCOM格式", title + "SSCOM格式", "SSCOM files(*.txt)");
     if (filePathName.isEmpty())
@@ -298,6 +305,12 @@ void MainWindow::on_actSSCOM_triggered()
 
 void MainWindow::on_actBSP_triggered()
 {
+    if (labviewSetting == nullptr)
+    {
+        qDebug() << "未打开文件";
+        Message::error("未打开文件");
+        return;
+    }
     QString filePathName = QFileDialog::getSaveFileName(this, "导出BSP格式", title + "BSP格式", "BSP files(*.bsp)");
     if (filePathName.isEmpty())
     {
@@ -385,17 +398,25 @@ void MainWindow::on_lwTestItemConfig_itemSelectionChanged()
     if (item == nullptr)
         return;
     QString name = item->text().trimmed();
-
+    qDebug() << __FUNCTION__ << __LINE__ << "改变" << name;
     uiUpdateConfigKey(name, true);
 }
 
 void MainWindow::uiUpdateConfigKey(QString name, bool needConfigKeyTestItemUpdate)
 {
+    if (notUpdateFlag == true)
+    {
+        notUpdateFlag = false;
+        return;
+    }
     if (labviewSetting == nullptr)
         return;
     int testItemIndex = labviewSetting->getTestItemIndex(name);
     if (testItemIndex != -1)
+    {
+        qDebug() << __FUNCTION__ << __LINE__ << "点击" << name;
         uiUpdateTestItem(name);
+    }
     ui->lwTestItemConfigKey->clear();
 
     if (isNeedConfigFile == false)
@@ -417,7 +438,10 @@ void MainWindow::uiUpdateConfigKey(QString name, bool needConfigKeyTestItemUpdat
         item->setText(key);
     }
     if ((testItemIndex == -1) && (needConfigKeyTestItemUpdate == true))
+    {
+        qDebug() << __FUNCTION__ << __LINE__ << "点击" << keyList.at(0);
         uiUpdateTestItem(keyList.at(0));
+    }
 }
 
 void MainWindow::on_lwTestItemConfigKey_itemSelectionChanged()
@@ -425,7 +449,7 @@ void MainWindow::on_lwTestItemConfigKey_itemSelectionChanged()
     QListWidgetItem *item = ui->lwTestItemConfigKey->currentItem();
     if (item == nullptr)
         return;
-    qDebug() << "点击" << item->text().trimmed();
+    qDebug() << __FUNCTION__ << __LINE__ << "点击" << item->text().trimmed();
     uiUpdateTestItem(item->text().trimmed());
 }
 
@@ -435,7 +459,7 @@ void MainWindow::on_lwTestItemAll_itemSelectionChanged()
     if (item == nullptr)
         return;
     lwTestItemAllRow = ui->lwTestItemAll->currentRow();
-    qDebug() << "当前行：" << lwTestItemAllRow;
+    qDebug() << __FUNCTION__ << __LINE__ << "当前行：" << lwTestItemAllRow;
     // ui->lwTestItemConfigKey->clear();
     uiUpdateConfigKey(item->text().trimmed(), false);
 }
@@ -448,11 +472,14 @@ void MainWindow::on_lwTestItemAll_itemSelectionChanged()
 
 void MainWindow::on_leTestItemName_editingFinished()
 {
+    if (labviewSetting == nullptr)
+        return;
     // 获取当前点击的测试项的名称
     QString str = ui->leTestItemName->text().trimmed();
+    qDebug() << __FUNCTION__ << __LINE__ << str;
     if (str == "")
     {
-        ui->leTestItemName->setText(leTestItemName_Old);
+        // ui->leTestItemName->setText(leTestItemName_Old);
         return;
     }
     ui->leTestItemName->setText(str);
@@ -738,6 +765,8 @@ void MainWindow::on_actTestItemCopy_triggered()
 
 void MainWindow::on_actTestItemDelete_triggered()
 {
+    if (labviewSetting == nullptr)
+        return;
     // 获取当前点击的测试项的名称
     QString str = ui->leTestItemName->text().trimmed();
     // 获取当前点击的测试项的索引
@@ -816,6 +845,8 @@ void MainWindow::onTestItemAllReordered(void)
 
 TestItem *MainWindow::getTestItemCurrent(void)
 {
+    if (labviewSetting == nullptr)
+        return nullptr;
     // 获取当前点击的测试项的名称
     QString str = ui->leTestItemName->text().trimmed();
     if (str == "")
@@ -887,6 +918,7 @@ void MainWindow::uiUpdateTestResult(const QVector<TestResult> &resultList)
 
 void MainWindow::uiUpdateTestItem(QString testItemName)
 {
+    qDebug() << __FUNCTION__ << __LINE__ << "点击: " << testItemName;
     if (labviewSetting == nullptr)
         return;
     int testItemIndex = labviewSetting->getTestItemIndex(testItemName);
@@ -903,7 +935,6 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
     }
 
     leTestItemName_Old = testItemName;
-    qDebug() << "点击: " << testItemName;
 
     const TestItem *testItem = &testItemListAddr->at(testItemIndex);
     // testItem->print();
@@ -922,6 +953,8 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
 
 void MainWindow::uiUpdateTestItemList()
 {
+    if (labviewSetting == nullptr)
+        return;
     ui->lwTestItemConfigKey->clear();
     ui->lwTestItemConfig->clear();
     ui->lwTestItemAll->clear();
@@ -972,13 +1005,19 @@ void MainWindow::uiUpdateTestItemList()
     }
 }
 
-void MainWindow::uiClearParam()
+void MainWindow::uiClearAll()
 {
     // this->setWindowTitle(MainWindowTitle);
+    notUpdateFlag = true;
+    leTestItemName_Old = "";
 
-    // ui->lwTestItemConfig->clear();
-    // ui->lwTestItemConfigKey->clear();
-    // ui->lwTestItemAll->clear();
+    ui->lwTestItemConfig->clear();
+    ui->lwTestItemConfigKey->clear();
+    ui->lwTestItemAll->clear();
+
+    ui->lwTestItemConfig->clearSelection();
+    ui->lwTestItemConfigKey->clearSelection();
+    ui->lwTestItemAll->clearSelection();
 
     ui->leTestItemName->clear();
     ui->spbxRepeatTimes->setValue(0);
@@ -1078,6 +1117,8 @@ void MainWindow::updateTestResultListFromUi(QVector<TestResult> &resultList)
 
 void MainWindow::updateTestItemFromUi(TestItem *testItem)
 {
+    qDebug() << __FUNCTION__ << __LINE__ << "更新" << testItem->name;
+
     if (testItem != nullptr)
     {
         testItem->name = ui->leTestItemName->text().trimmed();

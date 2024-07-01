@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-07-02 01:01:34
+ * @LastEditTime: 2024-07-02 03:24:13
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -105,6 +105,7 @@ private:
     LabViewSetting *labviewSetting = nullptr; // LabView设置
 
     int lwTestItemAllRow = -1; // 全部测试项列表行号
+    bool notUpdateFlag = true; // 不更新标志
 
     TestItem *getTestItemCurrent(void); // 获取当前测试项
 
@@ -114,7 +115,7 @@ private:
     void uiUpdateTestItemList();                                    // 更新测试项列表界面
     void uiUpdateConfigKey(QString name, bool needConfigKeyTestItemUpdate);
 
-    void uiClearParam(); // 清空界面
+    void uiClearAll(); // 清空界面
 
     void uiAddTestCmd(TestItemInterface *item);  // 界面添加测试命令
     void uiAddResult(TestResultInterface *item); // 界面添加测试结果
