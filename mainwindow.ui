@@ -340,7 +340,7 @@
           <item>
            <widget class="QComboBox" name="cbSign">
             <property name="toolTip">
-             <string>符号</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;0为无符号&lt;/p&gt;&lt;p&gt;1为有符号&lt;/p&gt;&lt;p&gt;68协议使用&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="editable">
              <bool>false</bool>
