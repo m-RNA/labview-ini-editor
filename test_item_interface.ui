@@ -272,7 +272,7 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>解析方式：AT、AT1、68、串口查询真、串口查询假、单按钮弹框、双按钮弹框</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;68 HEX发送&lt;/p&gt;&lt;p&gt;AT ASSIC码发送&lt;/p&gt;&lt;p&gt;AT1 基于AT，可发送HEX，内部判断后，正确返回OK&lt;/p&gt;&lt;p&gt;AT2 基于AT，加上控制流（DTR&lt;/p&gt;&lt;p&gt;AT3 基于AT，不设置波特率，适用于USB串口&lt;/p&gt;&lt;p&gt;串口查询真 查询到串口出现&lt;/p&gt;&lt;p&gt;串口查询假 查询到串口消失&lt;/p&gt;&lt;p&gt;单按钮弹框 单按钮弹窗&lt;/p&gt;&lt;p&gt;双按钮弹框 双按钮弹窗，可用于人工判断&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="editable">
          <bool>true</bool>
@@ -280,6 +280,11 @@
         <property name="currentIndex">
          <number>0</number>
         </property>
+        <item>
+         <property name="text">
+          <string>68</string>
+         </property>
+        </item>
         <item>
          <property name="text">
           <string>AT</string>
@@ -292,7 +297,12 @@
         </item>
         <item>
          <property name="text">
-          <string>68</string>
+          <string>AT2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>AT3</string>
          </property>
         </item>
         <item>

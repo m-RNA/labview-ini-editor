@@ -24,7 +24,7 @@ public:
     QString comName = "底板串口"; // 端口选择（底板串口、产品串口、主机串口...）
     QString tx = "";              // 发送内容
     QString rx = "";              // 接收内容
-    QString cmdType = "AT1";      // 命令类型（AT、AT1、68、串口查询真or假、单or双按钮弹框...)
+    QString cmdType = "AT1";      // 命令类型（AT、AT1~3、68、串口查询真or假、单or双按钮弹框...)
     double cmdDelay = 0;          // 命令延时
     double cmdTimeout = 5;        // 命令超时
 
