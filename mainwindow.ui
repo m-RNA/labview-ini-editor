@@ -956,6 +956,8 @@
     <property name="title">
      <string>设置</string>
     </property>
+    <addaction name="actPreviousTestItem"/>
+    <addaction name="actNextTestItem"/>
     <addaction name="actSownAllTestItem"/>
     <addaction name="separator"/>
     <addaction name="actNeedConfigFile"/>
@@ -1545,6 +1547,22 @@
   <action name="actUpdateVersion">
    <property name="text">
     <string>版本更新</string>
+   </property>
+  </action>
+  <action name="actNextTestItem">
+   <property name="text">
+    <string>下一测试项</string>
+   </property>
+   <property name="shortcut">
+    <string>F4</string>
+   </property>
+  </action>
+  <action name="actPreviousTestItem">
+   <property name="text">
+    <string>上一测试项</string>
+   </property>
+   <property name="shortcut">
+    <string>F2</string>
    </property>
   </action>
  </widget>

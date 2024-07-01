@@ -1194,3 +1194,30 @@ void MainWindow::on_lwTestResultItem_IndexChanged(int index)
         ui->lwTestCmd->setCurrentRow(index);
     }
 }
+
+void MainWindow::on_actNextTestItem_triggered()
+{
+    int row = ui->lwTestItemConfig->currentRow();
+    qDebug() << __FUNCTION__ << __LINE__ << "当前行：" << row;
+    if (row == -1)
+        return;
+    if (row == ui->lwTestItemConfig->count() - 1)
+        row = 0;
+    else
+        row++;
+    ui->lwTestItemConfig->setCurrentRow(row);
+}
+
+void MainWindow::on_actPreviousTestItem_triggered()
+{
+    int row = ui->lwTestItemConfig->currentRow();
+    qDebug() << __FUNCTION__ << __LINE__ << "当前行：" << row;
+
+    if (row == -1)
+        return;
+    if (row == 0)
+        row = ui->lwTestItemConfig->count() - 1;
+    else
+        row--;
+    ui->lwTestItemConfig->setCurrentRow(row);
+}

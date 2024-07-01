@@ -87,6 +87,10 @@ private slots:
 
     void on_lwTestResultItem_IndexChanged(int index);
 
+    void on_actNextTestItem_triggered();
+
+    void on_actPreviousTestItem_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString title = ""; // 窗口标题
