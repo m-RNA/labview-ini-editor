@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-07-01 02:43:41
+ * @LastEditTime: 2024-07-02 01:01:34
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -114,7 +114,7 @@ private:
     void uiUpdateTestItemList();                                    // 更新测试项列表界面
     void uiUpdateConfigKey(QString name, bool needConfigKeyTestItemUpdate);
 
-    void uiClearAll(); // 清空界面
+    void uiClearParam(); // 清空界面
 
     void uiAddTestCmd(TestItemInterface *item);  // 界面添加测试命令
     void uiAddResult(TestResultInterface *item); // 界面添加测试结果

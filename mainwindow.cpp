@@ -171,7 +171,7 @@ void MainWindow::on_actOpenIni_triggered()
 
 void MainWindow::on_actLoadIni_triggered()
 {
-    uiClearAll(); // 清空界面
+    uiClearParam(); // 清空界面
     filePathConfig = "";
 
     // 获取 dwlTestItemAll 当前宽高
@@ -971,13 +971,13 @@ void MainWindow::uiUpdateTestItemList()
     }
 }
 
-void MainWindow::uiClearAll()
+void MainWindow::uiClearParam()
 {
     // this->setWindowTitle(MainWindowTitle);
 
-    ui->lwTestItemConfig->clear();
-    ui->lwTestItemConfigKey->clear();
-    ui->lwTestItemAll->clear();
+    // ui->lwTestItemConfig->clear();
+    // ui->lwTestItemConfigKey->clear();
+    // ui->lwTestItemAll->clear();
 
     ui->leTestItemName->clear();
     ui->spbxRepeatTimes->setValue(0);
