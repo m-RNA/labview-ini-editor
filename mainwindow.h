@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-07-02 03:24:13
+ * @LastEditTime: 2024-07-02 04:52:33
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -109,7 +109,6 @@ private:
     LabViewSetting *labviewSetting = nullptr; // LabView设置
 
     int lwTestItemAllRow = -1; // 全部测试项列表行号
-    bool notUpdateFlag = true; // 不更新标志
 
     TestItem *getTestItemCurrent(void); // 获取当前测试项
 

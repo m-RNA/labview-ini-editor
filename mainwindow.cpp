@@ -404,11 +404,6 @@ void MainWindow::on_lwTestItemConfig_itemSelectionChanged()
 
 void MainWindow::uiUpdateConfigKey(QString name, bool needConfigKeyTestItemUpdate)
 {
-    if (notUpdateFlag == true)
-    {
-        notUpdateFlag = false;
-        return;
-    }
     if (labviewSetting == nullptr)
         return;
     int testItemIndex = labviewSetting->getTestItemIndex(name);
@@ -1008,7 +1003,6 @@ void MainWindow::uiUpdateTestItemList()
 void MainWindow::uiClearAll()
 {
     // this->setWindowTitle(MainWindowTitle);
-    notUpdateFlag = true;
     leTestItemName_Old = "";
 
     ui->lwTestItemConfig->clear();
