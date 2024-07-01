@@ -912,6 +912,7 @@ void MainWindow::uiUpdateTestItem(QString testItemName)
     ui->spbxDataSize->setValue(testItem->dataByteLen);
     ui->spbxDecPlace->setValue(testItem->decimal);
     ui->spbxByteOrder->setCurrentText(testItem->byteOrder);
+    ui->cbEncode->setCurrentText(testItem->encodeWay);
     ui->cbSign->setCurrentText(testItem->sign);
     ui->spbxRepeatTimes->setValue(testItem->repeat);
 
@@ -1080,11 +1081,12 @@ void MainWindow::updateTestItemFromUi(TestItem *testItem)
     if (testItem != nullptr)
     {
         testItem->name = ui->leTestItemName->text().trimmed();
-        testItem->byteOrder = ui->spbxByteOrder->currentText();
         testItem->dataByteLen = ui->spbxDataSize->value();
         testItem->decimal = ui->spbxDecPlace->value();
-        testItem->repeat = ui->spbxRepeatTimes->value();
+        testItem->byteOrder = ui->spbxByteOrder->currentText();
+        testItem->encodeWay = ui->cbEncode->currentText();
         testItem->sign = ui->cbSign->currentText();
+        testItem->repeat = ui->spbxRepeatTimes->value();
 
         updateTestCmdListFromUi(testItem->cmdList);
         updateTestResultListFromUi(testItem->resultList);
