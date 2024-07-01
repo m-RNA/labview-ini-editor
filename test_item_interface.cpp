@@ -27,6 +27,13 @@ QStringList TestItemInterface::STR_TEST_TYPE = {
     "68", "AT", "AT1", "AT2", "AT3", "串口查询真", "串口查询假", "单按钮弹框", "双按钮弹框",
 };
 
+QStringList TestItemInterface::UI_COM_LIST = {
+    "底板串口",
+    "产品串口",
+    "主机串口",
+    "下载串口",
+};
+
 TestItemInterface::TestItemInterface(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::TestItemInterface)
@@ -35,6 +42,9 @@ TestItemInterface::TestItemInterface(QWidget *parent)
     ui->cbTxEnd->setCurrentText(STR_TX_END.at(CB_TX_END_NC)); // NC
 
     ui->cbEncode->setVisible(false);
+
+    ui->cbComName->clear();
+    ui->cbComName->addItems(UI_COM_LIST);
 }
 
 TestItemInterface::~TestItemInterface() { delete ui; }
@@ -85,6 +95,12 @@ void TestItemInterface::setUi(int index, const TestCmd &item)
 
     ui->lbIndex->setText(QString::number(index));
     //    ui->leBrief->setText(item.brief);
+    if (!UI_COM_LIST.contains(item.comName))
+    {
+        UI_COM_LIST.append(item.comName);
+        ui->cbComName->clear();
+        ui->cbComName->addItems(UI_COM_LIST);
+    }
     ui->cbComName->setCurrentText(item.comName);
     ui->leBrief->setText(item.brief);
 

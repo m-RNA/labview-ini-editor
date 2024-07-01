@@ -2,11 +2,11 @@
  * @Author: 陈俊健
  * @Date: 2024-05-20 23:00:24
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-30 19:20:27
+ * @LastEditTime: 2024-07-02 04:47:22
  * @FilePath: \LabViewIniEditor2024\test_item_interface.h
- * @Description: 
- * 
- * Copyright (c) 2024 by Chenjunjian, All Rights Reserved. 
+ * @Description:
+ *
+ * Copyright (c) 2024 by Chenjunjian, All Rights Reserved.
  */
 #ifndef TEST_ITEM_INTERFACE_H
 #define TEST_ITEM_INTERFACE_H
@@ -36,6 +36,9 @@ public:
 
     // 从界面获取数据
     TestCmd getTestCmd() const;
+
+    static QStringList STR_TEST_TYPE;
+    static QStringList UI_COM_LIST;
 
 private slots:
 
