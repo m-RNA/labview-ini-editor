@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2024-05-20 23:00:24
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-30 20:21:57
+ * @LastEditTime: 2024-07-02 04:39:05
  * @FilePath: \LabViewIniEditor2024\test_item_interface.cpp
  * @Description:
  *
@@ -23,10 +23,8 @@
 
 const QStringList STR_TX_END = {"NC", "<\\r\\n>", "<HEX>"};
 
-#define TEST_TYPE_INDEX_68 2
-
-const QStringList STR_TEST_TYPE = {
-    "AT", "AT1", "68", "串口查询真", "串口查询假", "单按钮弹框", "双按钮弹框",
+QStringList TestItemInterface::STR_TEST_TYPE = {
+    "68", "AT", "AT1", "AT2", "AT3", "串口查询真", "串口查询假", "单按钮弹框", "双按钮弹框",
 };
 
 TestItemInterface::TestItemInterface(QWidget *parent)
@@ -171,7 +169,8 @@ TestCmd TestItemInterface::getTestCmd() const
 void TestItemInterface::on_cbTestType_currentTextChanged(const QString &arg1)
 {
     int index = STR_TEST_TYPE.indexOf(arg1);
-    if (index > TEST_TYPE_INDEX_68)
+    int disableIndex = STR_TEST_TYPE.indexOf("串口查询真"); // "串口查询真
+    if (index >= disableIndex)
         ui->cbComName->setEnabled(false);
     else
         ui->cbComName->setEnabled(true);
@@ -179,7 +178,8 @@ void TestItemInterface::on_cbTestType_currentTextChanged(const QString &arg1)
 
 void TestItemInterface::on_cbTestType_currentIndexChanged(int index)
 {
-    if (index > TEST_TYPE_INDEX_68)
+    int disableIndex = STR_TEST_TYPE.indexOf("串口查询真"); // "串口查询真
+    if (index >= disableIndex)
         ui->cbComName->setEnabled(false);
     else
         ui->cbComName->setEnabled(true);
