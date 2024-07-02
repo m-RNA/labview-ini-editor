@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-07-02 03:55:15
+ * @LastEditTime: 2024-07-03 03:16:13
  * @FilePath: \LabViewIniEditor2024\mainwindow.cpp
  * @Description:
  *
@@ -760,6 +760,7 @@ void MainWindow::on_actTestItemCopy_triggered()
 
 void MainWindow::on_actTestItemDelete_triggered()
 {
+    qDebug() << __FUNCTION__ << __LINE__;
     if (labviewSetting == nullptr)
         return;
     // 获取当前点击的测试项的名称
@@ -908,7 +909,8 @@ void MainWindow::uiUpdateTestResult(const QVector<TestResult> &resultList)
         item->setUi(i, resultList.at(i));
         uiAddResult(item);
     }
-    on_lwTestResultItem_IndexChanged(resultList.at(0).index);
+    if (resultList.size() > 0)
+        on_lwTestResultItem_IndexChanged(resultList.at(0).index);
 }
 
 void MainWindow::uiUpdateTestItem(QString testItemName)
@@ -1184,7 +1186,6 @@ void MainWindow::on_lwTestResultItem_IndexChanged(int index)
     }
     else
     {
-        TestItemInterface *item = (TestItemInterface *) ui->lwTestCmd->itemWidget(ui->lwTestCmd->item(index));
         ui->lwTestCmd->setCurrentRow(index);
     }
 }
