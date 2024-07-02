@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-10-28 19:35:01
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-07-02 04:52:33
+ * @LastEditTime: 2024-07-03 04:11:38
  * @FilePath: \LabViewIniEditor2024\mainwindow.h
  * @Description:
  *
@@ -69,9 +69,9 @@ private slots:
     void on_btnCopyTestIResult_clicked();
     void on_btnRemoveTestIResult_clicked();
 
-    void on_actTestItemAdd_triggered();
-    void on_actTestItemCopy_triggered();
-    void on_actTestItemDelete_triggered();
+    void on_btnAddTestItemAll_clicked();
+    void on_btnCopyTestItemAll_clicked();
+    void on_btnRemoveTestItemAll_clicked();
 
     void onTestCmdReordered(void);     // 测试项命令重排序
     void onTestResultReordered(void);  // 测试项结果重排序
@@ -80,10 +80,6 @@ private slots:
     // void on_lwlTestItemConfig_itemClicked(QListWidgetItem *item);
     // void on_lwlTestItemAll_itemClicked(QListWidgetItem *item);
     // void on_lwlTestItemConfigKey_itemClicked(QListWidgetItem *item);
-
-    void on_btnAddTestItemAll_clicked();
-    void on_btnCopyTestItemAll_clicked();
-    void on_btnRemoveTestItemAll_clicked();
 
     void on_lwTestResultItem_IndexChanged(int index);
 
@@ -101,14 +97,14 @@ private:
     QString fileNameConfig = "";   // 配置文件路径
     bool isNeedConfigFile = false; // 是否需要导入配置文件
 
-    QString leTestItemName_Old = ""; // 旧的测试项名称
+    QString uiLwTestItemName = ""; // 旧的测试项名称
 
     QList<TestItem> *testItemListAddr = nullptr; // 测试项列表
     QList<ConfigItem> configItemList = {};       // 配置项列表
 
     LabViewSetting *labviewSetting = nullptr; // LabView设置
 
-    int lwTestItemAllRow = -1; // 全部测试项列表行号
+    int uiLwTestItemAllRow = -1; // 全部测试项列表行号
 
     TestItem *getTestItemCurrent(void); // 获取当前测试项
 
