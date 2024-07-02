@@ -2,7 +2,7 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-06-30 22:50:28
+ * @LastEditTime: 2024-07-03 04:34:44
  * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
@@ -338,6 +338,16 @@ void LabViewSetting::insertTestItemProtocol(int index, const TestItem &testItem)
 {
     if (index < 0 || index > testItemList.size())
     {
+        return;
+    }
+    if (index == testItemList.size())
+    {
+        int testItemIndex = getTestItemIndex(testItem.name);
+        if (testItemIndex != -1)
+        {
+            testItemList.removeAt(testItemIndex);
+        }
+        testItemList.append(testItem);
         return;
     }
     QString lastName = testItemList.at(index).name;
