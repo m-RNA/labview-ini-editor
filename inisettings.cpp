@@ -68,7 +68,11 @@ bool IniSettings::loadFile(const QString &fileName)
     int index;     // 等号索引
 
     QTextStream in(&file); // 新建文本流对象
-    in.setCodec(m_codec);  // 设置编码方式
+#if QT_VERSION_MAJOR >= 6
+    // in.setEncoding(m_codec); // 设置编码方式
+#else
+    in.setCodec(m_codec); // 设置编码方式
+#endif
 
     while (!in.atEnd()) // 按行读取文件内容
     {
@@ -281,7 +285,11 @@ QStringList IniSettings::childKeysOrder() const
         return list;
     }
     QTextStream in(&file);
+#if QT_VERSION_MAJOR >= 6
+
+#else
     in.setCodec(m_codec); // 设置编码方式
+#endif
 
     QString line;       // 读取的每一行数据
     while (!in.atEnd()) // 按行读取文件内容
@@ -418,10 +426,15 @@ bool IniSettings::backupFile(const QString &filePathBackup)
 
     // 复制原文件内容到新文件
     QTextStream in(&file);
-    in.setCodec(m_codec); // 设置编码方式
-
     QTextStream out(&fileBackup);
+
+#if QT_VERSION_MAJOR >= 6
+
+#else
+    in.setCodec(m_codec); // 设置编码方式
     out.setCodec(m_codec);
+#endif
+
     while (!in.atEnd())
     {
         QString line = in.readLine();
@@ -463,9 +476,14 @@ bool IniSettings::saveFile()
         return false;
     }
     QTextStream in(&fileBackup);
-    in.setCodec(m_codec); // 设置编码方式
     QTextStream out(&file);
+
+#if QT_VERSION_MAJOR >= 6
+
+#else
+    in.setCodec(m_codec); // 设置编码方式
     out.setCodec(m_codec);
+#endif
 
     // 在原文件修改，不是重新写入，同时保留原文件中的注释
     QString line;                 // 读取的每一行数据
@@ -583,9 +601,14 @@ bool IniSettings::saveFileOrderKey(const QStringList &keyOrder, const QString &g
         return false;
     }
     QTextStream in(&fileBackup);
-    in.setCodec(m_codec); // 设置编码方式
     QTextStream out(&file);
+#if QT_VERSION_MAJOR >= 6
+
+#else
+    in.setCodec(m_codec); // 设置编码方式
     out.setCodec(m_codec);
+#endif
+
     out << INI_HEADER_LABVIEW;
 
     // 在原文件修改，不是重新写入，同时保留原文件中的注释

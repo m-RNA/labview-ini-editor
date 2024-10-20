@@ -4,9 +4,9 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/../build-LabViewIniEditor-Desktop_Qt_5_14_2_MinGW_64_bit-Debug/**",
-                "D:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/**",
-                "D:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/QtCore/**",
+                "${workspaceFolder}/build/Desktop_Qt_6_7_3_MinGW_64_bit-Debug/**",
+                // "D:/Qt/Qt5.14.2/5.14.2/mingw73_64/include/**",
+                "C:/Qt/6.7.3/mingw_64/include/**",
                 "${workspaceFolder}/**"
             ],
             "defines": [
@@ -14,7 +14,8 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "D:\\Qt\\Qt5.14.2\\Tools\\mingw730_64\\bin\\gcc.exe",
+            // "compilerPath": "D:\\Qt\\Qt5.14.2\\Tools\\mingw730_64\\bin\\gcc.exe",
+            "compilerPath": "C:/Qt/Tools/mingw1310_64/bin/gcc.exe",
             "cStandard": "c11",
             "cppStandard": "gnu++14",
             "intelliSenseMode": "windows-gcc-x64"

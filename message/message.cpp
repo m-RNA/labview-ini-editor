@@ -199,7 +199,11 @@ void MessageItem::SetDuration(int nDuration) { m_nDuration = nDuration; }
 void MessageItem::paintEvent(QPaintEvent *event)
 {
     QStyleOption opt;
+#if QT_VERSION_MAJOR >= 6
+    opt.initFrom(this);
+#else
     opt.init(this);
+#endif
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     QWidget::paintEvent(event);

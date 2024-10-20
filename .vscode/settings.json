@@ -36,7 +36,11 @@
         "unordered_map": "cpp",
         "limits": "cpp",
         "system_error": "cpp",
-        "qlistwidget": "cpp"
+        "qlistwidget": "cpp",
+        "charconv": "cpp",
+        "chrono": "cpp",
+        "optional": "cpp",
+        "format": "cpp"
     },
     "cSpell.words": [
         "LADC",

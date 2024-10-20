@@ -190,7 +190,11 @@ void MainWindow::on_actLoadIni_triggered()
             filePathConfig = strPath + fileNameConfig;
 
         // 设置可以关闭 dwlTestItemAll
+#if QT_VERSION_MAJOR >= 6
+        ui->dwlTestItemAll->setFeatures(QDockWidget::DockWidgetClosable);
+#else
         ui->dwlTestItemAll->setFeatures(QDockWidget::AllDockWidgetFeatures);
+#endif
     }
     else
     {

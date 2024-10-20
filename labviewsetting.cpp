@@ -2,8 +2,8 @@
  * @Author: 陈俊健
  * @Date: 2023-11-18 21:46:11
  * @LastEditors: 陈俊健
- * @LastEditTime: 2024-07-03 04:34:44
- * @FilePath: \LabViewIniEditor2024\labviewsetting.cpp
+ * @LastEditTime: 2024-10-19 14:44:39
+ * @FilePath: \LabviewIniEditor2024\labviewsetting.cpp
  * @Description:
  *
  * Copyright (c) 2023 by Chenjunjian, All Rights Reserved.
@@ -86,8 +86,12 @@ bool LabViewSetting::exportFileSscom(const QString &filePathName)
         return false;
     }
 
+#if QT_VERSION_MAJOR >= 6
+    QString originLine = "";
+#else
     QTextStream out(&file);
     out.setCodec(QTextCodec::codecForName("GB2312"));
+#endif
 
     int index = 1;
     QString keyComment = "";
@@ -105,9 +109,14 @@ bool LabViewSetting::exportFileSscom(const QString &filePathName)
         value = "A,";
         index++;
 
+#if QT_VERSION_MAJOR >= 6
+        originLine += keyComment + "=" + valueComment + "\n";
+        originLine += key + "=" + value + "\n\n";
+#else
         out << keyComment << "=" << valueComment << endl;
         out << key << "=" << value << endl;
         out << endl;
+#endif
 
         for (const auto &testCmd : testItem.cmdList)
         {
@@ -138,11 +147,21 @@ bool LabViewSetting::exportFileSscom(const QString &filePathName)
             }
             index++;
 
+#if QT_VERSION_MAJOR >= 6
+            originLine += keyComment + "=" + valueComment + "\n";
+            originLine += key + "=" + value + "\n\n";
+        }
+    }
+    QTextCodec *codec = QTextCodec::codecForName("GB2312");
+    QByteArray encodedLine = codec->fromUnicode(originLine);
+    file.write(encodedLine);
+#else
             out << keyComment << "=" << valueComment << endl;
             out << key << "=" << value << endl;
             out << endl;
         }
     }
+#endif
     bool ret = file.flush();
     file.close();
     return ret;
@@ -150,6 +169,9 @@ bool LabViewSetting::exportFileSscom(const QString &filePathName)
 
 bool LabViewSetting::exportFileBsp(const QString &filePathName)
 {
+#if QT_VERSION_MAJOR >= 6
+    // .....
+#else
     QFile file(filePathName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
@@ -225,6 +247,7 @@ bool LabViewSetting::exportFileBsp(const QString &filePathName)
     bool ret = file.flush();
     file.close();
     return ret;
+#endif
 }
 
 /**
